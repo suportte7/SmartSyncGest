@@ -3,35 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Gestão de Obras</title>
+    <title>SmartSyncGest - Gestão Inteligente de Obras</title>
     
-    <!-- Ícone da aba do navegador (Opcional - pode trocar o link da imagem depois) -->
+    <!-- Ícone corporativo para a aba do navegador e atalho no celular -->
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2942/2942813.png" type="image/png">
     
     <style>
-        /* Remove todas as margens e trava a tela para o sistema ocupar 100% do espaço */
-        body, html {
+        * {
+            box-sizing: border-box;
+        }
+        html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #f4f7f6; /* Mesma cor de fundo do seu sistema */
+            background-color: #f4f7f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
-        /* Estica o Iframe para esconder as bordas */
         iframe {
             width: 100%;
             height: 100%;
             border: none;
             display: block;
         }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f4f7f6;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            transition: opacity 0.5s ease;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e0e0e0;
+            border-top: 4px solid #0056b3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .fallback-container {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
+            z-index: 20;
+        }
+        .btn-open {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 24px;
+            background-color: #0056b3;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- O link do seu Google Apps Script entra exatamente no src abaixo -->
-    <iframe src="https://script.google.com/macros/s/AKfycbxgzSBjFeqh7hYdEd5kZPgP-HSiY0Mm9u3yxBDMS3aukUQyGn-aMkoay5ISrbTpFds-iQ/exec"></iframe>
+    <!-- Tela de carregamento suave -->
+    <div id="loader" class="loading-overlay">
+        <div class="spinner"></div>
+        <p style="margin-top: 15px; font-weight: 600; color: #0056b3;">Carregando SmartSyncGest...</p>
+    </div>
 
+    <!-- IFRAME DO GOOGLE APPS SCRIPT -->
+    <!-- IMPORTANTE: Substitua a URL abaixo pelo seu link de execução oficial terminado em /exec -->
+    <iframe id="appFrame" src="https://script.google.com/macros/s/AKfycbxgzSBjFeqh7hydEd5kZPgP-HSiY0Mm9u3yxBDMS3aukUQyGn-aMkoay5ISrbTpFds-iQ/exec" onload="ocultarLoader()"></iframe>
+
+    <!-- FALLBACK DE SEGURANÇA (Se o navegador bloquear o iframe por múltiplas contas) -->
+    <div id="fallback" class="fallback-container">
+        <h3 style="margin-top:0; color:#0056b3;">SmartSyncGest</h3>
+        <p style="font-size: 14px; color: #555;">Caso a visualização esteja bloqueada pela sessão do Google no seu navegador, acesse o sistema diretamente clicando no botão abaixo:</p>
+        <a id="directLink" href="https://script.google.com/macros/s/AKfycbxgzSBjFeqh7hydEd5kZPgP-HSiY0Mm9u3yxBDMS3aukUQyGn-aMkoay5ISrbTpFds-iQ/exec" target="_blank" class="btn-open">Abrir Sistema Diretamente</a>
+    </div>
+
+    <script>
+        function ocultarLoader() {
+            const loader = document.getElementById('loader');
+            if (loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }
+        }
+
+        // Se o iframe não responder em 7 segundos devido a bloqueio de cookies cruzados, exibe o fallback
+        setTimeout(() => {
+            const loader = document.getElementById('loader');
+            if (loader && loader.style.display !== 'none') {
+                loader.style.display = 'none';
+                document.getElementById('fallback').style.display = 'block';
+            }
+        }, 7000);
+    </script>
 </body>
 </html>
