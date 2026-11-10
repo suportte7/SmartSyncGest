@@ -11,10 +11,10 @@
     <script src="./config.js"></script>
 
     <style>
-        :root { --primary: #0056b3; --success: #28a745; --bg: #f4f7f6; --text: #333; --border: #e0e0e0; }
+        :root { --primary: #0056b3; --success: #28a745; --warning: #ffc107; --bg: #f4f7f6; --text: #333; --border: #e0e0e0; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-bottom: 20px; }
         
-        .top-header { width: 100%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); box-sizing: border-box; }
+        .top-header { width: 100%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .hamburger-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; padding: 0; margin-right: 15px; }
         .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; }
         
@@ -22,14 +22,12 @@
         .drawer { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 2000; box-shadow: 2px 0 12px rgba(0,0,0,0.2); transition: left 0.3s ease; display: flex; flex-direction: column; }
         .drawer.open { left: 0; }
         .drawer-header { background: var(--primary); color: white; padding: 25px 20px; }
-        .drawer-header h3 { margin: 0; font-size: 20px; }
         .drawer-menu { display: flex; flex-direction: column; padding: 15px 0; }
-        .drawer-item { padding: 15px 20px; color: var(--text); text-decoration: none; font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 12px; transition: 0.2s; border-left: 4px solid transparent; cursor: pointer; }
-        .drawer-item.active { background: #e9ecef; color: var(--primary); border-left-color: var(--primary); }
+        .drawer-item { padding: 15px 20px; color: var(--text); text-decoration: none; font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .drawer-item.active { background: #e9ecef; color: var(--primary); border-left: 4px solid var(--primary); }
         
-        .tab-content { display: none; width: 100%; justify-content: center; animation: fadeIn 0.3s; }
+        .tab-content { display: none; width: 100%; justify-content: center; }
         .tab-content.active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .container { background: white; width: 92%; max-width: 600px; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 25px; box-sizing: border-box; }
         h2 { margin-top: 0; font-size: 20px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px; }
         
@@ -38,15 +36,14 @@
         label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; box-sizing: border-box; }
         button { padding: 12px 24px; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
-        .btn-primary { background: var(--primary); } .btn-success { background: var(--success); }
+        .btn-primary { background: var(--primary); } .btn-success { background: var(--success); } .btn-warning { background: var(--warning); color: #000; }
         .btn-block { width: 100%; display: block; margin-top: 15px; }
         
-        .uh-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
-        .uh-checkbox { display: flex; align-items: center; gap: 8px; background: #f8f9fa; border: 1px solid var(--border); padding: 10px; border-radius: 8px; font-size: 13px; }
+        .uh-grid, .opcoes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+        .uh-checkbox, .opcao-tag { display: flex; align-items: center; gap: 8px; background: #f8f9fa; border: 1px solid var(--border); padding: 10px; border-radius: 8px; font-size: 13px; cursor: pointer; }
         
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .dash-card { background: #f8f9fa; border: 1px solid var(--border); padding: 15px; border-radius: 8px; text-align: center; }
-        .dash-title { font-size: 12px; color: #666; font-weight: bold; }
         .dash-value { font-size: 24px; font-weight: bold; color: var(--primary); margin: 5px 0; }
         
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; }
@@ -76,7 +73,7 @@
     </div>
 </div>
 
-<!-- ABA 1: DIÁRIO DE ENGENHARIA (DINÂMICO) -->
+<!-- ABA 1: DIÁRIO DE ENGENHARIA -->
 <div id="aba-diario" class="tab-content active">
     <div class="container">
         <h2>Diário de Engenharia</h2>
@@ -91,7 +88,7 @@
             </div>
             <div class="form-group"><label>Efetivo (Operários)</label><input type="number" id="diario_efetivo" value="10" required></div>
 
-            <!-- CONTAINER ONDE AS PERGUNTAS ESPECÍFICAS DA OBRA APARECEM AUTOMATICAMENTE -->
+            <!-- PERGUNTAS DINÂMICAS E DE MÚLTIPLA ESCOLHA -->
             <div id="containerDinamico"></div>
 
             <div class="form-group"><label>Ocorrências e Atrasos</label><textarea id="diario_ocorrencias" rows="3"></textarea></div>
@@ -100,12 +97,15 @@
                 <input type="checkbox" id="diario_termo" required style="width:auto;"><label style="margin:0;">Assino e atesto as informações.</label>
             </div>
             
-            <button type="submit" class="btn-success btn-block">Gerar PDF do Diário</button>
+            <div style="display: flex; gap: 10px;">
+                <button type="button" class="btn-warning flex-1" onclick="salvarRascunhoLocal()">💾 Salvar Rascunho</button>
+                <button type="submit" class="btn-success flex-1">🚀 Publicar PDF</button>
+            </div>
         </form>
     </div>
 </div>
 
-<!-- ABA 2: DASHBOARD PREDITIVO -->
+<!-- ABA 2: DASHBOARD -->
 <div id="aba-dash" class="tab-content">
     <div class="container">
         <h2>Painel Preditivo</h2>
@@ -114,10 +114,10 @@
     </div>
 </div>
 
-<!-- ABA 3: GESTÃO E CONFIGURAÇÕES DE OBRAS E PERGUNTAS -->
+<!-- ABA 3: GESTÃO E CRIAÇÃO DE PERGUNTAS DE MÚLTIPLA ESCOLHA -->
 <div id="aba-config" class="tab-content">
     <div class="container">
-        <h2>Cadastrar Obra & Perguntas</h2>
+        <h2>Cadastrar Obra & Perguntas com Alternativas</h2>
         <div class="form-group"><label>Nome da Obra</label><input type="text" id="cfg_nome" required></div>
         <div class="form-row">
             <div class="form-group flex-1"><label>Total UHs</label><input type="number" id="cfg_uhs" value="100" required></div>
@@ -125,17 +125,20 @@
         </div>
         <div class="form-group"><label>Cor do PDF</label><select id="cfg_cor"><option>Azul</option><option>Verde</option><option>Preto</option><option>Laranja</option><option>Vermelho</option></select></div>
         
-        <div class="form-group">
-            <label>Perguntas Específicas (Separadas por vírgula)</label>
-            <input type="text" id="cfg_perguntas" placeholder="Ex: Metros de estaca cravada, Concretagem laje 3, Teste de compactação">
-            <small style="color:#666;">Isso criará campos customizados exclusivos no diário desta obra.</small>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border:1px solid var(--border); margin-bottom: 15px;">
+            <h3 style="margin-top:0; font-size:14px; color:var(--primary);">Adicionar Pergunta com Alternativas (Marcar X)</h3>
+            <div class="form-group"><label>Texto da Pergunta</label><input type="text" id="nova_pergunta_texto" placeholder="Ex: Status da Concretagem da Laje"></div>
+            <div class="form-group"><label>Opções de Resposta (Separadas por vírgula)</label><input type="text" id="nova_pergunta_opcoes" placeholder="Ex: Iniciada, Em Andamento, Concluída, Não Aplicável"></div>
+            <button type="button" class="btn-primary" onclick="adicionarPerguntaNaLista()">➕ Adicionar Pergunta</button>
         </div>
 
-        <button class="btn-primary btn-block" onclick="salvarObra()">Salvar Obra Dinâmica</button>
+        <div id="listaPerguntasPreview" style="margin-bottom: 15px; font-size: 13px; color:#555;">Nenhuma pergunta customizada adicionada ainda.</div>
+
+        <button class="btn-success btn-block" onclick="salvarObraCompleta()">Salvar Obra no Sistema</button>
     </div>
 </div>
 
-<!-- MODAL / LOADER -->
+<!-- MODAL -->
 <div id="sysOverlay" class="overlay">
     <div class="modal-box">
         <div id="modalSpinner" class="spinner"></div>
@@ -149,16 +152,17 @@
 <script>
     const API_URL = typeof CONFIG !== 'undefined' ? CONFIG.API_URL : "SUA_URL_AQUI/exec";
     let obrasCache = [];
+    let perguntasTemporarias = [];
 
     window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('diario_data').valueAsDate = new Date();
         if(typeof CONFIG !== 'undefined') document.getElementById('app-version').innerText = `v${CONFIG.APP_VERSION}`;
         carregarDadosIniciais();
+        carregarRascunhoLocal();
     });
 
     function abrirMenu() { document.getElementById('myDrawer').classList.add('open'); document.getElementById('overlayMenu').style.display = 'block'; }
     function fecharMenu() { document.getElementById('myDrawer').classList.remove('open'); document.getElementById('overlayMenu').style.display = 'none'; }
-
     function trocarAba(aba, el) {
         fecharMenu();
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -171,7 +175,6 @@
     async function apiGET(acao, params = "") {
         try { const res = await fetch(`${API_URL}?acao=${acao}${params}`); return await res.json(); } catch(e) { return null; }
     }
-
     async function apiPOST(payload) {
         try { const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }); return await res.json(); } catch(e) { return { sucesso: false }; }
     }
@@ -188,7 +191,7 @@
         }
     }
 
-    // MOTOR DE FORMULÁRIO DINÂMICO
+    // MONTAGEM DO FORMULÁRIO COM BOTÕES DE MÚLTIPLA ESCOLHA (TOQUE RÁPIDO)
     function renderizarFormularioDinamico() {
         const nomeObra = document.getElementById('diario_obra').value;
         const obraSelecionada = obrasCache.find(o => o.nome === nomeObra);
@@ -196,7 +199,7 @@
         
         let html = `
             <div class="form-group">
-                <label>UHs Concluídas</label>
+                <label>UHs Concluídas (Toque para marcar)</label>
                 <div class="uh-grid">
                     <label class="uh-checkbox"><input type="checkbox" name="uh" value="Casa 01"> Casa 01</label>
                     <label class="uh-checkbox"><input type="checkbox" name="uh" value="Casa 02"> Casa 02</label>
@@ -206,44 +209,96 @@
         `;
 
         if (obraSelecionada && obraSelecionada.perguntasCustomizadas) {
-            obraSelecionada.perguntasCustomizadas.forEach((pergunta, index) => {
-                html += `
-                    <div class="form-group">
-                        <label>${pergunta}</label>
-                        <input type="text" class="pergunta-dinamica" data-pergunta="${pergunta}" placeholder="Digite a resposta técnica...">
-                    </div>
-                `;
+            obraSelecionada.perguntasCustomizadas.forEach((item, index) => {
+                html += `<div class="form-group"><label><strong>${item.texto}</strong></label><div class="opcoes-grid">`;
+                item.opcoes.forEach(opcao => {
+                    html += `<label class="opcao-tag"><input type="radio" name="pergunta_${index}" value="${opcao}"> ${opcao}</label>`;
+                });
+                html += `</div></div>`;
             });
         }
         container.innerHTML = html;
+    }
+
+    // CONSTRUTOR DE PERGUNTAS NA ABA CONFIG
+    function adicionarPerguntaNaLista() {
+        const texto = document.getElementById('nova_pergunta_texto').value;
+        const opcoesStr = document.getElementById('nova_pergunta_opcoes').value;
+        if (!texto || !opcoesStr) return alert("Preencha a pergunta e as opções separadas por vírgula.");
+        
+        const opcoes = opcoesStr.split(',').map(op => op.trim()).filter(op => op.length > 0);
+        perguntasTemporarias.push({ texto: texto, opcoes: opcoes });
+        
+        document.getElementById('nova_pergunta_texto').value = '';
+        document.getElementById('nova_pergunta_opcoes').value = '';
+        
+        let previewHtml = "<strong>Perguntas configuradas:</strong><ul>";
+        perguntasTemporarias.forEach((p, i) => { previewHtml += `<li>${i+1}. ${p.texto} [Opções: ${p.opcoes.join(', ')}]</li>`; });
+        document.getElementById('listaPerguntasPreview').innerHTML = previewHtml + "</ul>";
+    }
+
+    // SISTEMA DE RASCUNHO LOCAL NO CELULAR (localStorage)
+    function salvarRascunhoLocal() {
+        let uhs = []; document.querySelectorAll('input[name="uh"]:checked').forEach(c => uhs.push(c.value));
+        let customResps = {};
+        
+        // Pega respostas dos radios de múltipla escolha
+        const nomeObra = document.getElementById('diario_obra').value;
+        const obraSelecionada = obrasCache.find(o => o.nome === nomeObra);
+        if (obraSelecionada && obraSelecionada.perguntasCustomizadas) {
+            obraSelecionada.perguntasCustomizadas.forEach((item, index) => {
+                const marcado = document.querySelector(`input[name="pergunta_${index}"]:checked`);
+                if (marcado) customResps[item.texto] = marcado.value;
+            });
+        }
+
+        const rascunho = {
+            obra: nomeObra, data: document.getElementById('diario_data').value,
+            clima: document.getElementById('diario_clima').value, efetivo: document.getElementById('diario_efetivo').value,
+            uhs: uhs, custom: customResps, ocorrencias: document.getElementById('diario_ocorrencias').value
+        };
+
+        localStorage.setItem('smartsync_rascunho', JSON.stringify(rascunho));
+        alert("💾 Rascunho salvo no celular! Você pode fechar o app e continuar depois.");
+    }
+
+    function carregarRascunhoLocal() {
+        const salvo = localStorage.getItem('smartsync_rascunho');
+        if (!salvo) return;
+        if (confirm("Encontramos um rascunho salvo do diário anterior. Deseja recuperá-lo?")) {
+            const d = JSON.parse(salvo);
+            document.getElementById('diario_obra').value = d.obra;
+            renderizarFormularioDinamico();
+            document.getElementById('diario_data').value = d.data;
+            document.getElementById('diario_clima').value = d.clima;
+            document.getElementById('diario_efetivo').value = d.efetivo;
+            document.getElementById('diario_ocorrencias').value = d.ocorrencias;
+        }
     }
 
     async function enviarDiario(event) {
         event.preventDefault();
         document.getElementById('sysOverlay').style.display = 'flex';
         document.getElementById('modalSpinner').style.display = 'block';
-        document.getElementById('modalBtn').style.display = 'none';
-        document.getElementById('modalTitle').innerText = "Gerando Diário";
-        document.getElementById('modalMsg').innerText = "Salvando dados e criando prancha PDF...";
+        document.getElementById('modalTitle').innerText = "Publicando Diário";
+        document.getElementById('modalMsg').innerText = "Gerando PDF oficial no Google Drive...";
 
         let uhs = []; document.querySelectorAll('input[name="uh"]:checked').forEach(c => uhs.push(c.value));
-        
         let customResps = {};
-        document.querySelectorAll('.pergunta-dinamica').forEach(input => {
-            customResps[input.dataset.pergunta] = input.value;
-        });
+        
+        const nomeObra = document.getElementById('diario_obra').value;
+        const obraSelecionada = obrasCache.find(o => o.nome === nomeObra);
+        if (obraSelecionada && obraSelecionada.perguntasCustomizadas) {
+            obraSelecionada.perguntasCustomizadas.forEach((item, index) => {
+                const marcado = document.querySelector(`input[name="pergunta_${index}"]:checked`);
+                if (marcado) customResps[item.texto] = marcado.value;
+            });
+        }
 
         const payload = {
-            acao: "salvar_diario",
-            obra: document.getElementById('diario_obra').value,
-            data_diario: document.getElementById('diario_data').value,
-            clima: document.getElementById('diario_clima').value,
-            efetivo_proprio: document.getElementById('diario_efetivo').value,
-            respostas: {
-                uhs: uhs,
-                custom: customResps,
-                ocorrencias: document.getElementById('diario_ocorrencias').value
-            },
+            acao: "salvar_diario", obra: nomeObra, data_diario: document.getElementById('diario_data').value,
+            clima: document.getElementById('diario_clima').value, efetivo_proprio: document.getElementById('diario_efetivo').value,
+            respostas: { uhs: uhs, custom: customResps, ocorrencias: document.getElementById('diario_ocorrencias').value },
             responsavel: "Engenheiro Responsável"
         };
 
@@ -252,52 +307,31 @@
         document.getElementById('modalBtn').style.display = 'inline-block';
         
         if (res.sucesso) {
-            document.getElementById('modalTitle').innerText = "Diário Concluído!";
+            localStorage.removeItem('smartsync_rascunho'); // Limpa rascunho ao publicar
+            document.getElementById('modalTitle').innerText = "Publicado com Sucesso!";
             document.getElementById('modalMsg').innerText = res.mensagem;
-            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold;">📄 Visualizar PDF no Drive</a>`;
+            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold;">📄 Ver PDF no Drive</a>`;
             document.getElementById('formDiario').reset();
             renderizarFormularioDinamico();
         } else {
             document.getElementById('modalTitle').innerText = "Erro";
-            document.getElementById('modalMsg').innerText = "Não foi possível registrar o diário.";
+            document.getElementById('modalMsg').innerText = "Falha ao publicar diário.";
         }
     }
 
     function fecharModal() { document.getElementById('sysOverlay').style.display = 'none'; }
 
-    async function carregarDashboard() {
-        const obra = document.getElementById('dash_obra').value;
-        if (!obra) return;
-        document.getElementById('dash_conteudo').innerHTML = "<p>Carregando métricas...</p>";
-        const res = await apiGET("dashboard", `&obra=${encodeURIComponent(obra)}`);
-        if (res && res.sucesso) {
-            const d = res.dados;
-            document.getElementById('dash_conteudo').innerHTML = `
-                <div class="dash-card"><span class="dash-title">UHs Concluídas</span><div class="dash-value">${d.totalUHsConcluidas} / ${d.totalUHsPrevistas}</div></div>
-                <div class="dash-card"><span class="dash-title">Ritmo Diário</span><div class="dash-value">${d.ritmoDiarioAtual}</div></div>
-                <div class="dash-card" style="grid-column: span 2;"><span class="dash-title">Status</span><div class="dash-value" style="color:var(--success);">${d.statusObra}</div></div>
-            `;
-        }
-    }
-
-    async function salvarObra() {
+    async function salvarObraCompleta() {
         const nome = document.getElementById('cfg_nome').value;
-        if (!nome) return alert("Informe o nome da obra.");
-        
-        let perguntasStr = document.getElementById('cfg_perguntas').value;
-        let arrayPerguntas = perguntasStr ? perguntasStr.split(',').map(p => p.trim()).filter(p => p.length > 0) : [];
+        if (!nome) return alert("Digite o nome da obra.");
 
         document.getElementById('sysOverlay').style.display = 'flex';
         document.getElementById('modalSpinner').style.display = 'block';
-        document.getElementById('modalBtn').style.display = 'none';
 
         const payload = {
-            acao: "salvar_obra",
-            nome: nome,
-            totalUHs: document.getElementById('cfg_uhs').value,
-            dataFim: document.getElementById('cfg_fim').value,
-            corTema: document.getElementById('cfg_cor').value,
-            perguntasCustomizadas: arrayPerguntas
+            acao: "salvar_obra", nome: nome, totalUHs: document.getElementById('cfg_uhs').value,
+            dataFim: document.getElementById('cfg_fim').value, corTema: document.getElementById('cfg_cor').value,
+            perguntasCustomizadas: perguntasTemporarias
         };
 
         const res = await apiPOST(payload);
@@ -305,12 +339,14 @@
         document.getElementById('modalBtn').style.display = 'inline-block';
         
         if (res.sucesso) {
-            document.getElementById('modalTitle').innerText = "Sucesso";
+            document.getElementById('modalTitle').innerText = "Obra Salva!";
             document.getElementById('modalMsg').innerText = res.mensagem;
+            perguntasTemporarias = [];
+            document.getElementById('listaPerguntasPreview').innerHTML = '';
             carregarDadosIniciais();
         } else {
             document.getElementById('modalTitle').innerText = "Erro";
-            document.getElementById('modalMsg').innerText = "Erro ao cadastrar obra.";
+            document.getElementById('modalMsg').innerText = "Erro ao salvar obra.";
         }
     }
 </script>
