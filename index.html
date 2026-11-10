@@ -3,119 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Engenharia</title>
+    <title>SmartSyncGest - Diário de Engenharia</title>
+    
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="./icons/icon-192.png" type="image/png">
+    <meta name="theme-color" content="#0056b3">
     <script src="./config.js"></script>
+
     <style>
-        :root { --primary: #0056b3; --success: #28a745; --warning: #ffc107; --danger: #dc3545; --bg: #f4f7f6; --text: #333; --border: #e0e0e0; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 20px; }
-        .top-header { background: var(--primary); color: white; display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        :root { --primary: #0056b3; --success: #28a745; --warning: #ffc107; --danger: #dc3545; --info: #17a2b8; --bg: #f4f7f6; --text: #333; --border: #e0e0e0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 30px; }
+        
+        .top-header { background: var(--primary); color: white; display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
         .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; }
+        .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; cursor: pointer; }
         
-        .tab-bar { display: flex; background: white; border-bottom: 1px solid var(--border); overflow-x: auto; }
-        .tab-btn { flex: 1; text-align: center; padding: 12px; cursor: pointer; font-size: 13px; font-weight: bold; color: #666; white-space: nowrap; border-bottom: 3px solid transparent; }
-        .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
+        .tab-bar { display: flex; background: white; border-bottom: 1px solid var(--border); overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .tab-btn { flex: 1; text-align: center; padding: 12px 10px; cursor: pointer; font-size: 13px; font-weight: bold; color: #666; white-space: nowrap; border-bottom: 3px solid transparent; transition: 0.2s; }
+        .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: #f8f9fa; }
         
-        .tab-content { display: none; padding: 20px; max-width: 600px; margin: 0 auto; }
+        .tab-content { display: none; padding: 20px 15px; max-width: 650px; margin: 0 auto; box-sizing: border-box; }
         .tab-content.active { display: block; }
-        .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px;}
+        .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
-        h2 { margin-top: 0; font-size: 18px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        h3.section-title { font-size: 14px; background: #e9ecef; padding: 8px 12px; border-radius: 6px; margin-top: 20px; color: var(--primary); }
+        h2 { margin-top: 0; font-size: 19px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px; }
+        h3.section-title { font-size: 14px; background: #e9ecef; padding: 8px 12px; border-radius: 6px; margin-top: 25px; margin-bottom: 15px; color: var(--primary); font-weight: bold; }
         
-        .form-group { margin-bottom: 15px; }
+        .form-group { margin-bottom: 15px; text-align: left; }
         .form-row { display: flex; gap: 10px; } .flex-1 { flex: 1; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
         input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; box-sizing: border-box; }
-        button { padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; color: white; width: 100%; margin-top: 10px;}
-        .btn-primary { background: var(--primary); } .btn-success { background: var(--success); } .btn-info { background: #17a2b8; }
+        button { padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; color: white; width: 100%; margin-top: 10px; transition: 0.2s; }
+        .btn-primary { background: var(--primary); } .btn-success { background: var(--success); } .btn-info { background: var(--info); } .btn-warning { background: var(--warning); color: #000; }
         
-        .etapa-linha { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; border: 1px solid var(--border); padding: 10px; border-radius: 6px; margin-bottom: 8px; gap: 10px;}
-        .etapa-linha span { flex: 2; font-size: 13px; }
-        .etapa-linha input { flex: 1; text-align: center; }
-        .badge { font-size: 10px; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; display: block; margin-top: 4px; }
+        .etapa-linha { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; margin-bottom: 10px; gap: 10px; }
+        .etapa-linha .info { flex: 2; font-size: 13px; }
+        .etapa-linha input { flex: 1; text-align: center; font-weight: bold; }
+        .badge { font-size: 11px; background: #e2e8f0; padding: 3px 6px; border-radius: 4px; display: inline-block; margin-top: 4px; color: #4a5568; }
         
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-box { background: white; padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 350px; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 3000; align-items: center; justify-content: center; }
+        .modal-box { background: white; padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 380px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+        .spinner { width: 36px; height: 36px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
 <div class="top-header">
     <div class="brand-title">SmartSyncGest</div>
-    <div id="usuario-logado" style="font-size: 12px;">Não logado</div>
+    <div id="usuario-logado" class="user-badge" onclick="trocarAba('login', null)">👤 Entrar</div>
 </div>
 
 <div class="tab-bar">
     <div class="tab-btn active" onclick="trocarAba('login', this)">👤 Login</div>
-    <div class="tab-btn admin-only" onclick="trocarAba('admin', this)" style="display:none;">⚙️ Gestão de Obras</div>
     <div class="tab-btn" id="tab-diario" onclick="trocarAba('diario', this)" style="display:none;">📝 Diário</div>
+    <div class="tab-btn admin-only" onclick="trocarAba('admin-obra', this)" style="display:none;">⚙️ Construtor Obras</div>
+    <div class="tab-btn admin-only" onclick="trocarAba('admin-users', this)" style="display:none;">🔒 Permissões</div>
 </div>
 
-<!-- ABA 1: LOGIN -->
+<!-- TELA 1: LOGIN E SELEÇÃO DE PERFIL -->
 <div id="aba-login" class="tab-content active">
-    <div class="container">
-        <h2>Acesso ao Sistema</h2>
+    <div class="container" style="text-align: center;">
+        <h2>Identificação de Acesso</h2>
+        <p style="font-size: 13px; color:#666;">Selecione quem está acessando o sistema:</p>
         <div class="form-group">
-            <label>Selecione seu Usuário (Carregado da API)</label>
-            <select id="select_usuario"><option>Carregando dados...</option></select>
+            <label>Usuário Cadastrado</label>
+            <select id="select_usuario" style="padding: 12px;"><option>Carregando dados da API...</option></select>
         </div>
-        <button class="btn-primary" onclick="efetuarLogin()">Entrar</button>
+        <button class="btn-primary" onclick="efetuarLogin()">Entrar no Sistema</button>
     </div>
 </div>
 
-<!-- ABA 2: ADMIN (CONSTRUTOR DE OBRAS ESTILO GOOGLE FORMS) -->
-<div id="aba-admin" class="tab-content">
-    <div class="container">
-        <h2>Construtor de Obras (Admin)</h2>
-        <div class="form-group"><label>Nome da Nova Obra</label><input type="text" id="nova_obra_nome" placeholder="Ex: Torre Jardins"></div>
-        <div class="form-row">
-            <div class="form-group flex-1"><label>Total UHs Previsto</label><input type="number" id="nova_obra_uhs" value="100"></div>
-            <div class="form-group flex-1"><label>Construtora</label><input type="text" id="nova_obra_emp" value="SGO"></div>
-        </div>
-        
-        <h3 class="section-title">Definir Etapas e Metas (O Molde do Diário)</h3>
-        <div class="form-row" style="align-items: flex-end;">
-            <div class="form-group flex-1"><label>Nome da Etapa</label><input type="text" id="add_etapa_nome" placeholder="Ex: Fundações"></div>
-            <div class="form-group" style="width: 80px;"><label>Meta</label><input type="number" id="add_etapa_meta" value="100"></div>
-            <button class="btn-info" style="width: auto; padding: 10px 15px; margin-bottom:15px;" onclick="adicionarEtapaAdmin()">+</button>
-        </div>
-        
-        <div id="lista_etapas_admin"></div>
-        <button class="btn-success" onclick="salvarObraAdmin()">💾 Salvar Nova Obra no Banco</button>
-    </div>
-</div>
-
-<!-- ABA 3: DIÁRIO DE ENGENHARIA -->
+<!-- TELA 2: DIÁRIO DE ENGENHARIA (CAMPO) -->
 <div id="aba-diario" class="tab-content">
     <div class="container">
-        <h2>Diário de Engenharia de Campo</h2>
+        <h2>Diário de Engenharia</h2>
+        <button type="button" class="btn-info" style="margin-bottom: 20px; font-size: 13px; padding: 8px;" onclick="preencherDadosTeste()">🧪 Preencher Produção do Dia (Teste)</button>
+
         <form id="formDiario" onsubmit="enviarDiario(event)">
             <h3 class="section-title">1. Informações Gerais</h3>
-            <div class="form-group"><label>Selecione a Obra</label><select id="diario_obra" onchange="renderizarFormularioEngenheiro()"></select></div>
+            <div class="form-group"><label>Obra / Empreendimento</label><select id="diario_obra" onchange="renderizarFormularioEngenheiro()"></select></div>
             <div class="form-row">
                 <div class="form-group flex-1"><label>Data</label><input type="date" id="diario_data" required></div>
-                <div class="form-group flex-1"><label>Clima</label><select id="diario_clima"><option>Sol</option><option>Chuva</option></select></div>
+                <div class="form-group flex-1"><label>Clima Manhã / Tarde</label><select id="diario_clima"><option>Sol / Sol</option><option>Nublado / Nublado</option><option>Chuva Forte</option></select></div>
             </div>
-            <div class="form-group"><label>Efetivo Total</label><input type="number" id="diario_efetivo" value="50" required></div>
+            <div class="form-group"><label>Efetivo Total em Campo</label><input type="number" id="diario_efetivo" value="105" required></div>
 
-            <h3 class="section-title">2. Lançamento de Produção do Dia (PD)</h3>
-            <p style="font-size:12px; color:#666;">Preencha apenas o que foi produzido <strong>hoje</strong>. O saldo é automático.</p>
+            <h3 class="section-title">2. Acompanhamento de Produção (PD)</h3>
+            <p style="font-size:12px; color:#666; margin-top:-10px;">Informe o executado <strong>hoje</strong>. O acumulado e saldo calculam sozinhos:</p>
             
             <div id="container_etapas_diario"></div>
 
-            <h3 class="section-title">3. Ocorrências</h3>
-            <div class="form-group"><textarea id="diario_relato" rows="3">Trabalhos executados conforme cronograma.</textarea></div>
+            <h3 class="section-title">3. Ocorrências e Relatos</h3>
+            <div class="form-group"><textarea id="diario_relato" rows="3">Trabalhos executados normalmente no canteiro de obras.</textarea></div>
             
-            <button type="submit" class="btn-success">🚀 Publicar e Gerar PDF</button>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
+                <input type="checkbox" id="diario_termo" required style="width:auto;"><label style="margin:0; font-size:12px;">Assino e atesto as informações de campo.</label>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button type="button" class="btn-warning flex-1" onclick="salvarRascunhoLocal()">💾 Salvar Rascunho</button>
+                <button type="submit" class="btn-success flex-1">🚀 Publicar e Gerar PDF</button>
+            </div>
         </form>
     </div>
 </div>
 
-<!-- MODAL LOADING -->
+<!-- TELA 3: CONSTRUTOR DE OBRAS ESTILO GOOGLE FORMS (ADMIN) -->
+<div id="aba-admin-obra" class="tab-content">
+    <div class="container">
+        <h2>Construtor de Obras & Metas (Admin)</h2>
+        <div class="form-group"><label>Nome da Nova Obra</label><input type="text" id="nova_obra_nome" placeholder="Ex: Residencial Parque das Flores"></div>
+        <div class="form-row">
+            <div class="form-group flex-1"><label>Total UHs / Metas</label><input type="number" id="nova_obra_uhs" value="200"></div>
+            <div class="form-group flex-1"><label>Empresa Construtora</label><input type="text" id="nova_obra_emp" value="SGO Engenharia"></div>
+        </div>
+        
+        <h3 class="section-title">Definir Matriz de Etapas (Google Forms Estilo)</h3>
+        <div class="form-row" style="align-items: flex-end;">
+            <div class="form-group flex-1"><label>Nome da Etapa</label><input type="text" id="add_etapa_nome" placeholder="Ex: Terraplanagem"></div>
+            <div class="form-group" style="width: 90px;"><label>Meta Total</label><input type="number" id="add_etapa_meta" value="100"></div>
+            <button class="btn-info" style="width: auto; padding: 10px 15px; margin-bottom:15px;" onclick="adicionarEtapaAdmin()">+</button>
+        </div>
+        
+        <div id="lista_etapas_admin" style="margin-bottom: 15px;"></div>
+        <button class="btn-success" onclick="salvarObraAdmin()">💾 Salvar Obra no Banco</button>
+    </div>
+</div>
+
+<!-- TELA 4: LOGINS & PERMISSÕES (ADMIN) -->
+<div id="aba-admin-users" class="tab-content">
+    <div class="container">
+        <h2>Controle de Acessos & Permissões</h2>
+        <div class="form-group"><label>E-mail do Colaborador</label><input type="email" id="usr_email" placeholder="engenheiro@empresa.com"></div>
+        <div class="form-group"><label>Nome Completo</label><input type="text" id="usr_nome" placeholder="Nome do Profissional"></div>
+        <div class="form-row">
+            <div class="form-group flex-1"><label>Perfil de Acesso</label><select id="usr_perfil"><option>Engenheiro</option><option>Administrador</option><option>Fiscal</option></select></div>
+            <div class="form-group flex-1"><label>Obra Vinculada</label><select id="usr_obra"></select></div>
+        </div>
+        <button class="btn-primary" onclick="salvarUsuarioAdmin()">🔒 Conceder Permissão</button>
+    </div>
+</div>
+
+<!-- MODAL SYSTEM OVERLAY -->
 <div id="sysOverlay" class="overlay">
     <div class="modal-box">
+        <div id="modalSpinner" class="spinner"></div>
         <h3 id="modalTitle" style="color:var(--primary); margin-top:0;">Carregando...</h3>
-        <p id="modalMsg" style="font-size:14px; color:#666;">Aguarde, processando dados.</p>
+        <p id="modalMsg" style="font-size:14px; color:#666;">Comunicando com o servidor.</p>
         <div id="modalLink" style="margin-top: 15px;"></div>
         <button id="modalBtn" class="btn-primary" style="display:none;" onclick="fecharModal()">OK</button>
     </div>
@@ -129,7 +164,7 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('diario_data').valueAsDate = new Date();
-        carregarDados();
+        carregarDadosSistema();
     });
 
     function trocarAba(abaId, el) {
@@ -149,25 +184,36 @@
                 return await res.json();
             }
         } catch(e) {
-            alert("Erro de conexão com o Apps Script. Verifique a URL.");
             return null;
         }
     }
 
-    async function carregarDados() {
+    async function carregarDadosSistema() {
         const res = await apiRequest("listar_dados", "GET");
         if(res && res.sucesso) {
-            baseGlobal = res.dados;
+            baseGlobal = res.dados || { obras: [], usuarios: [] };
             let htmlUsr = '';
             baseGlobal.usuarios.forEach(u => htmlUsr += `<option value="${u.email}">${u.nome} (${u.perfil})</option>`);
             document.getElementById('select_usuario').innerHTML = htmlUsr;
+
+            let htmlObraUsr = '';
+            baseGlobal.obras.forEach(o => htmlObraUsr += `<option value="${o.nome}">${o.nome}</option>`);
+            document.getElementById('usr_obra').innerHTML = htmlObraUsr;
+
+            const salvoEmail = localStorage.getItem('smartsync_user_email');
+            if (salvoEmail) {
+                document.getElementById('select_usuario').value = salvoEmail;
+                efetuarLogin();
+            }
         }
     }
 
     function efetuarLogin() {
         const email = document.getElementById('select_usuario').value;
-        usuarioAtivo = baseGlobal.usuarios.find(u => u.email === email);
-        document.getElementById('usuario-logado').innerText = usuarioAtivo.nome;
+        usuarioAtivo = baseGlobal.usuarios.find(u => u.email === email) || baseGlobal.usuarios[0];
+        localStorage.setItem('smartsync_user_email', usuarioAtivo.email);
+
+        document.getElementById('usuario-logado').innerText = `${usuarioAtivo.nome} [${usuarioAtivo.perfil}]`;
 
         document.getElementById('tab-diario').style.display = 'block';
         if(usuarioAtivo.perfil === 'Administrador') {
@@ -184,11 +230,11 @@
         trocarAba('diario', document.getElementById('tab-diario'));
     }
 
-    // --- LÓGICA DO CONSTRUTOR (ADMIN) ---
+    // --- CONSTRUTOR DE OBRAS (ADMIN) ---
     function adicionarEtapaAdmin() {
         const nome = document.getElementById('add_etapa_nome').value;
         const meta = document.getElementById('add_etapa_meta').value;
-        if(!nome || !meta) return;
+        if(!nome || !meta) return alert("Digite o nome e a meta da etapa.");
         etapasAdminTemp.push({ nome: nome, meta: meta });
         renderizarListaEtapasAdmin();
         document.getElementById('add_etapa_nome').value = '';
@@ -197,15 +243,16 @@
     function renderizarListaEtapasAdmin() {
         let html = '';
         etapasAdminTemp.forEach(et => {
-            html += `<div class="etapa-linha"><span>${et.nome}</span><span>Meta: ${et.meta}</span></div>`;
+            html += `<div class="etapa-linha"><div class="info"><b>${et.nome}</b></div><div style="font-weight:bold;">Meta: ${et.meta}</div></div>`;
         });
         document.getElementById('lista_etapas_admin').innerHTML = html;
     }
 
     async function salvarObraAdmin() {
         const nome = document.getElementById('nova_obra_nome').value;
-        if(!nome || etapasAdminTemp.length === 0) return alert("Preencha o nome e adicione etapas.");
-        abrirModal("Salvando Obra...", "Gravando matriz no banco de dados.");
+        if(!nome || etapasAdminTemp.length === 0) return alert("Digite o nome da obra e adicione pelo menos uma etapa.");
+        
+        abrirModal("Salvando Obra...", "Gravando matriz de planejamento no banco de dados.");
 
         const payload = {
             acao: "salvar_obra", nome: nome, totalUHs: document.getElementById('nova_obra_uhs').value,
@@ -213,64 +260,108 @@
         };
         const res = await apiRequest("salvar_obra", "POST", payload);
         etapasAdminTemp = []; renderizarListaEtapasAdmin();
-        await carregarDados(); // Recarrega obras
-        fecharModal(res.sucesso ? "Sucesso!" : "Erro", res.mensagem);
+        await carregarDadosSistema();
+        fecharModal(res.sucesso ? "Obra Cadastrada!" : "Erro", res.mensagem, true);
     }
 
-    // --- LÓGICA DO DIÁRIO (ENGENHEIRO) ---
+    async function salvarUsuarioAdmin() {
+        const email = document.getElementById('usr_email').value;
+        const nome = document.getElementById('usr_nome').value;
+        if(!email || !nome) return alert("Preencha e-mail e nome do usuário.");
+        
+        abrirModal("Concedendo Permissão...", "Registrando usuário na base corporativa.");
+
+        const payload = {
+            acao: "salvar_usuario", email: email, nome: nome,
+            perfil: document.getElementById('usr_perfil').value, obra: document.getElementById('usr_obra').value
+        };
+        const res = await apiRequest("salvar_usuario", "POST", payload);
+        await carregarDadosSistema();
+        fecharModal(res.sucesso ? "Usuário Cadastrado!" : "Erro", res.mensagem, true);
+    }
+
+    // --- FORMULÁRIO DO ENGENHEIRO (CAMPO) ---
     function renderizarFormularioEngenheiro() {
         const nomeObra = document.getElementById('diario_obra').value;
         const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
         const container = document.getElementById('container_etapas_diario');
         
-        if(!obraObj || !obraObj.etapasPlanejamento) return container.innerHTML = "Sem metas configuradas.";
+        if(!obraObj || !obraObj.etapasPlanejamento) return container.innerHTML = "<p>Nenhuma meta configurada para esta obra.</p>";
 
         let html = '';
         for (var et in obraObj.etapasPlanejamento) {
             var dados = obraObj.etapasPlanejamento[et];
             html += `
                 <div class="etapa-linha">
-                    <span>${et}<br><b class="badge">Meta: ${dados.meta} | Saldo: ${dados.sd}</b></span>
-                    <input type="number" class="input-pd" data-etapa="${et}" value="0" min="0">
+                    <div class="info">
+                        <b>${et}</b>
+                        <span class="badge">Meta: ${dados.meta} | Saldo: ${dados.sd}</span>
+                    </div>
+                    <input type="number" class="input-pd" data-etapa="${et}" value="0" min="0" placeholder="PD">
                 </div>
             `;
         }
         container.innerHTML = html;
     }
 
-    async function enviarDiario(event) {
-        event.preventDefault();
-        abrirModal("Publicando...", "Calculando saldos e gerando prancha PDF no Drive.");
+    function preencherDadosTeste() {
+        const inputs = document.querySelectorAll('.input-pd');
+        if(inputs.length > 0) inputs[0].value = "10";
+        if(inputs.length > 5) inputs[5].value = "5";
+        document.getElementById('diario_relato').value = "Trabalhos executados com ritmo normal no canteiro.";
+        alert("🧪 Produção de teste preenchida!");
+    }
 
+    function salvarRascunhoLocal() {
         let etapasProd = {};
         document.querySelectorAll('.input-pd').forEach(inp => {
             if(Number(inp.value) > 0) etapasProd[inp.dataset.etapa] = { pd: inp.value };
+        });
+        const rascunho = {
+            obra: document.getElementById('diario_obra').value, data: document.getElementById('diario_data').value,
+            efetivo: document.getElementById('diario_efetivo').value, etapas: etapasProd, relato: document.getElementById('diario_relato').value
+        };
+        localStorage.setItem('smartsync_rascunho_pwa', JSON.stringify(rascunho));
+        alert("💾 Rascunho salvo no celular!");
+    }
+
+    async function enviarDiario(event) {
+        event.preventDefault();
+        abrirModal("Publicando Diário...", "Calculando saldos da matriz e gerando PDF no Google Drive.");
+
+        let etapasProd = {};
+        document.querySelectorAll('.input-pd').forEach(inp => {
+            var val = Number(inp.value);
+            if(val > 0) etapasProd[inp.dataset.etapa] = { pd: val };
         });
 
         const payload = {
             acao: "salvar_diario", obra: document.getElementById('diario_obra').value,
             data_diario: document.getElementById('diario_data').value, clima: document.getElementById('diario_clima').value,
-            efetivo_total: document.getElementById('diario_efetivo').value, responsavel: usuarioAtivo.nome,
+            efetivo_total: document.getElementById('diario_efetivo').value, responsavel: usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável",
             respostas: { etapas_producao: etapasProd, ocorrencias: document.getElementById('diario_relato').value }
         };
 
         const res = await apiRequest("salvar_diario", "POST", payload);
         if(res.sucesso) {
-            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold;">📄 Visualizar PDF Oficial</a>`;
-            await carregarDados(); // Recarrega saldos
+            localStorage.removeItem('smartsync_rascunho_pwa');
+            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold; font-size:15px;">📄 Visualizar PDF Oficial no Drive</a>`;
+            await carregarDadosSistema();
         }
-        fecharModal(res.sucesso ? "Publicado!" : "Erro", res.mensagem, true);
+        fecharModal(res.sucesso ? "Diário Publicado!" : "Erro", res.mensagem, true);
     }
 
-    // --- MODAL HELPERS ---
+    // --- MODAIS ---
     function abrirModal(titulo, msg) {
         document.getElementById('sysOverlay').style.display = 'flex';
+        document.getElementById('modalSpinner').style.display = 'block';
         document.getElementById('modalBtn').style.display = 'none';
         document.getElementById('modalLink').innerHTML = '';
         document.getElementById('modalTitle').innerText = titulo;
         document.getElementById('modalMsg').innerText = msg;
     }
     function fecharModal(titulo, msg, showBtn = true) {
+        document.getElementById('modalSpinner').style.display = 'none';
         document.getElementById('modalTitle').innerText = titulo;
         document.getElementById('modalMsg').innerText = msg;
         if(showBtn) document.getElementById('modalBtn').style.display = 'inline-block';
