@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Diário de Engenharia Completo</title>
+    <title>SmartSyncGest - Diário de Engenharia</title>
     
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" href="./icons/icon-192.png" type="image/png">
@@ -30,7 +30,7 @@
         .tab-content.active { display: flex; }
         .container { background: white; width: 92%; max-width: 650px; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 25px; box-sizing: border-box; }
         h2 { margin-top: 0; font-size: 20px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px; }
-        h3.section-title { font-size: 15px; color: var(--primary); background: #e9ecef; padding: 8px 12px; border-radius: 6px; margin-top: 25px; margin-bottom: 15px; }
+        h3.section-title { font-size: 14px; color: var(--primary); background: #e9ecef; padding: 8px 12px; border-radius: 6px; margin-top: 25px; margin-bottom: 15px; }
         
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-row { display: flex; gap: 10px; } .flex-1 { flex: 1; }
@@ -40,9 +40,10 @@
         .btn-primary { background: var(--primary); } .btn-success { background: var(--success); } .btn-warning { background: var(--warning); color: #000; } .btn-info { background: var(--info); }
         .btn-block { width: 100%; display: block; margin-top: 15px; }
         
-        .grid-check { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
-        .check-tag { display: flex; align-items: center; gap: 8px; background: #f8f9fa; border: 1px solid var(--border); padding: 8px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; }
-        
+        .etapa-linha { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; border: 1px solid var(--border); padding: 8px 12px; border-radius: 6px; margin-bottom: 8px; font-size: 13px; gap: 10px; }
+        .etapa-linha label { flex: 2; margin: 0; }
+        .etapa-linha input { flex: 1; text-align: center; padding: 6px; }
+
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .dash-card { background: #f8f9fa; border: 1px solid var(--border); padding: 15px; border-radius: 8px; text-align: center; }
         .dash-value { font-size: 24px; font-weight: bold; color: var(--primary); margin: 5px 0; }
@@ -74,12 +75,12 @@
     </div>
 </div>
 
-<!-- ABA 1: DIÁRIO DE ENGENHARIA MODELO COMPLETO -->
+<!-- ABA 1: DIÁRIO DE ENGENHARIA -->
 <div id="aba-diario" class="tab-content active">
     <div class="container">
-        <h2>Diário de Engenharia (Modelo Eunápolis)</h2>
+        <h2>Diário de Engenharia (Modelo Planejamento / PD)</h2>
         
-        <button type="button" class="btn-info btn-block" style="margin-bottom: 20px; font-size: 13px; padding: 8px;" onclick="preencherDadosTesteModel()">🧪 Preencher com Modelo Completo (Teste)</button>
+        <button type="button" class="btn-info btn-block" style="margin-bottom: 20px; font-size: 13px; padding: 8px;" onclick="preencherDadosTesteModel()">🧪 Preencher Produção do Dia (Teste)</button>
 
         <form id="formDiario" onsubmit="enviarDiario(event)">
             
@@ -91,64 +92,18 @@
                 <div class="form-group flex-1"><label>Clima Tarde</label><select id="clima_tarde"><option>Sol</option><option>Nublado</option><option>Chuva</option></select></div>
             </div>
 
-            <h3 class="section-title">2. Condições Físicas do Canteiro</h3>
-            <div class="form-row">
-                <div class="form-group flex-1"><label>Acesso Empreendimento</label><select id="cond_acesso"><option>Sem Restrição</option><option>Com Restrição Parcial</option></select></div>
-                <div class="form-group flex-1"><label>Área de Produção de Kits</label><select id="cond_ kits"><option>Sem Restrição - Implantado</option><option>Não Implantado</option></select></div>
-            </div>
-            <div class="form-row">
-                <div class="form-group flex-1"><label>Banheiros</label><select id="cond_banheiro"><option>Sem Restrição - Implantado</option><option>Pendente</option></select></div>
-                <div class="form-group flex-1"><label>Refeitório</label><select id="cond_refeitorio"><option>Sem Restrição - Implantado</option><option>Pendente</option></select></div>
+            <h3 class="section-title">2. Efetivo Total de Operários</h3>
+            <div class="form-group"><label>Total de Pessoas em Campo</label><input type="number" id="efetivo_total" value="105" required></div>
+
+            <h3 class="section-title">3. Produção do Dia (PD) por Etapa</h3>
+            <p style="font-size:12px; color:#666; margin-top:-10px;">Informe apenas o que foi executado <strong>hoje</strong>. O sistema calcula acumulados e saldos automaticamente:</p>
+            
+            <div id="containerEtapasProducao">
+                <!-- Gerado via JavaScript baseado no modelo -->
             </div>
 
-            <h3 class="section-title">3. Efetivo de Mão de Obra</h3>
-            <div class="form-row">
-                <div class="form-group flex-1"><label>Adm. Construtora</label><input type="number" id="ef_adm" value="12"></div>
-                <div class="form-group flex-1"><label>Prod. Construtora</label><input type="number" id="ef_prod" value="73"></div>
-            </div>
-            <div class="form-row">
-                <div class="form-group flex-1"><label>DJ Teles (Empreiteira)</label><input type="number" id="ef_djteles" value="14"></div>
-                <div class="form-group flex-1"><label>ROR Pintura (Empreiteira)</label><input type="number" id="ef_ror" value="20"></div>
-            </div>
-
-            <h3 class="section-title">4. Avanço Físico - Etapas Concluídas Hoje</h3>
-            <p style="font-size:12px; color:#666; margin-top:-10px;">Marque as etapas que tiveram conclusão no dia:</p>
-            <div class="grid-check">
-                <label class="check-tag"><input type="checkbox" name="etapa" value="01-Laje Radier"> 01. Laje Radier</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="02-Armação Tela Parede Inf"> 02. Armação Tela P. Inf</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="03-Elétrica Passagem Inf"> 03. Elétrica Passagem Inf</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="04-Hidro Isométrico PPR Inf"> 04. Hidro PPR Inf</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="05-Concretação Parede Inf"> 05. Concretagem P. Inf</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="06-Escada"> 06. Escada</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="07-Estucagem Inf"> 07. Estucagem Inf</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="08-Armação Tela Sup"> 08. Armação Tela Sup</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="09-Elétrica Sup"> 09. Elétrica Sup</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="10-Hidro Sup"> 10. Hidro Sup</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="11-Concretagem Sup e Laje"> 11. Concretagem Sup/Laje</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="12-Estucagem Sup"> 12. Estucagem Sup</label>
-                <label class="check-tag"><input type="checkbox" name="check_etapa" value="13-Reservatório"> 13. Reservatório</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="14-Contrapiso"> 14. Contrapiso</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="15-Cobertura"> 15. Cobertura</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="16-Esquadrias e Ferragens"> 16. Esquadrias</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="17-Chicote Elétrico"> 17. Chicote Elétrico</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="18-Shaft"> 18. Shaft</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="19-Acabamento Hidrossanitário"> 19. Acabamento Hidro</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="20-Forro de PVC"> 20. Forro de PVC</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="21-Piso e Revestimento"> 21. Piso e Revestimento</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="22-Pintura Interna"> 22. Pintura Interna</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="23-Pintura Externa"> 23. Pintura Externa</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="24-Acabamento Elétrico"> 24. Acabamento Elétrico</label>
-                <label class="check-tag"><input type="checkbox" name="etapa" value="25-Limpeza Geral"> 25. Limpeza Geral</label>
-            </div>
-
-            <h3 class="section-title">5. Segurança do Trabalho e Qualidade</h3>
-            <div class="form-row">
-                <div class="form-group flex-1"><label>Uso Adequado de EPIs</label><select id="seg_epis"><option>Bom</option><option>Regular</option><option>Insatisfatório</option></select></div>
-                <div class="form-group flex-1"><label>Ordem e Limpeza</label><select id="seg_limpeza"><option>Bom</option><option>Regular</option><option>Ruim</option></select></div>
-            </div>
-
-            <h3 class="section-title">6. Relatos e Ocorrências</h3>
-            <div class="form-group"><textarea id="diario_relato" rows="3">Trabalhos normais. Execução em andamento conforme cronograma do empreendimento.</textarea></div>
+            <h3 class="section-title">4. Relatos e Ocorrências</h3>
+            <div class="form-group"><textarea id="diario_relato" rows="3">Trabalhos normais no empreendimento. Sem restrições de acesso ao canteiro.</textarea></div>
             
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
                 <input type="checkbox" id="diario_termo" required style="width:auto;"><label style="margin:0;">Assino e atesto as informações prestadas.</label>
@@ -174,7 +129,7 @@
 <!-- ABA 3: GESTÃO -->
 <div id="aba-config" class="tab-content">
     <div class="container">
-        <h2>Cadastrar Empreendimento</h2>
+        <h2>Cadastrar Empreendimento & Metas</h2>
         <div class="form-group"><label>Nome da Obra</label><input type="text" id="cfg_nome" value="Empreendimento Eunápolis - BA" required></div>
         <div class="form-row">
             <div class="form-group flex-1"><label>Total UHs</label><input type="number" id="cfg_uhs" value="500" required></div>
@@ -200,12 +155,38 @@
     const API_URL = typeof CONFIG !== 'undefined' ? CONFIG.API_URL : "SUA_URL_AQUI/exec";
     let obrasCache = [];
 
+    const listaEtapasPadrao = [
+        "01-Laje Radier", "02-Armação Tela Parede Inf", "03-Elétrica Passagem Inf",
+        "04-Hidro Isométrico PPR Inf", "05-Concretagem Parede Inf", "06-Escada",
+        "07-Estucagem Inf", "08-Armação Tela Sup", "09-Elétrica Sup",
+        "10-Hidro Sup", "11-Concretagem Sup e Laje", "12-Estucagem Sup",
+        "13-Reservatório", "14-Contrapiso", "15-Cobertura",
+        "16-Esquadrias e Ferragens", "17-Chicote Elétrico", "18-Shaft",
+        "19-Acabamento Hidrossanitário", "20-Forro de PVC", "21-Piso e Revestimento",
+        "22-Pintura Interna", "23-Pintura Externa", "24-Acabamento Elétrico", "25-Limpeza Geral"
+    ];
+
     window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('diario_data').valueAsDate = new Date();
         if(typeof CONFIG !== 'undefined') document.getElementById('app-version').innerText = `v${CONFIG.APP_VERSION}`;
+        renderizarCamposEtapas();
         carregarDadosIniciais();
         carregarRascunhoLocal();
     });
+
+    function renderizarCamposEtapas() {
+        const container = document.getElementById('containerEtapasProducao');
+        let html = '';
+        listaEtapasPadrao.forEach((etapa, idx) => {
+            html += `
+                <div class="etapa-linha">
+                    <label>${etapa}</label>
+                    <input type="number" class="input-pd" data-etapa="${etapa}" value="0" min="0" placeholder="Qtd hoje">
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
 
     function abrirMenu() { document.getElementById('myDrawer').classList.add('open'); document.getElementById('overlayMenu').style.display = 'block'; }
     function fecharMenu() { document.getElementById('myDrawer').classList.remove('open'); document.getElementById('overlayMenu').style.display = 'none'; }
@@ -237,43 +218,44 @@
     }
 
     function preencherDadosTesteModel() {
-        document.getElementById('ef_adm').value = "12";
-        document.getElementById('ef_prod').value = "73";
-        document.getElementById('ef_djteles').value = "14";
-        document.getElementById('ef_ror').value = "20";
-        document.getElementById('diario_relato').value = "Trabalhos normais. Canteiro operando com efetivo total e sem restrições de acesso.";
-        
-        // Marca algumas etapas de exemplo
-        const checks = document.querySelectorAll('input[name="etapa"]');
-        if(checks.length > 13) {
-            checks[13].checked = true; // Contrapiso
-            checks[21].checked = true; // Pintura Interna
+        // Preenche valores simulados de produção do dia em algumas etapas
+        const inputs = document.querySelectorAll('.input-pd');
+        if(inputs.length > 13) {
+            inputs[0].value = "10";  // Laje Radier
+            inputs[13].value = "25"; // Contrapiso
+            inputs[21].value = "40"; // Pintura Interna
         }
-        alert("🧪 Modelo de Eunápolis preenchido com dados fictícios para teste!");
+        document.getElementById('diario_relato').value = "Trabalhos normais. Canteiro operando dentro da meta planejada diária.";
+        alert("🧪 Produção do Dia preenchida com dados fictícios para teste!");
     }
 
     function salvarRascunhoLocal() {
-        let etapas = []; document.querySelectorAll('input[name="etapa"]:checked').forEach(c => etapas.push(c.value));
+        let etapasProd = {};
+        document.querySelectorAll('.input-pd').forEach(inp => {
+            if(Number(inp.value) > 0) etapasProd[inp.dataset.etapa] = { pd: inp.value };
+        });
+
         const rascunho = {
             obra: document.getElementById('diario_obra').value, data: document.getElementById('diario_data').value,
-            climaM: document.getElementById('clima_manha').value, climaT: document.getElementById('clima_tarde').value,
-            efAdm: document.getElementById('ef_adm').value, efProd: document.getElementById('ef_prod').value,
-            etapas: etapas, relato: document.getElementById('diario_relato').value
+            efetivo: document.getElementById('efetivo_total').value, etapas: etapasProd, relato: document.getElementById('diario_relato').value
         };
-        localStorage.setItem('smartsync_rascunho_completo', JSON.stringify(rascunho));
+        localStorage.setItem('smartsync_rascunho_planejamento', JSON.stringify(rascunho));
         alert("💾 Rascunho salvo no celular com sucesso!");
     }
 
     function carregarRascunhoLocal() {
-        const salvo = localStorage.getItem('smartsync_rascunho_completo');
+        const salvo = localStorage.getItem('smartsync_rascunho_planejamento');
         if (!salvo) return;
         if (confirm("Encontramos um rascunho salvo. Deseja recuperá-lo?")) {
             const d = JSON.parse(salvo);
             document.getElementById('diario_obra').value = d.obra;
-            document.getElementById('diario_data').value = d.data;
-            document.getElementById('ef_adm').value = d.efAdm;
-            document.getElementById('ef_prod').value = d.efProd;
+            document.getElementById('efetivo_total').value = d.efetivo;
             document.getElementById('diario_relato').value = d.relato;
+            if(d.etapas) {
+                document.querySelectorAll('.input-pd').forEach(inp => {
+                    if(d.etapas[inp.dataset.etapa]) inp.value = d.etapas[inp.dataset.etapa].pd;
+                });
+            }
         }
     }
 
@@ -282,21 +264,24 @@
         document.getElementById('sysOverlay').style.display = 'flex';
         document.getElementById('modalSpinner').style.display = 'block';
         document.getElementById('modalTitle').innerText = "Publicando Diário";
-        document.getElementById('modalMsg').innerText = "Gerando prancha PDF oficial no Google Drive...";
+        document.getElementById('modalMsg').innerText = "Calculando saldos e gerando prancha PDF no Google Drive...";
 
-        let etapas = []; document.querySelectorAll('input[name="etapa"]:checked').forEach(c => etapas.push(c.value));
+        let etapasProd = {};
+        document.querySelectorAll('.input-pd').forEach(inp => {
+            var val = Number(inp.value);
+            if(val > 0) {
+                etapasProd[inp.dataset.etapa] = { pd: val };
+            }
+        });
         
         const payload = {
             acao: "salvar_diario", 
             obra: document.getElementById('diario_obra').value, 
             data_diario: document.getElementById('diario_data').value,
             clima: `Manhã: ${document.getElementById('clima_manha').value} / Tarde: ${document.getElementById('clima_tarde').value}`,
-            efetivo_proprio: Number(document.getElementById('ef_adm').value) + Number(document.getElementById('ef_prod').value),
+            efetivo_total: document.getElementById('efetivo_total').value,
             respostas: {
-                condicoes: { acesso: document.getElementById('cond_acesso').value, banheiros: document.getElementById('cond_banheiro').value },
-                efetivo_detalhado: { adm: document.getElementById('ef_adm').value, prod: document.getElementById('ef_prod').value, dj: document.getElementById('ef_djteles').value, ror: document.getElementById('ef_ror').value },
-                etapas_concluidas: etapas,
-                seguranca: { epis: document.getElementById('seg_epis').value, limpeza: document.getElementById('seg_limpeza').value },
+                etapas_producao: etapasProd,
                 ocorrencias: document.getElementById('diario_relato').value
             },
             responsavel: "Engenheiro Responsável"
@@ -307,11 +292,12 @@
         document.getElementById('modalBtn').style.display = 'inline-block';
         
         if (res.sucesso) {
-            localStorage.removeItem('smartsync_rascunho_completo');
+            localStorage.removeItem('smartsync_rascunho_planejamento');
             document.getElementById('modalTitle').innerText = "Publicado com Sucesso!";
             document.getElementById('modalMsg').innerText = res.mensagem;
             document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold;">📄 Ver PDF no Drive</a>`;
             document.getElementById('formDiario').reset();
+            renderizarCamposEtapas();
         } else {
             document.getElementById('modalTitle').innerText = "Erro";
             document.getElementById('modalMsg').innerText = "Falha ao publicar diário.";
@@ -326,10 +312,13 @@
         document.getElementById('sysOverlay').style.display = 'flex';
         document.getElementById('modalSpinner').style.display = 'block';
 
+        let metasObj = {};
+        listaEtapasPadrao.forEach(et => { metasObj[et] = 500; }); // Padrão 500 para teste
+
         const payload = {
             acao: "salvar_obra", nome: nome, totalUHs: document.getElementById('cfg_uhs').value,
             dataFim: document.getElementById('cfg_fim').value, corTema: document.getElementById('cfg_cor').value,
-            perguntasCustomizadas: []
+            metasPlanejadas: metasObj
         };
 
         const res = await apiPOST(payload);
