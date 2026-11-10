@@ -60,7 +60,7 @@
 <div class="top-header">
     <button class="hamburger-btn" onclick="abrirMenu()">☰</button>
     <div class="brand-title">SmartSyncGest <span id="usuario-logado-badge" style="font-size:11px; opacity:0.8; margin-left:10px;"></span></div>
-    <div style="font-size: 12px;" onclick="abrirTelaLogin()" style="cursor:pointer;" title="Trocar Usuário">👤</div>
+    <div style="font-size: 18px; cursor:pointer;" onclick="abrirTelaLogin()" title="Trocar Usuário">👤</div>
 </div>
 
 <div id="overlayMenu" class="overlay-menu" onclick="fecharMenu()"></div>
@@ -81,9 +81,9 @@
 <div id="aba-login" class="tab-content active">
     <div class="container" style="text-align: center;">
         <h2>Identificação de Acesso</h2>
-        <p style="font-size: 13px; color:#666;">Selecione quem está acessando o sistema para calibrar as permissões:</p>
+        <p style="font-size: 13px; color:#666;">Selecione quem está acessando o sistema:</p>
         <div class="form-group">
-            <label>Seu E-mail Cadastrado</label>
+            <label>Usuário Cadastrado</label>
             <select id="select_login_usuario" class="form-group" style="padding: 12px;"></select>
         </div>
         <button class="btn-primary btn-block" onclick="efetuarLogin()">Entrar no Sistema</button>
@@ -132,7 +132,7 @@
     </div>
 </div>
 
-<!-- ABA 3: CONSTRUTOR DE OBRAS (ESTILO GOOGLE FORMS - ADMIN) -->
+<!-- ABA 3: CONSTRUTOR DE OBRAS (ADMIN) -->
 <div id="aba-config-obra" class="tab-content">
     <div class="container">
         <h2>Construtor de Obras & Metas (Admin)</h2>
@@ -143,15 +143,13 @@
         </div>
         
         <h3 class="section-title">Definir Metas por Etapa (Matriz)</h3>
-        <div id="containerConstrutorEtapas" style="margin-bottom: 15px; max-height: 250px; overflow-y: auto;">
-            <!-- Gerado automaticamente com base no modelo Eunápolis -->
-        </div>
+        <div id="containerConstrutorEtapas" style="margin-bottom: 15px; max-height: 250px; overflow-y: auto;"></div>
 
         <button class="btn-success btn-block" onclick="salvarNovaObraAdmin()">💾 Salvar Obra na Matriz</button>
     </div>
 </div>
 
-<!-- ABA 4: LOGINS E PERMISSÕES (ADMIN) -->
+<!-- ABA 4: LOGINS & PERMISSÕES (ADMIN) -->
 <div id="aba-config-usuarios" class="tab-content">
     <div class="container">
         <h2>Gerenciamento de Acessos & Permissões</h2>
@@ -234,7 +232,6 @@
         });
         document.getElementById('select_login_usuario').innerHTML = html;
         
-        // Se já tiver login salvo no navegador
         const salvoEmail = localStorage.getItem('smartsync_user_email');
         if (salvoEmail) {
             document.getElementById('select_login_usuario').value = salvoEmail;
@@ -257,7 +254,6 @@
         document.getElementById('usuario-logado-badge').innerText = `[${usuarioAtual.perfil}]`;
         document.getElementById('drawer-user-info').innerText = `${usuarioAtual.nome}`;
 
-        // Controlar visibilidade de menus Admin
         const adminElements = document.querySelectorAll('.admin-only');
         adminElements.forEach(el => {
             el.style.display = (usuarioAtual.perfil === 'Administrador') ? 'flex' : 'none';
