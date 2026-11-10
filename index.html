@@ -5,49 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SmartSyncGest</title>
     
-    <!-- Chamada do PWA Manifest -->
     <link rel="manifest" href="./manifest.json">
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2942/2942813.png" type="image/png">
+    <link rel="icon" href="./icons/icon-192.png" type="image/png">
     <meta name="theme-color" content="#0056b3">
-    
-    <!-- Chamada do Arquivo de Configuração -->
     <script src="./config.js"></script>
 
     <style>
-        :root { --primary: #0056b3; --success: #28a745; --warning: #ffc107; --danger: #dc3545; --bg: #f4f7f6; --text: #333; --border: #e0e0e0; }
+        :root { --primary: #0056b3; --success: #28a745; --bg: #f4f7f6; --text: #333; --border: #e0e0e0; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-bottom: 20px; }
-        .top-header { width: 100%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .brand-title { font-size: 18px; font-weight: bold; }
-        .menu-bar { display: flex; background: white; width: 100%; justify-content: space-around; padding: 12px 0; border-bottom: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .menu-item { cursor: pointer; font-size: 13px; font-weight: bold; color: #666; text-decoration: none; padding-bottom: 5px; }
-        .menu-item.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
+        
+        .top-header { width: 100%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); box-sizing: border-box; }
+        .hamburger-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; padding: 0; margin-right: 15px; }
+        .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; }
+        
+        .overlay-menu { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; }
+        .drawer { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 2000; box-shadow: 2px 0 12px rgba(0,0,0,0.2); transition: left 0.3s ease; display: flex; flex-direction: column; }
+        .drawer.open { left: 0; }
+        .drawer-header { background: var(--primary); color: white; padding: 25px 20px; }
+        .drawer-header h3 { margin: 0; font-size: 20px; }
+        .drawer-menu { display: flex; flex-direction: column; padding: 15px 0; }
+        .drawer-item { padding: 15px 20px; color: var(--text); text-decoration: none; font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 12px; transition: 0.2s; border-left: 4px solid transparent; cursor: pointer; }
+        .drawer-item.active { background: #e9ecef; color: var(--primary); border-left-color: var(--primary); }
+        
         .tab-content { display: none; width: 100%; justify-content: center; animation: fadeIn 0.3s; }
         .tab-content.active { display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .container { background: white; width: 92%; max-width: 600px; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 25px; }
+        .container { background: white; width: 92%; max-width: 600px; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 25px; box-sizing: border-box; }
         h2 { margin-top: 0; font-size: 20px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px; }
-        .step { display: none; } .step.active { display: block; }
-        .progress-bar { height: 8px; background: var(--border); border-radius: 8px; margin-bottom: 25px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--primary); width: 20%; transition: width 0.3s; }
+        
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-row { display: flex; gap: 10px; } .flex-1 { flex: 1; }
         label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; box-sizing: border-box; }
         button { padding: 12px 24px; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
-        .btn-nav { background: #6c757d; } .btn-primary { background: var(--primary); } .btn-success { background: var(--success); }
-        .buttons { display: flex; justify-content: space-between; margin-top: 25px; }
+        .btn-primary { background: var(--primary); } .btn-success { background: var(--success); }
         .btn-block { width: 100%; display: block; margin-top: 15px; }
+        
         .uh-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
         .uh-checkbox { display: flex; align-items: center; gap: 8px; background: #f8f9fa; border: 1px solid var(--border); padding: 10px; border-radius: 8px; font-size: 13px; }
-        .custom-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
-        .custom-table th, .custom-table td { border: 1px solid var(--border); padding: 10px; text-align: left; } .custom-table th { background: #e9ecef; }
+        
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .dash-card { background: #f8f9fa; border: 1px solid var(--border); padding: 15px; border-radius: 8px; text-align: center; }
         .dash-title { font-size: 12px; color: #666; font-weight: bold; }
         .dash-value { font-size: 24px; font-weight: bold; color: var(--primary); margin: 5px 0; }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-box { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; animation: fadeIn 0.2s; }
-        .modal-icon { font-size: 40px; margin-bottom: 10px; }
+        
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; }
+        .modal-box { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; }
         .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -55,271 +58,260 @@
 <body>
 
 <div class="top-header">
-    <div class="brand-title">SmartSyncGest <span id="app-version" style="font-size: 10px; font-weight: normal;"></span></div>
-    <div style="font-size: 12px;" id="statusConexao">Online 🟢</div>
+    <button class="hamburger-btn" onclick="abrirMenu()">☰</button>
+    <div class="brand-title">SmartSyncGest <span id="app-version" style="font-size: 10px;"></span></div>
+    <div style="font-size: 12px;" id="statusConexao">🟢</div>
 </div>
 
-<div class="menu-bar">
-    <a class="menu-item active" onclick="trocarAba('rdo', this)">📝 RDO</a>
-    <a class="menu-item" onclick="trocarAba('dash', this)">📊 Painel</a>
-    <a class="menu-item" onclick="trocarAba('estoque', this)">📦 Estoque</a>
-    <a class="menu-item" onclick="trocarAba('config', this)">⚙️ Admin</a>
+<div id="overlayMenu" class="overlay-menu" onclick="fecharMenu()"></div>
+<div id="myDrawer" class="drawer">
+    <div class="drawer-header">
+        <h3>SmartSyncGest</h3>
+        <span style="font-size: 12px; opacity: 0.8;">Diários de Engenharia</span>
+    </div>
+    <div class="drawer-menu">
+        <a class="drawer-item active" onclick="trocarAba('diario', this)">📝 Diário de Engenharia</a>
+        <a class="drawer-item" onclick="trocarAba('dash', this)">📊 Painel Preditivo</a>
+        <a class="drawer-item" onclick="trocarAba('config', this)">⚙️ Gestão de Obras</a>
+    </div>
 </div>
 
-<!-- ABA 1: RDO -->
-<div id="aba-rdo" class="tab-content active">
+<!-- ABA 1: DIÁRIO DE ENGENHARIA (DINÂMICO) -->
+<div id="aba-diario" class="tab-content active">
     <div class="container">
         <h2>Diário de Engenharia</h2>
-        <div class="progress-bar"><div class="progress-fill" id="progressRDO"></div></div>
-        
-        <form id="formRDO">
-            <div class="step active" id="step1">
-                <div class="form-group"><label>Obra</label><select id="rdo_obra"></select></div>
-                <div class="form-group"><label>Data</label><input type="date" id="rdo_data" required></div>
-                <div class="form-group"><label>Clima</label><select id="rdo_clima"><option>Ensolarado</option><option>Nublado</option><option>Chuva Forte (Paralisação)</option></select></div>
+        <form id="formDiario" onsubmit="enviarDiario(event)">
+            <div class="form-group">
+                <label>Selecione a Obra</label>
+                <select id="diario_obra" onchange="renderizarFormularioDinamico()"></select>
             </div>
-            <div class="step" id="step2">
-                <div class="form-group"><label>Efetivo Próprio (Operários)</label><input type="number" id="rdo_efetivo" value="10"></div>
+            <div class="form-row">
+                <div class="form-group flex-1"><label>Data</label><input type="date" id="diario_data" required></div>
+                <div class="form-group flex-1"><label>Clima</label><select id="diario_clima"><option>Ensolarado</option><option>Nublado</option><option>Chuva Forte</option></select></div>
             </div>
-            <div class="step" id="step3">
-                <div class="form-group">
-                    <label>Unidades Habitacionais (UHs) Entregues Hoje</label>
-                    <div class="uh-grid">
-                        <label class="uh-checkbox"><input type="checkbox" name="uh" value="Casa 01"> Casa 01</label>
-                        <label class="uh-checkbox"><input type="checkbox" name="uh" value="Casa 02"> Casa 02</label>
-                        <label class="uh-checkbox"><input type="checkbox" name="uh" value="Casa 03"> Casa 03</label>
-                        <label class="uh-checkbox"><input type="checkbox" name="uh" value="Casa 04"> Casa 04</label>
-                    </div>
-                </div>
-            </div>
-            <div class="step" id="step4">
-                <div class="form-group"><label>Ocorrências e Atrasos</label><textarea id="rdo_ocorrencias" rows="4"></textarea></div>
-            </div>
-            <div class="step" id="step5">
-                <div style="background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 15px; font-size: 14px;" id="resumoRDO"></div>
-                <div style="display:flex; align-items:center; gap:10px;"><input type="checkbox" id="rdo_termo" required><label style="margin:0;">Assino e atesto as informações.</label></div>
-            </div>
+            <div class="form-group"><label>Efetivo (Operários)</label><input type="number" id="diario_efetivo" value="10" required></div>
 
-            <div class="buttons">
-                <button type="button" class="btn-nav" id="btnVoltar" style="visibility:hidden;" onclick="moverPasso(-1)">Voltar</button>
-                <button type="button" class="btn-primary" id="btnProximo" onclick="moverPasso(1)">Próximo</button>
-                <button type="button" class="btn-success" id="btnSalvar" style="display:none;" onclick="enviarRDO()">Assinar e Gerar PDF</button>
+            <!-- CONTAINER ONDE AS PERGUNTAS ESPECÍFICAS DA OBRA APARECEM AUTOMATICAMENTE -->
+            <div id="containerDinamico"></div>
+
+            <div class="form-group"><label>Ocorrências e Atrasos</label><textarea id="diario_ocorrencias" rows="3"></textarea></div>
+            
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
+                <input type="checkbox" id="diario_termo" required style="width:auto;"><label style="margin:0;">Assino e atesto as informações.</label>
             </div>
+            
+            <button type="submit" class="btn-success btn-block">Gerar PDF do Diário</button>
         </form>
     </div>
 </div>
 
-<!-- ABA 2: DASHBOARD -->
+<!-- ABA 2: DASHBOARD PREDITIVO -->
 <div id="aba-dash" class="tab-content">
     <div class="container">
-        <h2>Dashboard Preditivo</h2>
-        <div class="form-group"><label>Filtro por Obra</label><select id="dash_obra" onchange="carregarDashboard()"></select></div>
+        <h2>Painel Preditivo</h2>
+        <div class="form-group"><label>Obra</label><select id="dash_obra" onchange="carregarDashboard()"></select></div>
         <div class="dash-grid" id="dash_conteudo"></div>
     </div>
 </div>
 
-<!-- ABA 3: ESTOQUE -->
-<div id="aba-estoque" class="tab-content">
-    <div class="container">
-        <h2>Almoxarifado e Insumos</h2>
-        <div style="background: #f8f9fa; padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid var(--border);">
-            <div class="form-row">
-                <div class="form-group flex-1"><label>Material</label><input type="text" id="est_mat" placeholder="Ex: Cimento" required></div>
-                <div class="form-group flex-1"><label>Qtd.</label><input type="number" id="est_qtd" required></div>
-            </div>
-            <div class="form-group"><label>Tipo</label><select id="est_tipo"><option>Entrada (Chegada)</option><option>Saída (Consumo)</option></select></div>
-            <button class="btn-primary btn-block" onclick="salvarEstoque()">Registrar Movimentação</button>
-        </div>
-        <h3 style="font-size: 16px; margin-bottom: 5px;">Saldo Atual</h3>
-        <div id="tabela_estoque"></div>
-    </div>
-</div>
-
-<!-- ABA 4: CONFIGURAÇÕES -->
+<!-- ABA 3: GESTÃO E CONFIGURAÇÕES DE OBRAS E PERGUNTAS -->
 <div id="aba-config" class="tab-content">
     <div class="container">
-        <h2>Cadastrar Empreendimento</h2>
+        <h2>Cadastrar Obra & Perguntas</h2>
         <div class="form-group"><label>Nome da Obra</label><input type="text" id="cfg_nome" required></div>
         <div class="form-row">
-            <div class="form-group flex-1"><label>Total UHs</label><input type="number" id="cfg_uhs" required></div>
+            <div class="form-group flex-1"><label>Total UHs</label><input type="number" id="cfg_uhs" value="100" required></div>
             <div class="form-group flex-1"><label>Fim do Contrato</label><input type="date" id="cfg_fim" required></div>
         </div>
-        <div class="form-group"><label>Cor da Prancha PDF</label><select id="cfg_cor"><option>Azul</option><option>Verde</option><option>Preto</option><option>Laranja</option><option>Vermelho</option></select></div>
-        <button class="btn-primary btn-block" onclick="salvarObra()">Salvar Novo Empreendimento</button>
+        <div class="form-group"><label>Cor do PDF</label><select id="cfg_cor"><option>Azul</option><option>Verde</option><option>Preto</option><option>Laranja</option><option>Vermelho</option></select></div>
+        
+        <div class="form-group">
+            <label>Perguntas Específicas (Separadas por vírgula)</label>
+            <input type="text" id="cfg_perguntas" placeholder="Ex: Metros de estaca cravada, Concretagem laje 3, Teste de compactação">
+            <small style="color:#666;">Isso criará campos customizados exclusivos no diário desta obra.</small>
+        </div>
+
+        <button class="btn-primary btn-block" onclick="salvarObra()">Salvar Obra Dinâmica</button>
     </div>
 </div>
 
-<!-- LOADER E MODAL -->
+<!-- MODAL / LOADER -->
 <div id="sysOverlay" class="overlay">
-    <div class="modal-box" id="sysModal">
+    <div class="modal-box">
         <div id="modalSpinner" class="spinner"></div>
-        <div id="modalIcon" class="modal-icon" style="display:none;">✅</div>
-        <h3 id="modalTitle">Carregando...</h3>
-        <p id="modalMsg" style="color:#666; font-size:14px;">Conectando ao servidor Google.</p>
+        <h3 id="modalTitle">Processando...</h3>
+        <p id="modalMsg" style="color:#666; font-size:14px;">Comunicando com o servidor.</p>
         <div id="modalLink" style="margin: 15px 0;"></div>
-        <button id="modalBtn" class="btn-primary" style="display:none;" onclick="fecharModal()">OK, Fechar</button>
+        <button id="modalBtn" class="btn-primary" style="display:none;" onclick="fecharModal()">OK</button>
     </div>
 </div>
 
 <script>
-    // Registro do Service Worker (PWA)
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js').then(reg => {
-                console.log('PWA Service Worker registrado com sucesso!', reg);
-            }).catch(err => console.log('Falha no Service Worker: ', err));
-        });
-    }
-
-    let passoAtual = 1;
-    const totalPassos = 5;
+    const API_URL = typeof CONFIG !== 'undefined' ? CONFIG.API_URL : "SUA_URL_AQUI/exec";
+    let obrasCache = [];
 
     window.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('rdo_data').valueAsDate = new Date();
-        document.getElementById('app-version').innerText = `v${CONFIG.APP_VERSION}`;
-        carregarListaObras();
-        window.addEventListener('online', () => document.getElementById('statusConexao').innerText = 'Online 🟢');
-        window.addEventListener('offline', () => document.getElementById('statusConexao').innerText = 'Offline 🔴');
+        document.getElementById('diario_data').valueAsDate = new Date();
+        if(typeof CONFIG !== 'undefined') document.getElementById('app-version').innerText = `v${CONFIG.APP_VERSION}`;
+        carregarDadosIniciais();
     });
 
+    function abrirMenu() { document.getElementById('myDrawer').classList.add('open'); document.getElementById('overlayMenu').style.display = 'block'; }
+    function fecharMenu() { document.getElementById('myDrawer').classList.remove('open'); document.getElementById('overlayMenu').style.display = 'none'; }
+
     function trocarAba(aba, el) {
+        fecharMenu();
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+        document.querySelectorAll('.drawer-item').forEach(m => m.classList.remove('active'));
         document.getElementById('aba-' + aba).classList.add('active');
         el.classList.add('active');
         if (aba === 'dash') carregarDashboard();
-        if (aba === 'estoque') carregarEstoque();
     }
 
-    function moverPasso(dir) {
-        document.getElementById('step' + passoAtual).classList.remove('active');
-        passoAtual += dir;
-        document.getElementById('step' + passoAtual).classList.add('active');
-        document.getElementById('progressRDO').style.width = (passoAtual / totalPassos * 100) + '%';
-        document.getElementById('btnVoltar').style.visibility = passoAtual === 1 ? 'hidden' : 'visible';
-        
-        if (passoAtual === totalPassos) {
-            document.getElementById('btnProximo').style.display = 'none';
-            document.getElementById('btnSalvar').style.display = 'block';
-            let uhs = []; document.querySelectorAll('input[name="uh"]:checked').forEach(c => uhs.push(c.value));
-            document.getElementById('resumoRDO').innerHTML = `<strong>Data:</strong> ${document.getElementById('rdo_data').value} <br> <strong>Efetivo:</strong> ${document.getElementById('rdo_efetivo').value} <br> <strong>UHs:</strong> ${uhs.length > 0 ? uhs.join(', ') : 'Nenhuma'}`;
-        } else {
-            document.getElementById('btnProximo').style.display = 'block';
-            document.getElementById('btnSalvar').style.display = 'none';
+    async function apiGET(acao, params = "") {
+        try { const res = await fetch(`${API_URL}?acao=${acao}${params}`); return await res.json(); } catch(e) { return null; }
+    }
+
+    async function apiPOST(payload) {
+        try { const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }); return await res.json(); } catch(e) { return { sucesso: false }; }
+    }
+
+    async function carregarDadosIniciais() {
+        const res = await apiGET("listar_obras");
+        if (res && res.sucesso) {
+            obrasCache = res.dados || [];
+            let html = '';
+            obrasCache.forEach(o => html += `<option value="${o.nome}">${o.nome}</option>`);
+            document.getElementById('diario_obra').innerHTML = html;
+            document.getElementById('dash_obra').innerHTML = html;
+            renderizarFormularioDinamico();
         }
     }
 
-    function mostrarLoader(titulo, msg) {
-        document.getElementById('sysOverlay').style.display = 'flex';
-        document.getElementById('modalSpinner').style.display = 'block';
-        document.getElementById('modalIcon').style.display = 'none';
-        document.getElementById('modalBtn').style.display = 'none';
-        document.getElementById('modalLink').innerHTML = '';
-        document.getElementById('modalTitle').innerText = titulo;
-        document.getElementById('modalMsg').innerText = msg;
+    // MOTOR DE FORMULÁRIO DINÂMICO
+    function renderizarFormularioDinamico() {
+        const nomeObra = document.getElementById('diario_obra').value;
+        const obraSelecionada = obrasCache.find(o => o.nome === nomeObra);
+        const container = document.getElementById('containerDinamico');
+        
+        let html = `
+            <div class="form-group">
+                <label>UHs Concluídas</label>
+                <div class="uh-grid">
+                    <label class="uh-checkbox"><input type="checkbox" name="uh" value="Casa 01"> Casa 01</label>
+                    <label class="uh-checkbox"><input type="checkbox" name="uh" value="Casa 02"> Casa 02</label>
+                    <label class="uh-checkbox"><input type="checkbox" name="uh" value="Casa 03"> Casa 03</label>
+                </div>
+            </div>
+        `;
+
+        if (obraSelecionada && obraSelecionada.perguntasCustomizadas) {
+            obraSelecionada.perguntasCustomizadas.forEach((pergunta, index) => {
+                html += `
+                    <div class="form-group">
+                        <label>${pergunta}</label>
+                        <input type="text" class="pergunta-dinamica" data-pergunta="${pergunta}" placeholder="Digite a resposta técnica...">
+                    </div>
+                `;
+            });
+        }
+        container.innerHTML = html;
     }
 
-    function mostrarResultado(sucesso, titulo, msg, linkPDF = null) {
+    async function enviarDiario(event) {
+        event.preventDefault();
+        document.getElementById('sysOverlay').style.display = 'flex';
+        document.getElementById('modalSpinner').style.display = 'block';
+        document.getElementById('modalBtn').style.display = 'none';
+        document.getElementById('modalTitle').innerText = "Gerando Diário";
+        document.getElementById('modalMsg').innerText = "Salvando dados e criando prancha PDF...";
+
+        let uhs = []; document.querySelectorAll('input[name="uh"]:checked').forEach(c => uhs.push(c.value));
+        
+        let customResps = {};
+        document.querySelectorAll('.pergunta-dinamica').forEach(input => {
+            customResps[input.dataset.pergunta] = input.value;
+        });
+
+        const payload = {
+            acao: "salvar_diario",
+            obra: document.getElementById('diario_obra').value,
+            data_diario: document.getElementById('diario_data').value,
+            clima: document.getElementById('diario_clima').value,
+            efetivo_proprio: document.getElementById('diario_efetivo').value,
+            respostas: {
+                uhs: uhs,
+                custom: customResps,
+                ocorrencias: document.getElementById('diario_ocorrencias').value
+            },
+            responsavel: "Engenheiro Responsável"
+        };
+
+        const res = await apiPOST(payload);
         document.getElementById('modalSpinner').style.display = 'none';
-        document.getElementById('modalIcon').style.display = 'block';
-        document.getElementById('modalIcon').innerText = sucesso ? '✅' : '❌';
-        document.getElementById('modalTitle').innerText = titulo;
-        document.getElementById('modalMsg').innerText = msg;
-        if (linkPDF) document.getElementById('modalLink').innerHTML = `<a href="${linkPDF}" target="_blank" style="color:var(--primary); font-weight:bold;">📄 Visualizar PDF Gerado</a>`;
         document.getElementById('modalBtn').style.display = 'inline-block';
+        
+        if (res.sucesso) {
+            document.getElementById('modalTitle').innerText = "Diário Concluído!";
+            document.getElementById('modalMsg').innerText = res.mensagem;
+            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold;">📄 Visualizar PDF no Drive</a>`;
+            document.getElementById('formDiario').reset();
+            renderizarFormularioDinamico();
+        } else {
+            document.getElementById('modalTitle').innerText = "Erro";
+            document.getElementById('modalMsg').innerText = "Não foi possível registrar o diário.";
+        }
     }
 
     function fecharModal() { document.getElementById('sysOverlay').style.display = 'none'; }
 
-    async function apiGET(acao, params = "") {
-        try {
-            const res = await fetch(`${CONFIG.API_URL}?acao=${acao}${params}`);
-            return await res.json();
-        } catch(e) { return null; }
-    }
-
-    async function apiPOST(payload) {
-        try {
-            const res = await fetch(CONFIG.API_URL, { method: "POST", body: JSON.stringify(payload) });
-            return await res.json();
-        } catch(e) { return { sucesso: false, erro: e.message }; }
-    }
-
-    async function carregarListaObras() {
-        const res = await apiGET("listar_obras");
-        if (res && res.sucesso) {
-            let html = '';
-            res.dados.forEach(o => html += `<option value="${o.nome}">${o.nome}</option>`);
-            document.getElementById('rdo_obra').innerHTML = html;
-            document.getElementById('dash_obra').innerHTML = html;
-        }
-    }
-
-    async function enviarRDO() {
-        if (!document.getElementById('rdo_termo').checked) { alert("Assine o termo!"); return; }
-        mostrarLoader("Gerando RDO", "Salvando no Google Drive e Planilha...");
-        let uhs = []; document.querySelectorAll('input[name="uh"]:checked').forEach(c => uhs.push(c.value));
-        
-        const payload = {
-            acao: "salvar_rdo",
-            obra: document.getElementById('rdo_obra').value, data_rdo: document.getElementById('rdo_data').value,
-            clima: document.getElementById('rdo_clima').value, efetivo_proprio: document.getElementById('rdo_efetivo').value,
-            uhs_concluidas: uhs, ocorrencias: document.getElementById('rdo_ocorrencias').value, responsavel: "Engenheiro Técnico"
-        };
-
-        const res = await apiPOST(payload);
-        if (res.sucesso) {
-            mostrarResultado(true, "RDO Finalizado!", res.mensagem, res.url_pdf);
-            document.getElementById('formRDO').reset(); moverPasso(1 - passoAtual);
-        } else mostrarResultado(false, "Erro", "Não foi possível salvar o RDO.");
-    }
-
     async function carregarDashboard() {
         const obra = document.getElementById('dash_obra').value;
         if (!obra) return;
-        document.getElementById('dash_conteudo').innerHTML = "<p>Buscando métricas...</p>";
+        document.getElementById('dash_conteudo').innerHTML = "<p>Carregando métricas...</p>";
         const res = await apiGET("dashboard", `&obra=${encodeURIComponent(obra)}`);
         if (res && res.sucesso) {
             const d = res.dados;
             document.getElementById('dash_conteudo').innerHTML = `
-                <div class="dash-card"><span class="dash-title">Avanço UHs</span><div class="dash-value">${d.totalUHsConcluidas} / ${d.totalUHsPrevistas}</div></div>
+                <div class="dash-card"><span class="dash-title">UHs Concluídas</span><div class="dash-value">${d.totalUHsConcluidas} / ${d.totalUHsPrevistas}</div></div>
                 <div class="dash-card"><span class="dash-title">Ritmo Diário</span><div class="dash-value">${d.ritmoDiarioAtual}</div></div>
-                <div class="dash-card" style="grid-column: span 2;"><span class="dash-title">Status da Obra</span><div class="dash-value" style="color:var(--success)">${d.statusObra}</div></div>
+                <div class="dash-card" style="grid-column: span 2;"><span class="dash-title">Status</span><div class="dash-value" style="color:var(--success);">${d.statusObra}</div></div>
             `;
         }
     }
 
-    async function carregarEstoque() {
-        const obra = document.getElementById('rdo_obra').value;
-        const res = await apiGET("listar_estoque", `&obra=${encodeURIComponent(obra)}`);
-        if (res && res.sucesso && res.dados.length > 0) {
-            let html = '<table class="custom-table"><tr><th>Material</th><th>Saldo</th></tr>';
-            res.dados.forEach(i => html += `<tr><td><strong>${i.material}</strong></td><td>${i.quantidade} un</td></tr>`);
-            document.getElementById('tabela_estoque').innerHTML = html + '</table>';
-        } else document.getElementById('tabela_estoque').innerHTML = "<p style='font-size:13px;color:#666;'>Estoque vazio ou não sincronizado.</p>";
-    }
-
-    async function salvarEstoque() {
-        if (!document.getElementById('est_mat').value || !document.getElementById('est_qtd').value) return;
-        mostrarLoader("Registrando", "Sincronizando almoxarifado...");
-        const payload = {
-            acao: "salvar_estoque", obra: document.getElementById('rdo_obra').value,
-            material: document.getElementById('est_mat').value, quantidade: document.getElementById('est_qtd').value,
-            tipo: document.getElementById('est_tipo').value, responsavel: "Técnico"
-        };
-        const res = await apiPOST(payload);
-        if (res.sucesso) { mostrarResultado(true, "Estoque Atualizado", res.mensagem); carregarEstoque(); }
-    }
-
     async function salvarObra() {
-        if (!document.getElementById('cfg_nome').value) return;
-        mostrarLoader("Cadastrando", "Salvando Empreendimento...");
+        const nome = document.getElementById('cfg_nome').value;
+        if (!nome) return alert("Informe o nome da obra.");
+        
+        let perguntasStr = document.getElementById('cfg_perguntas').value;
+        let arrayPerguntas = perguntasStr ? perguntasStr.split(',').map(p => p.trim()).filter(p => p.length > 0) : [];
+
+        document.getElementById('sysOverlay').style.display = 'flex';
+        document.getElementById('modalSpinner').style.display = 'block';
+        document.getElementById('modalBtn').style.display = 'none';
+
         const payload = {
-            acao: "salvar_obra", nome: document.getElementById('cfg_nome').value, totalUHs: document.getElementById('cfg_uhs').value,
-            dataFim: document.getElementById('cfg_fim').value, corTema: document.getElementById('cfg_cor').value
+            acao: "salvar_obra",
+            nome: nome,
+            totalUHs: document.getElementById('cfg_uhs').value,
+            dataFim: document.getElementById('cfg_fim').value,
+            corTema: document.getElementById('cfg_cor').value,
+            perguntasCustomizadas: arrayPerguntas
         };
+
         const res = await apiPOST(payload);
-        if (res.sucesso) { mostrarResultado(true, "Obra Cadastrada", res.mensagem); carregarListaObras(); }
+        document.getElementById('modalSpinner').style.display = 'none';
+        document.getElementById('modalBtn').style.display = 'inline-block';
+        
+        if (res.sucesso) {
+            document.getElementById('modalTitle').innerText = "Sucesso";
+            document.getElementById('modalMsg').innerText = res.mensagem;
+            carregarDadosIniciais();
+        } else {
+            document.getElementById('modalTitle').innerText = "Erro";
+            document.getElementById('modalMsg').innerText = "Erro ao cadastrar obra.";
+        }
     }
 </script>
 </body>
