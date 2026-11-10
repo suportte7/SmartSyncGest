@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Diário de Engenharia</title>
+    <title>SmartSyncGest - Diário de Engenharia Completo</title>
     
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" href="./icons/icon-192.png" type="image/png">
@@ -28,19 +28,20 @@
         
         .tab-content { display: none; width: 100%; justify-content: center; }
         .tab-content.active { display: flex; }
-        .container { background: white; width: 92%; max-width: 600px; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 25px; box-sizing: border-box; }
+        .container { background: white; width: 92%; max-width: 650px; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 25px; box-sizing: border-box; }
         h2 { margin-top: 0; font-size: 20px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px; }
+        h3.section-title { font-size: 15px; color: var(--primary); background: #e9ecef; padding: 8px 12px; border-radius: 6px; margin-top: 25px; margin-bottom: 15px; }
         
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-row { display: flex; gap: 10px; } .flex-1 { flex: 1; }
         label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; box-sizing: border-box; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; box-sizing: border-box; }
         button { padding: 12px 24px; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
         .btn-primary { background: var(--primary); } .btn-success { background: var(--success); } .btn-warning { background: var(--warning); color: #000; } .btn-info { background: var(--info); }
         .btn-block { width: 100%; display: block; margin-top: 15px; }
         
-        .uh-grid, .opcoes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
-        .uh-checkbox, .opcao-tag { display: flex; align-items: center; gap: 8px; background: #f8f9fa; border: 1px solid var(--border); padding: 10px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+        .grid-check { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+        .check-tag { display: flex; align-items: center; gap: 8px; background: #f8f9fa; border: 1px solid var(--border); padding: 8px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; }
         
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .dash-card { background: #f8f9fa; border: 1px solid var(--border); padding: 15px; border-radius: 8px; text-align: center; }
@@ -64,7 +65,7 @@
 <div id="myDrawer" class="drawer">
     <div class="drawer-header">
         <h3>SmartSyncGest</h3>
-        <span style="font-size: 12px; opacity: 0.8;">Diários de Engenharia</span>
+        <span style="font-size: 12px; opacity: 0.8;">Diário de Engenharia</span>
     </div>
     <div class="drawer-menu">
         <a class="drawer-item active" onclick="trocarAba('diario', this)">📝 Diário de Engenharia</a>
@@ -73,32 +74,84 @@
     </div>
 </div>
 
-<!-- ABA 1: DIÁRIO DE ENGENHARIA -->
+<!-- ABA 1: DIÁRIO DE ENGENHARIA MODELO COMPLETO -->
 <div id="aba-diario" class="tab-content active">
     <div class="container">
-        <h2>Diário de Engenharia</h2>
+        <h2>Diário de Engenharia (Modelo Eunápolis)</h2>
         
-        <!-- BOTÃO DE TESTE: PREENCHIMENTO AUTOMÁTICO (REMOVER DEPOIS) -->
-        <button type="button" class="btn-info btn-block" style="margin-bottom: 20px; font-size: 13px; padding: 8px;" onclick="preencherDadosTeste()">🧪 Preencher com Dados Fictícios (Teste)</button>
+        <button type="button" class="btn-info btn-block" style="margin-bottom: 20px; font-size: 13px; padding: 8px;" onclick="preencherDadosTesteModel()">🧪 Preencher com Modelo Completo (Teste)</button>
 
         <form id="formDiario" onsubmit="enviarDiario(event)">
-            <div class="form-group">
-                <label>Selecione a Obra</label>
-                <select id="diario_obra" onchange="renderizarFormularioDinamico()"></select>
-            </div>
+            
+            <h3 class="section-title">1. Informações Gerais e Clima</h3>
+            <div class="form-group"><label>Obra / Empreendimento</label><select id="diario_obra"></select></div>
             <div class="form-row">
                 <div class="form-group flex-1"><label>Data</label><input type="date" id="diario_data" required></div>
-                <div class="form-group flex-1"><label>Clima</label><select id="diario_clima"><option>Sol (Manhã e Tarde)</option><option>Nublado</option><option>Chuva Forte (Paralisação)</option></select></div>
+                <div class="form-group flex-1"><label>Clima Manhã</label><select id="clima_manha"><option>Sol</option><option>Nublado</option><option>Chuva</option></select></div>
+                <div class="form-group flex-1"><label>Clima Tarde</label><select id="clima_tarde"><option>Sol</option><option>Nublado</option><option>Chuva</option></select></div>
             </div>
-            <div class="form-group"><label>Efetivo de Operários (Próprio)</label><input type="number" id="diario_efetivo" value="85" required></div>
 
-            <!-- PERGUNTAS DINÂMICAS E DE MÚLTIPLA ESCOLHA -->
-            <div id="containerDinamico"></div>
+            <h3 class="section-title">2. Condições Físicas do Canteiro</h3>
+            <div class="form-row">
+                <div class="form-group flex-1"><label>Acesso Empreendimento</label><select id="cond_acesso"><option>Sem Restrição</option><option>Com Restrição Parcial</option></select></div>
+                <div class="form-group flex-1"><label>Área de Produção de Kits</label><select id="cond_ kits"><option>Sem Restrição - Implantado</option><option>Não Implantado</option></select></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group flex-1"><label>Banheiros</label><select id="cond_banheiro"><option>Sem Restrição - Implantado</option><option>Pendente</option></select></div>
+                <div class="form-group flex-1"><label>Refeitório</label><select id="cond_refeitorio"><option>Sem Restrição - Implantado</option><option>Pendente</option></select></div>
+            </div>
 
-            <div class="form-group"><label>Ocorrências e Relatos do Dia</label><textarea id="diario_ocorrencias" rows="3">Trabalhos normais no empreendimento. Sem restrições de acesso ao canteiro.</textarea></div>
+            <h3 class="section-title">3. Efetivo de Mão de Obra</h3>
+            <div class="form-row">
+                <div class="form-group flex-1"><label>Adm. Construtora</label><input type="number" id="ef_adm" value="12"></div>
+                <div class="form-group flex-1"><label>Prod. Construtora</label><input type="number" id="ef_prod" value="73"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group flex-1"><label>DJ Teles (Empreiteira)</label><input type="number" id="ef_djteles" value="14"></div>
+                <div class="form-group flex-1"><label>ROR Pintura (Empreiteira)</label><input type="number" id="ef_ror" value="20"></div>
+            </div>
+
+            <h3 class="section-title">4. Avanço Físico - Etapas Concluídas Hoje</h3>
+            <p style="font-size:12px; color:#666; margin-top:-10px;">Marque as etapas que tiveram conclusão no dia:</p>
+            <div class="grid-check">
+                <label class="check-tag"><input type="checkbox" name="etapa" value="01-Laje Radier"> 01. Laje Radier</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="02-Armação Tela Parede Inf"> 02. Armação Tela P. Inf</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="03-Elétrica Passagem Inf"> 03. Elétrica Passagem Inf</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="04-Hidro Isométrico PPR Inf"> 04. Hidro PPR Inf</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="05-Concretação Parede Inf"> 05. Concretagem P. Inf</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="06-Escada"> 06. Escada</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="07-Estucagem Inf"> 07. Estucagem Inf</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="08-Armação Tela Sup"> 08. Armação Tela Sup</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="09-Elétrica Sup"> 09. Elétrica Sup</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="10-Hidro Sup"> 10. Hidro Sup</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="11-Concretagem Sup e Laje"> 11. Concretagem Sup/Laje</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="12-Estucagem Sup"> 12. Estucagem Sup</label>
+                <label class="check-tag"><input type="checkbox" name="check_etapa" value="13-Reservatório"> 13. Reservatório</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="14-Contrapiso"> 14. Contrapiso</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="15-Cobertura"> 15. Cobertura</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="16-Esquadrias e Ferragens"> 16. Esquadrias</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="17-Chicote Elétrico"> 17. Chicote Elétrico</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="18-Shaft"> 18. Shaft</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="19-Acabamento Hidrossanitário"> 19. Acabamento Hidro</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="20-Forro de PVC"> 20. Forro de PVC</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="21-Piso e Revestimento"> 21. Piso e Revestimento</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="22-Pintura Interna"> 22. Pintura Interna</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="23-Pintura Externa"> 23. Pintura Externa</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="24-Acabamento Elétrico"> 24. Acabamento Elétrico</label>
+                <label class="check-tag"><input type="checkbox" name="etapa" value="25-Limpeza Geral"> 25. Limpeza Geral</label>
+            </div>
+
+            <h3 class="section-title">5. Segurança do Trabalho e Qualidade</h3>
+            <div class="form-row">
+                <div class="form-group flex-1"><label>Uso Adequado de EPIs</label><select id="seg_epis"><option>Bom</option><option>Regular</option><option>Insatisfatório</option></select></div>
+                <div class="form-group flex-1"><label>Ordem e Limpeza</label><select id="seg_limpeza"><option>Bom</option><option>Regular</option><option>Ruim</option></select></div>
+            </div>
+
+            <h3 class="section-title">6. Relatos e Ocorrências</h3>
+            <div class="form-group"><textarea id="diario_relato" rows="3">Trabalhos normais. Execução em andamento conforme cronograma do empreendimento.</textarea></div>
             
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
-                <input type="checkbox" id="diario_termo" required style="width:auto;"><label style="margin:0;">Assino e atesto digitalmente as informações.</label>
+                <input type="checkbox" id="diario_termo" required style="width:auto;"><label style="margin:0;">Assino e atesto as informações prestadas.</label>
             </div>
             
             <div style="display: flex; gap: 10px;">
@@ -121,23 +174,13 @@
 <!-- ABA 3: GESTÃO -->
 <div id="aba-config" class="tab-content">
     <div class="container">
-        <h2>Cadastrar Obra & Perguntas com Alternativas</h2>
-        <div class="form-group"><label>Nome da Obra</label><input type="text" id="cfg_nome" required></div>
+        <h2>Cadastrar Empreendimento</h2>
+        <div class="form-group"><label>Nome da Obra</label><input type="text" id="cfg_nome" value="Empreendimento Eunápolis - BA" required></div>
         <div class="form-row">
             <div class="form-group flex-1"><label>Total UHs</label><input type="number" id="cfg_uhs" value="500" required></div>
             <div class="form-group flex-1"><label>Fim do Contrato</label><input type="date" id="cfg_fim" required></div>
         </div>
         <div class="form-group"><label>Cor do PDF</label><select id="cfg_cor"><option>Azul</option><option>Verde</option><option>Preto</option><option>Laranja</option><option>Vermelho</option></select></div>
-        
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border:1px solid var(--border); margin-bottom: 15px;">
-            <h3 style="margin-top:0; font-size:14px; color:var(--primary);">Adicionar Pergunta com Alternativas (Marcar X)</h3>
-            <div class="form-group"><label>Texto da Pergunta</label><input type="text" id="nova_pergunta_texto" placeholder="Ex: Execução de Contrapiso"></div>
-            <div class="form-group"><label>Opções de Resposta (Separadas por vírgula)</label><input type="text" id="nova_pergunta_opcoes" placeholder="Ex: Concluído, Em Andamento, Não Iniciado"></div>
-            <button type="button" class="btn-primary" onclick="adicionarPerguntaNaLista()">➕ Adicionar Pergunta</button>
-        </div>
-
-        <div id="listaPerguntasPreview" style="margin-bottom: 15px; font-size: 13px; color:#555;">Nenhuma pergunta customizada adicionada ainda.</div>
-
         <button class="btn-success btn-block" onclick="salvarObraCompleta()">Salvar Obra no Sistema</button>
     </div>
 </div>
@@ -156,7 +199,6 @@
 <script>
     const API_URL = typeof CONFIG !== 'undefined' ? CONFIG.API_URL : "SUA_URL_AQUI/exec";
     let obrasCache = [];
-    let perguntasTemporarias = [];
 
     window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('diario_data').valueAsDate = new Date();
@@ -191,107 +233,47 @@
             obrasCache.forEach(o => html += `<option value="${o.nome}">${o.nome}</option>`);
             document.getElementById('diario_obra').innerHTML = html;
             document.getElementById('dash_obra').innerHTML = html;
-            renderizarFormularioDinamico();
         }
     }
 
-    function renderizarFormularioDinamico() {
-        const nomeObra = document.getElementById('diario_obra').value;
-        const obraSelecionada = obrasCache.find(o => o.nome === nomeObra);
-        const container = document.getElementById('containerDinamico');
+    function preencherDadosTesteModel() {
+        document.getElementById('ef_adm').value = "12";
+        document.getElementById('ef_prod').value = "73";
+        document.getElementById('ef_djteles').value = "14";
+        document.getElementById('ef_ror').value = "20";
+        document.getElementById('diario_relato').value = "Trabalhos normais. Canteiro operando com efetivo total e sem restrições de acesso.";
         
-        let html = `
-            <div class="form-group">
-                <label>UHs Concluídas no Dia (Toque rápido)</label>
-                <div class="uh-grid">
-                    <label class="uh-checkbox"><input type="checkbox" name="uh" value="Bloco A - UHs 01 a 05"> Bloco A (01-05)</label>
-                    <label class="uh-checkbox"><input type="checkbox" name="uh" value="Bloco B - UHs 06 a 10"> Bloco B (06-10)</label>
-                    <label class="uh-checkbox"><input type="checkbox" name="uh" value="Infraestrutura - Lote 01"> Infra (Lote 01)</label>
-                </div>
-            </div>
-        `;
-
-        if (obraSelecionada && obraSelecionada.perguntasCustomizadas) {
-            obraSelecionada.perguntasCustomizadas.forEach((item, index) => {
-                html += `<div class="form-group"><label><strong>${item.texto}</strong></label><div class="opcoes-grid">`;
-                item.opcoes.forEach(opcao => {
-                    html += `<label class="opcao-tag"><input type="radio" name="pergunta_${index}" value="${opcao}"> ${opcao}</label>`;
-                });
-                html += `</div></div>`;
-            });
+        // Marca algumas etapas de exemplo
+        const checks = document.querySelectorAll('input[name="etapa"]');
+        if(checks.length > 13) {
+            checks[13].checked = true; // Contrapiso
+            checks[21].checked = true; // Pintura Interna
         }
-        container.innerHTML = html;
-    }
-
-    // BOTÃO DE TESTE: PREENCHIMENTO AUTOMÁTICO FICTÍCIO
-    function preencherDadosTeste() {
-        document.getElementById('diario_efetivo').value = "85";
-        document.getElementById('diario_ocorrencias').value = "Trabalhos normais. Condições climáticas estáveis e canteiro liberado sem restrições.";
-        
-        // Marca checkboxes de UHs
-        const checks = document.querySelectorAll('input[name="uh"]');
-        if(checks.length > 0) checks[0].checked = true;
-
-        // Marca primeira opção de cada rádio dinâmico
-        const obraSelecionada = obrasCache.find(o => o.nome === document.getElementById('diario_obra').value);
-        if (obraSelecionada && obraSelecionada.perguntasCustomizadas) {
-            obraSelecionada.perguntasCustomizadas.forEach((item, index) => {
-                const primeiroRadio = document.querySelector(`input[name="pergunta_${index}"]`);
-                if(primeiroRadio) primeiroRadio.checked = true;
-            });
-        }
-        alert("🧪 Formulário preenchido com dados fictícios para teste!");
-    }
-
-    function adicionarPerguntaNaLista() {
-        const texto = document.getElementById('nova_pergunta_texto').value;
-        const opcoesStr = document.getElementById('nova_pergunta_opcoes').value;
-        if (!texto || !opcoesStr) return alert("Preencha a pergunta e as opções separadas por vírgula.");
-        
-        const opcoes = opcoesStr.split(',').map(op => op.trim()).filter(op => op.length > 0);
-        perguntasTemporarias.push({ texto: texto, opcoes: opcoes });
-        
-        document.getElementById('nova_pergunta_texto').value = '';
-        document.getElementById('nova_pergunta_opcoes').value = '';
-        
-        let previewHtml = "<strong>Perguntas configuradas:</strong><ul>";
-        perguntasTemporarias.forEach((p, i) => { previewHtml += `<li>${i+1}. ${p.texto} [Opções: ${p.opcoes.join(', ')}]</li>`; });
-        document.getElementById('listaPerguntasPreview').innerHTML = previewHtml + "</ul>";
+        alert("🧪 Modelo de Eunápolis preenchido com dados fictícios para teste!");
     }
 
     function salvarRascunhoLocal() {
-        let uhs = []; document.querySelectorAll('input[name="uh"]:checked').forEach(c => uhs.push(c.value));
-        let customResps = {};
-        const nomeObra = document.getElementById('diario_obra').value;
-        const obraSelecionada = obrasCache.find(o => o.nome === nomeObra);
-        if (obraSelecionada && obraSelecionada.perguntasCustomizadas) {
-            obraSelecionada.perguntasCustomizadas.forEach((item, index) => {
-                const marcado = document.querySelector(`input[name="pergunta_${index}"]:checked`);
-                if (marcado) customResps[item.texto] = marcado.value;
-            });
-        }
-
+        let etapas = []; document.querySelectorAll('input[name="etapa"]:checked').forEach(c => etapas.push(c.value));
         const rascunho = {
-            obra: nomeObra, data: document.getElementById('diario_data').value,
-            clima: document.getElementById('diario_clima').value, efetivo: document.getElementById('diario_efetivo').value,
-            uhs: uhs, custom: customResps, ocorrencias: document.getElementById('diario_ocorrencias').value
+            obra: document.getElementById('diario_obra').value, data: document.getElementById('diario_data').value,
+            climaM: document.getElementById('clima_manha').value, climaT: document.getElementById('clima_tarde').value,
+            efAdm: document.getElementById('ef_adm').value, efProd: document.getElementById('ef_prod').value,
+            etapas: etapas, relato: document.getElementById('diario_relato').value
         };
-
-        localStorage.setItem('smartsync_rascunho', JSON.stringify(rascunho));
+        localStorage.setItem('smartsync_rascunho_completo', JSON.stringify(rascunho));
         alert("💾 Rascunho salvo no celular com sucesso!");
     }
 
     function carregarRascunhoLocal() {
-        const salvo = localStorage.getItem('smartsync_rascunho');
+        const salvo = localStorage.getItem('smartsync_rascunho_completo');
         if (!salvo) return;
         if (confirm("Encontramos um rascunho salvo. Deseja recuperá-lo?")) {
             const d = JSON.parse(salvo);
             document.getElementById('diario_obra').value = d.obra;
-            renderizarFormularioDinamico();
             document.getElementById('diario_data').value = d.data;
-            document.getElementById('diario_clima').value = d.clima;
-            document.getElementById('diario_efetivo').value = d.efetivo;
-            document.getElementById('diario_ocorrencias').value = d.ocorrencias;
+            document.getElementById('ef_adm').value = d.efAdm;
+            document.getElementById('ef_prod').value = d.efProd;
+            document.getElementById('diario_relato').value = d.relato;
         }
     }
 
@@ -300,24 +282,23 @@
         document.getElementById('sysOverlay').style.display = 'flex';
         document.getElementById('modalSpinner').style.display = 'block';
         document.getElementById('modalTitle').innerText = "Publicando Diário";
-        document.getElementById('modalMsg').innerText = "Gerando PDF oficial no Google Drive...";
+        document.getElementById('modalMsg').innerText = "Gerando prancha PDF oficial no Google Drive...";
 
-        let uhs = []; document.querySelectorAll('input[name="uh"]:checked').forEach(c => uhs.push(c.value));
-        let customResps = {};
+        let etapas = []; document.querySelectorAll('input[name="etapa"]:checked').forEach(c => etapas.push(c.value));
         
-        const nomeObra = document.getElementById('diario_obra').value;
-        const obraSelecionada = obrasCache.find(o => o.nome === nomeObra);
-        if (obraSelecionada && obraSelecionada.perguntasCustomizadas) {
-            obraSelecionada.perguntasCustomizadas.forEach((item, index) => {
-                const marcado = document.querySelector(`input[name="pergunta_${index}"]:checked`);
-                if (marcado) customResps[item.texto] = marcado.value;
-            });
-        }
-
         const payload = {
-            acao: "salvar_diario", obra: nomeObra, data_diario: document.getElementById('diario_data').value,
-            clima: document.getElementById('diario_clima').value, efetivo_proprio: document.getElementById('diario_efetivo').value,
-            respostas: { uhs: uhs, custom: customResps, ocorrencias: document.getElementById('diario_ocorrencias').value },
+            acao: "salvar_diario", 
+            obra: document.getElementById('diario_obra').value, 
+            data_diario: document.getElementById('diario_data').value,
+            clima: `Manhã: ${document.getElementById('clima_manha').value} / Tarde: ${document.getElementById('clima_tarde').value}`,
+            efetivo_proprio: Number(document.getElementById('ef_adm').value) + Number(document.getElementById('ef_prod').value),
+            respostas: {
+                condicoes: { acesso: document.getElementById('cond_acesso').value, banheiros: document.getElementById('cond_banheiro').value },
+                efetivo_detalhado: { adm: document.getElementById('ef_adm').value, prod: document.getElementById('ef_prod').value, dj: document.getElementById('ef_djteles').value, ror: document.getElementById('ef_ror').value },
+                etapas_concluidas: etapas,
+                seguranca: { epis: document.getElementById('seg_epis').value, limpeza: document.getElementById('seg_limpeza').value },
+                ocorrencias: document.getElementById('diario_relato').value
+            },
             responsavel: "Engenheiro Responsável"
         };
 
@@ -326,12 +307,11 @@
         document.getElementById('modalBtn').style.display = 'inline-block';
         
         if (res.sucesso) {
-            localStorage.removeItem('smartsync_rascunho');
+            localStorage.removeItem('smartsync_rascunho_completo');
             document.getElementById('modalTitle').innerText = "Publicado com Sucesso!";
             document.getElementById('modalMsg').innerText = res.mensagem;
             document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold;">📄 Ver PDF no Drive</a>`;
             document.getElementById('formDiario').reset();
-            renderizarFormularioDinamico();
         } else {
             document.getElementById('modalTitle').innerText = "Erro";
             document.getElementById('modalMsg').innerText = "Falha ao publicar diário.";
@@ -343,14 +323,13 @@
     async function salvarObraCompleta() {
         const nome = document.getElementById('cfg_nome').value;
         if (!nome) return alert("Digite o nome da obra.");
-
         document.getElementById('sysOverlay').style.display = 'flex';
         document.getElementById('modalSpinner').style.display = 'block';
 
         const payload = {
             acao: "salvar_obra", nome: nome, totalUHs: document.getElementById('cfg_uhs').value,
             dataFim: document.getElementById('cfg_fim').value, corTema: document.getElementById('cfg_cor').value,
-            perguntasCustomizadas: perguntasTemporarias
+            perguntasCustomizadas: []
         };
 
         const res = await apiPOST(payload);
@@ -360,8 +339,6 @@
         if (res.sucesso) {
             document.getElementById('modalTitle').innerText = "Obra Salva!";
             document.getElementById('modalMsg').innerText = res.mensagem;
-            perguntasTemporarias = [];
-            document.getElementById('listaPerguntasPreview').innerHTML = '';
             carregarDadosIniciais();
         } else {
             document.getElementById('modalTitle').innerText = "Erro";
