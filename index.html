@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Diário de Engenharia</title>
+    <title>SmartSyncGest - Diário Inteligente</title>
     
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" href="./icons/icon-192.png" type="image/png">
@@ -42,6 +42,7 @@
         
         .etapa-linha { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; border: 1px solid var(--border); padding: 8px 12px; border-radius: 6px; margin-bottom: 8px; font-size: 13px; gap: 10px; }
         .etapa-linha label { flex: 2; margin: 0; }
+        .etapa-linha .meta-badge { font-size: 11px; background: #e2e8f0; padding: 3px 6px; border-radius: 4px; color: #4a5568; }
         .etapa-linha input { flex: 1; text-align: center; padding: 6px; }
 
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -66,44 +67,40 @@
 <div id="myDrawer" class="drawer">
     <div class="drawer-header">
         <h3>SmartSyncGest</h3>
-        <span style="font-size: 12px; opacity: 0.8;">Diário de Engenharia</span>
+        <span style="font-size: 12px; opacity: 0.8;">Diário Inteligente</span>
     </div>
     <div class="drawer-menu">
         <a class="drawer-item active" onclick="trocarAba('diario', this)">📝 Diário de Engenharia</a>
         <a class="drawer-item" onclick="trocarAba('dash', this)">📊 Painel Preditivo</a>
-        <a class="drawer-item" onclick="trocarAba('config', this)">⚙️ Gestão de Obras</a>
     </div>
 </div>
 
 <!-- ABA 1: DIÁRIO DE ENGENHARIA -->
 <div id="aba-diario" class="tab-content active">
     <div class="container">
-        <h2>Diário de Engenharia (Modelo Planejamento / PD)</h2>
+        <h2>Diário de Engenharia (Base Matriz)</h2>
         
-        <button type="button" class="btn-info btn-block" style="margin-bottom: 20px; font-size: 13px; padding: 8px;" onclick="preencherDadosTesteModel()">🧪 Preencher Produção do Dia (Teste)</button>
+        <button type="button" class="btn-info btn-block" style="margin-bottom: 20px; font-size: 13px; padding: 8px;" onclick="preencherDadosTesteInteligente()">🧪 Preencher Produção do Dia (Teste)</button>
 
         <form id="formDiario" onsubmit="enviarDiario(event)">
             
-            <h3 class="section-title">1. Informações Gerais e Clima</h3>
-            <div class="form-group"><label>Obra / Empreendimento</label><select id="diario_obra"></select></div>
+            <h3 class="section-title">1. Informações Gerais</h3>
+            <div class="form-group"><label>Obra / Empreendimento</label><select id="diario_obra" onchange="renderizarEtapasDaObraSelecionada()"></select></div>
             <div class="form-row">
                 <div class="form-group flex-1"><label>Data</label><input type="date" id="diario_data" required></div>
-                <div class="form-group flex-1"><label>Clima Manhã</label><select id="clima_manha"><option>Sol</option><option>Nublado</option><option>Chuva</option></select></div>
-                <div class="form-group flex-1"><label>Clima Tarde</label><select id="clima_tarde"><option>Sol</option><option>Nublado</option><option>Chuva</option></select></div>
+                <div class="form-group flex-1"><label>Clima Manhã / Tarde</label><select id="clima_geral"><option>Sol / Sol</option><option>Nublado / Nublado</option><option>Chuva Forte (Paralisação)</option></select></div>
             </div>
+            <div class="form-group"><label>Efetivo Total em Campo</label><input type="number" id="efetivo_total" value="105" required></div>
 
-            <h3 class="section-title">2. Efetivo Total de Operários</h3>
-            <div class="form-group"><label>Total de Pessoas em Campo</label><input type="number" id="efetivo_total" value="105" required></div>
-
-            <h3 class="section-title">3. Produção do Dia (PD) por Etapa</h3>
-            <p style="font-size:12px; color:#666; margin-top:-10px;">Informe apenas o que foi executado <strong>hoje</strong>. O sistema calcula acumulados e saldos automaticamente:</p>
+            <h3 class="section-title">2. Produção do Dia (PD) vs. Planejamento</h3>
+            <p style="font-size:12px; color:#666; margin-top:-10px;">O app carrega as metas da matriz. Digite apenas o executado <strong>hoje</strong>:</p>
             
-            <div id="containerEtapasProducao">
-                <!-- Gerado via JavaScript baseado no modelo -->
+            <div id="containerEtapasInteligente">
+                <!-- Carregado via API da Planilha -->
             </div>
 
-            <h3 class="section-title">4. Relatos e Ocorrências</h3>
-            <div class="form-group"><textarea id="diario_relato" rows="3">Trabalhos normais no empreendimento. Sem restrições de acesso ao canteiro.</textarea></div>
+            <h3 class="section-title">3. Ocorrências e Relatos</h3>
+            <div class="form-group"><textarea id="diario_relato" rows="3">Trabalhos normais no empreendimento. Canteiro liberado.</textarea></div>
             
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
                 <input type="checkbox" id="diario_termo" required style="width:auto;"><label style="margin:0;">Assino e atesto as informações prestadas.</label>
@@ -126,20 +123,6 @@
     </div>
 </div>
 
-<!-- ABA 3: GESTÃO -->
-<div id="aba-config" class="tab-content">
-    <div class="container">
-        <h2>Cadastrar Empreendimento & Metas</h2>
-        <div class="form-group"><label>Nome da Obra</label><input type="text" id="cfg_nome" value="Empreendimento Eunápolis - BA" required></div>
-        <div class="form-row">
-            <div class="form-group flex-1"><label>Total UHs</label><input type="number" id="cfg_uhs" value="500" required></div>
-            <div class="form-group flex-1"><label>Fim do Contrato</label><input type="date" id="cfg_fim" required></div>
-        </div>
-        <div class="form-group"><label>Cor do PDF</label><select id="cfg_cor"><option>Azul</option><option>Verde</option><option>Preto</option><option>Laranja</option><option>Vermelho</option></select></div>
-        <button class="btn-success btn-block" onclick="salvarObraCompleta()">Salvar Obra no Sistema</button>
-    </div>
-</div>
-
 <!-- MODAL -->
 <div id="sysOverlay" class="overlay">
     <div class="modal-box">
@@ -155,38 +138,11 @@
     const API_URL = typeof CONFIG !== 'undefined' ? CONFIG.API_URL : "SUA_URL_AQUI/exec";
     let obrasCache = [];
 
-    const listaEtapasPadrao = [
-        "01-Laje Radier", "02-Armação Tela Parede Inf", "03-Elétrica Passagem Inf",
-        "04-Hidro Isométrico PPR Inf", "05-Concretagem Parede Inf", "06-Escada",
-        "07-Estucagem Inf", "08-Armação Tela Sup", "09-Elétrica Sup",
-        "10-Hidro Sup", "11-Concretagem Sup e Laje", "12-Estucagem Sup",
-        "13-Reservatório", "14-Contrapiso", "15-Cobertura",
-        "16-Esquadrias e Ferragens", "17-Chicote Elétrico", "18-Shaft",
-        "19-Acabamento Hidrossanitário", "20-Forro de PVC", "21-Piso e Revestimento",
-        "22-Pintura Interna", "23-Pintura Externa", "24-Acabamento Elétrico", "25-Limpeza Geral"
-    ];
-
     window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('diario_data').valueAsDate = new Date();
         if(typeof CONFIG !== 'undefined') document.getElementById('app-version').innerText = `v${CONFIG.APP_VERSION}`;
-        renderizarCamposEtapas();
         carregarDadosIniciais();
-        carregarRascunhoLocal();
     });
-
-    function renderizarCamposEtapas() {
-        const container = document.getElementById('containerEtapasProducao');
-        let html = '';
-        listaEtapasPadrao.forEach((etapa, idx) => {
-            html += `
-                <div class="etapa-linha">
-                    <label>${etapa}</label>
-                    <input type="number" class="input-pd" data-etapa="${etapa}" value="0" min="0" placeholder="Qtd hoje">
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-    }
 
     function abrirMenu() { document.getElementById('myDrawer').classList.add('open'); document.getElementById('overlayMenu').style.display = 'block'; }
     function fecharMenu() { document.getElementById('myDrawer').classList.remove('open'); document.getElementById('overlayMenu').style.display = 'none'; }
@@ -214,19 +170,40 @@
             obrasCache.forEach(o => html += `<option value="${o.nome}">${o.nome}</option>`);
             document.getElementById('diario_obra').innerHTML = html;
             document.getElementById('dash_obra').innerHTML = html;
+            renderizarEtapasDaObraSelecionada();
+            carregarRascunhoLocal();
         }
     }
 
-    function preencherDadosTesteModel() {
-        // Preenche valores simulados de produção do dia em algumas etapas
-        const inputs = document.querySelectorAll('.input-pd');
-        if(inputs.length > 13) {
-            inputs[0].value = "10";  // Laje Radier
-            inputs[13].value = "25"; // Contrapiso
-            inputs[21].value = "40"; // Pintura Interna
+    function renderizarEtapasDaObraSelecionada() {
+        const nomeObra = document.getElementById('diario_obra').value;
+        const obraObj = obrasCache.find(o => o.nome === nomeObra);
+        const container = document.getElementById('containerEtapasInteligente');
+        
+        if (!obraObj || !obraObj.etapasPlanejamento) {
+            container.innerHTML = "<p>Nenhuma meta planejada encontrada na matriz.</p>";
+            return;
         }
-        document.getElementById('diario_relato').value = "Trabalhos normais. Canteiro operando dentro da meta planejada diária.";
-        alert("🧪 Produção do Dia preenchida com dados fictícios para teste!");
+
+        let html = '';
+        for (var etapa in obraObj.etapasPlanejamento) {
+            var dadosEtapa = obraObj.etapasPlanejamentoetapa;
+            html += `
+                <div class="etapa-linha">
+                    <label>${etapa} <span class="meta-badge">Meta: ${dadosEtapa.meta} | Saldo: ${dadosEtapa.sd}</span></label>
+                    <input type="number" class="input-pd" data-etapa="${etapa}" value="0" min="0" placeholder="PD">
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+    }
+
+    function preencherDadosTesteInteligente() {
+        const inputs = document.querySelectorAll('.input-pd');
+        if(inputs.length > 0) inputs[0].value = "10"; // Laje Radier
+        if(inputs.length > 13) inputs[13].value = "20"; // Contrapiso
+        document.getElementById('diario_relato').value = "Produção diária executada conforme planejamento da matriz.";
+        alert("🧪 Dados de teste inseridos!");
     }
 
     function salvarRascunhoLocal() {
@@ -234,21 +211,21 @@
         document.querySelectorAll('.input-pd').forEach(inp => {
             if(Number(inp.value) > 0) etapasProd[inp.dataset.etapa] = { pd: inp.value };
         });
-
         const rascunho = {
             obra: document.getElementById('diario_obra').value, data: document.getElementById('diario_data').value,
             efetivo: document.getElementById('efetivo_total').value, etapas: etapasProd, relato: document.getElementById('diario_relato').value
         };
-        localStorage.setItem('smartsync_rascunho_planejamento', JSON.stringify(rascunho));
-        alert("💾 Rascunho salvo no celular com sucesso!");
+        localStorage.setItem('smartsync_rascunho_inteligente', JSON.stringify(rascunho));
+        alert("💾 Rascunho salvo com inteligência!");
     }
 
     function carregarRascunhoLocal() {
-        const salvo = localStorage.getItem('smartsync_rascunho_planejamento');
+        const salvo = localStorage.getItem('smartsync_rascunho_inteligente');
         if (!salvo) return;
-        if (confirm("Encontramos um rascunho salvo. Deseja recuperá-lo?")) {
+        if (confirm("Deseja recuperar o rascunho salvo?")) {
             const d = JSON.parse(salvo);
             document.getElementById('diario_obra').value = d.obra;
+            renderizarEtapasDaObraSelecionada();
             document.getElementById('efetivo_total').value = d.efetivo;
             document.getElementById('diario_relato').value = d.relato;
             if(d.etapas) {
@@ -263,27 +240,21 @@
         event.preventDefault();
         document.getElementById('sysOverlay').style.display = 'flex';
         document.getElementById('modalSpinner').style.display = 'block';
-        document.getElementById('modalTitle').innerText = "Publicando Diário";
-        document.getElementById('modalMsg').innerText = "Calculando saldos e gerando prancha PDF no Google Drive...";
+        document.getElementById('modalTitle').innerText = "Processando Diário";
+        document.getElementById('modalMsg').innerText = "Cruzando dados com a matriz e gerando PDF...";
 
         let etapasProd = {};
         document.querySelectorAll('.input-pd').forEach(inp => {
             var val = Number(inp.value);
-            if(val > 0) {
-                etapasProd[inp.dataset.etapa] = { pd: val };
-            }
+            if(val > 0) etapasProd[inp.dataset.etapa] = { pd: val };
         });
         
         const payload = {
-            acao: "salvar_diario", 
-            obra: document.getElementById('diario_obra').value, 
+            acao: "salvar_diario", obra: document.getElementById('diario_obra').value,
             data_diario: document.getElementById('diario_data').value,
-            clima: `Manhã: ${document.getElementById('clima_manha').value} / Tarde: ${document.getElementById('clima_tarde').value}`,
+            clima: document.getElementById('clima_geral').value,
             efetivo_total: document.getElementById('efetivo_total').value,
-            respostas: {
-                etapas_producao: etapasProd,
-                ocorrencias: document.getElementById('diario_relato').value
-            },
+            respostas: { etapas_producao: etapasProd, ocorrencias: document.getElementById('diario_relato').value },
             responsavel: "Engenheiro Responsável"
         };
 
@@ -292,12 +263,12 @@
         document.getElementById('modalBtn').style.display = 'inline-block';
         
         if (res.sucesso) {
-            localStorage.removeItem('smartsync_rascunho_planejamento');
-            document.getElementById('modalTitle').innerText = "Publicado com Sucesso!";
+            localStorage.removeItem('smartsync_rascunho_inteligente');
+            document.getElementById('modalTitle').innerText = "Diário Publicado!";
             document.getElementById('modalMsg').innerText = res.mensagem;
             document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold;">📄 Ver PDF no Drive</a>`;
             document.getElementById('formDiario').reset();
-            renderizarCamposEtapas();
+            carregarDadosIniciais();
         } else {
             document.getElementById('modalTitle').innerText = "Erro";
             document.getElementById('modalMsg').innerText = "Falha ao publicar diário.";
@@ -305,35 +276,6 @@
     }
 
     function fecharModal() { document.getElementById('sysOverlay').style.display = 'none'; }
-
-    async function salvarObraCompleta() {
-        const nome = document.getElementById('cfg_nome').value;
-        if (!nome) return alert("Digite o nome da obra.");
-        document.getElementById('sysOverlay').style.display = 'flex';
-        document.getElementById('modalSpinner').style.display = 'block';
-
-        let metasObj = {};
-        listaEtapasPadrao.forEach(et => { metasObj[et] = 500; }); // Padrão 500 para teste
-
-        const payload = {
-            acao: "salvar_obra", nome: nome, totalUHs: document.getElementById('cfg_uhs').value,
-            dataFim: document.getElementById('cfg_fim').value, corTema: document.getElementById('cfg_cor').value,
-            metasPlanejadas: metasObj
-        };
-
-        const res = await apiPOST(payload);
-        document.getElementById('modalSpinner').style.display = 'none';
-        document.getElementById('modalBtn').style.display = 'inline-block';
-        
-        if (res.sucesso) {
-            document.getElementById('modalTitle').innerText = "Obra Salva!";
-            document.getElementById('modalMsg').innerText = res.mensagem;
-            carregarDadosIniciais();
-        } else {
-            document.getElementById('modalTitle').innerText = "Erro";
-            document.getElementById('modalMsg').innerText = "Erro ao salvar obra.";
-        }
-    }
 </script>
 </body>
 </html>
