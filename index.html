@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Diário Inteligente</title>
+    <title>SmartSyncGest - Sistema Completo</title>
     
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" href="./icons/icon-192.png" type="image/png">
@@ -11,7 +11,7 @@
     <script src="./config.js"></script>
 
     <style>
-        :root { --primary: #0056b3; --success: #28a745; --warning: #ffc107; --info: #17a2b8; --bg: #f4f7f6; --text: #333; --border: #e0e0e0; }
+        :root { --primary: #0056b3; --success: #28a745; --warning: #ffc107; --danger: #dc3545; --info: #17a2b8; --bg: #f4f7f6; --text: #333; --border: #e0e0e0; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-bottom: 20px; }
         
         .top-header { width: 100%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -37,7 +37,7 @@
         label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
         input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; box-sizing: border-box; }
         button { padding: 12px 24px; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
-        .btn-primary { background: var(--primary); } .btn-success { background: var(--success); } .btn-warning { background: var(--warning); color: #000; } .btn-info { background: var(--info); }
+        .btn-primary { background: var(--primary); } .btn-success { background: var(--success); } .btn-warning { background: var(--warning); color: #000; } .btn-info { background: var(--info); } .btn-danger { background: var(--danger); }
         .btn-block { width: 100%; display: block; margin-top: 15px; }
         
         .etapa-linha { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; border: 1px solid var(--border); padding: 8px 12px; border-radius: 6px; margin-bottom: 8px; font-size: 13px; gap: 10px; }
@@ -59,51 +59,60 @@
 
 <div class="top-header">
     <button class="hamburger-btn" onclick="abrirMenu()">☰</button>
-    <div class="brand-title">SmartSyncGest <span id="app-version" style="font-size: 10px;"></span></div>
-    <div style="font-size: 12px;" id="statusConexao">🟢</div>
+    <div class="brand-title">SmartSyncGest <span id="usuario-logado-badge" style="font-size:11px; opacity:0.8; margin-left:10px;"></span></div>
+    <div style="font-size: 12px;" onclick="abrirTelaLogin()" style="cursor:pointer;" title="Trocar Usuário">👤</div>
 </div>
 
 <div id="overlayMenu" class="overlay-menu" onclick="fecharMenu()"></div>
 <div id="myDrawer" class="drawer">
     <div class="drawer-header">
         <h3>SmartSyncGest</h3>
-        <span style="font-size: 12px; opacity: 0.8;">Diário Inteligente</span>
+        <span id="drawer-user-info" style="font-size: 12px; opacity: 0.8;">Gestão de Engenharia</span>
     </div>
     <div class="drawer-menu">
         <a class="drawer-item active" onclick="trocarAba('diario', this)">📝 Diário de Engenharia</a>
         <a class="drawer-item" onclick="trocarAba('dash', this)">📊 Painel Preditivo</a>
+        <a class="drawer-item admin-only" onclick="trocarAba('config-obra', this)" style="display:none;">⚙️ Construtor de Obras (Admin)</a>
+        <a class="drawer-item admin-only" onclick="trocarAba('config-usuarios', this)" style="display:none;">🔒 Logins & Permissões (Admin)</a>
+    </div>
+</div>
+
+<!-- TELA DE LOGIN / SELEÇÃO DE PERFIL -->
+<div id="aba-login" class="tab-content active">
+    <div class="container" style="text-align: center;">
+        <h2>Identificação de Acesso</h2>
+        <p style="font-size: 13px; color:#666;">Selecione quem está acessando o sistema para calibrar as permissões:</p>
+        <div class="form-group">
+            <label>Seu E-mail Cadastrado</label>
+            <select id="select_login_usuario" class="form-group" style="padding: 12px;"></select>
+        </div>
+        <button class="btn-primary btn-block" onclick="efetuarLogin()">Entrar no Sistema</button>
     </div>
 </div>
 
 <!-- ABA 1: DIÁRIO DE ENGENHARIA -->
-<div id="aba-diario" class="tab-content active">
+<div id="aba-diario" class="tab-content">
     <div class="container">
-        <h2>Diário de Engenharia (Base Matriz)</h2>
-        
-        <button type="button" class="btn-info btn-block" style="margin-bottom: 20px; font-size: 13px; padding: 8px;" onclick="preencherDadosTesteInteligente()">🧪 Preencher Produção do Dia (Teste)</button>
+        <h2>Diário de Engenharia</h2>
+        <button type="button" class="btn-info btn-block" style="margin-bottom: 20px; font-size: 13px; padding: 8px;" onclick="preencherDadosTeste()">🧪 Preencher Produção do Dia (Teste)</button>
 
         <form id="formDiario" onsubmit="enviarDiario(event)">
-            
             <h3 class="section-title">1. Informações Gerais</h3>
-            <div class="form-group"><label>Obra / Empreendimento</label><select id="diario_obra" onchange="renderizarEtapasDaObraSelecionada()"></select></div>
+            <div class="form-group"><label>Obra / Empreendimento</label><select id="diario_obra" onchange="renderizarEtapasDiario()"></select></div>
             <div class="form-row">
                 <div class="form-group flex-1"><label>Data</label><input type="date" id="diario_data" required></div>
-                <div class="form-group flex-1"><label>Clima Manhã / Tarde</label><select id="clima_geral"><option>Sol / Sol</option><option>Nublado / Nublado</option><option>Chuva Forte (Paralisação)</option></select></div>
+                <div class="form-group flex-1"><label>Clima</label><select id="clima_geral"><option>Sol / Sol</option><option>Nublado / Nublado</option><option>Chuva Forte</option></select></div>
             </div>
             <div class="form-group"><label>Efetivo Total em Campo</label><input type="number" id="efetivo_total" value="105" required></div>
 
             <h3 class="section-title">2. Produção do Dia (PD) vs. Planejamento</h3>
-            <p style="font-size:12px; color:#666; margin-top:-10px;">O app carrega as metas da matriz. Digite apenas o executado <strong>hoje</strong>:</p>
-            
-            <div id="containerEtapasInteligente">
-                <!-- Carregado via API da Planilha -->
-            </div>
+            <div id="containerEtapasDiario"></div>
 
             <h3 class="section-title">3. Ocorrências e Relatos</h3>
-            <div class="form-group"><textarea id="diario_relato" rows="3">Trabalhos normais no empreendimento. Canteiro liberado.</textarea></div>
+            <div class="form-group"><textarea id="diario_relato" rows="3">Trabalhos normais no empreendimento.</textarea></div>
             
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
-                <input type="checkbox" id="diario_termo" required style="width:auto;"><label style="margin:0;">Assino e atesto as informações prestadas.</label>
+                <input type="checkbox" id="diario_termo" required style="width:auto;"><label style="margin:0;">Assino e atesto as informações.</label>
             </div>
             
             <div style="display: flex; gap: 10px;">
@@ -123,6 +132,39 @@
     </div>
 </div>
 
+<!-- ABA 3: CONSTRUTOR DE OBRAS (ESTILO GOOGLE FORMS - ADMIN) -->
+<div id="aba-config-obra" class="tab-content">
+    <div class="container">
+        <h2>Construtor de Obras & Metas (Admin)</h2>
+        <div class="form-group"><label>Nome da Obra</label><input type="text" id="cfg_nome_obra" placeholder="Ex: Loteamento Boa Vista"></div>
+        <div class="form-row">
+            <div class="form-group flex-1"><label>Total UHs / Metas</label><input type="number" id="cfg_total_uhs" value="300"></div>
+            <div class="form-group flex-1"><label>Construtora</label><input type="text" id="cfg_empresa" value="SGO Engenharia"></div>
+        </div>
+        
+        <h3 class="section-title">Definir Metas por Etapa (Matriz)</h3>
+        <div id="containerConstrutorEtapas" style="margin-bottom: 15px; max-height: 250px; overflow-y: auto;">
+            <!-- Gerado automaticamente com base no modelo Eunápolis -->
+        </div>
+
+        <button class="btn-success btn-block" onclick="salvarNovaObraAdmin()">💾 Salvar Obra na Matriz</button>
+    </div>
+</div>
+
+<!-- ABA 4: LOGINS E PERMISSÕES (ADMIN) -->
+<div id="aba-config-usuarios" class="tab-content">
+    <div class="container">
+        <h2>Gerenciamento de Acessos & Permissões</h2>
+        <div class="form-group"><label>E-mail do Usuário</label><input type="email" id="usr_email" placeholder="engenheiro@empresa.com"></div>
+        <div class="form-group"><label>Nome Completo</label><input type="text" id="usr_nome" placeholder="Nome do Colaborador"></div>
+        <div class="form-row">
+            <div class="form-group flex-1"><label>Perfil de Acesso</label><select id="usr_perfil"><option>Engenheiro</option><option>Administrador</option><option>Fiscal</option></select></div>
+            <div class="form-group flex-1"><label>Obra Vinculada</label><select id="usr_obra"></select></div>
+        </div>
+        <button class="btn-primary btn-block" onclick="salvarNovoUsuarioAdmin()">🔒 Conceder Acesso</button>
+    </div>
+</div>
+
 <!-- MODAL -->
 <div id="sysOverlay" class="overlay">
     <div class="modal-box">
@@ -136,22 +178,35 @@
 
 <script>
     const API_URL = typeof CONFIG !== 'undefined' ? CONFIG.API_URL : "SUA_URL_AQUI/exec";
-    let obrasCache = [];
+    let dadosGlobais = { obras: [], usuarios: [] };
+    let usuarioAtual = null;
+
+    const etapasPadraoEunapolis = [
+        "01-Laje Radier", "02-Armação Tela Parede Inf", "03-Elétrica Passagem Inf",
+        "04-Hidro Isométrico PPR Inf", "05-Concretagem Parede Inf", "06-Escada",
+        "07-Estucagem Inf", "08-Armação Tela Sup", "09-Elétrica Sup",
+        "10-Hidro Sup", "11-Concretagem Sup e Laje", "12-Estucagem Sup",
+        "13-Reservatório", "14-Contrapiso", "15-Cobertura",
+        "16-Esquadrias e Ferragens", "17-Chicote Elétrico", "18-Shaft",
+        "19-Acabamento Hidrossanitário", "20-Forro de PVC", "21-Piso e Revestimento",
+        "22-Pintura Interna", "23-Pintura Externa", "24-Acabamento Elétrico", "25-Limpeza Geral"
+    ];
 
     window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('diario_data').valueAsDate = new Date();
         if(typeof CONFIG !== 'undefined') document.getElementById('app-version').innerText = `v${CONFIG.APP_VERSION}`;
-        carregarDadosIniciais();
+        carregarSistemaCompleto();
     });
 
     function abrirMenu() { document.getElementById('myDrawer').classList.add('open'); document.getElementById('overlayMenu').style.display = 'block'; }
     function fecharMenu() { document.getElementById('myDrawer').classList.remove('open'); document.getElementById('overlayMenu').style.display = 'none'; }
+    
     function trocarAba(aba, el) {
         fecharMenu();
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.drawer-item').forEach(m => m.classList.remove('active'));
         document.getElementById('aba-' + aba).classList.add('active');
-        el.classList.add('active');
+        if(el) el.classList.add('active');
         if (aba === 'dash') carregarDashboard();
     }
 
@@ -162,48 +217,109 @@
         try { const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }); return await res.json(); } catch(e) { return { sucesso: false }; }
     }
 
-    async function carregarDadosIniciais() {
-        const res = await apiGET("listar_obras");
+    async function carregarSistemaCompleto() {
+        const res = await apiGET("listar_dados");
         if (res && res.sucesso) {
-            obrasCache = res.dados || [];
-            let html = '';
-            obrasCache.forEach(o => html += `<option value="${o.nome}">${o.nome}</option>`);
-            document.getElementById('diario_obra').innerHTML = html;
-            document.getElementById('dash_obra').innerHTML = html;
-            renderizarEtapasDaObraSelecionada();
-            carregarRascunhoLocal();
+            dadosGlobais = res.dados || { obras: [], usuarios: [] };
+            popularTelaLogin();
+            popularSelectsGerais();
+            renderizarConstrutorEtapasAdmin();
         }
     }
 
-    function renderizarEtapasDaObraSelecionada() {
+    function popularTelaLogin() {
+        let html = '';
+        dadosGlobais.usuarios.forEach(u => {
+            html += `<option value="${u.email}">${u.nome} (${u.perfil})</option>`;
+        });
+        document.getElementById('select_login_usuario').innerHTML = html;
+        
+        // Se já tiver login salvo no navegador
+        const salvoEmail = localStorage.getItem('smartsync_user_email');
+        if (salvoEmail) {
+            document.getElementById('select_login_usuario').value = salvoEmail;
+            efetuarLogin();
+        } else {
+            abrirTelaLogin();
+        }
+    }
+
+    function abrirTelaLogin() {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById('aba-login').classList.add('active');
+    }
+
+    function efetuarLogin() {
+        const email = document.getElementById('select_login_usuario').value;
+        usuarioAtual = dadosGlobais.usuarios.find(u => u.email === email) || dadosGlobais.usuarios[0];
+        localStorage.setItem('smartsync_user_email', usuarioAtual.email);
+
+        document.getElementById('usuario-logado-badge').innerText = `[${usuarioAtual.perfil}]`;
+        document.getElementById('drawer-user-info').innerText = `${usuarioAtual.nome}`;
+
+        // Controlar visibilidade de menus Admin
+        const adminElements = document.querySelectorAll('.admin-only');
+        adminElements.forEach(el => {
+            el.style.display = (usuarioAtual.perfil === 'Administrador') ? 'flex' : 'none';
+        });
+
+        trocarAba('diario', document.querySelector('.drawer-item'));
+    }
+
+    function popularSelectsGerais() {
+        let obraHtml = '';
+        dadosGlobais.obras.forEach(o => { obraHtml += `<option value="${o.nome}">${o.nome}</option>`; });
+        
+        document.getElementById('diario_obra').innerHTML = obraHtml;
+        document.getElementById('dash_obra').innerHTML = obraHtml;
+        document.getElementById('usr_obra').innerHTML = obraHtml;
+
+        renderizarEtapasDiario();
+    }
+
+    function renderizarEtapasDiario() {
         const nomeObra = document.getElementById('diario_obra').value;
-        const obraObj = obrasCache.find(o => o.nome === nomeObra);
-        const container = document.getElementById('containerEtapasInteligente');
+        const obraObj = dadosGlobais.obras.find(o => o.nome === nomeObra);
+        const container = document.getElementById('containerEtapasDiario');
         
         if (!obraObj || !obraObj.etapasPlanejamento) {
-            container.innerHTML = "<p>Nenhuma meta planejada encontrada na matriz.</p>";
+            container.innerHTML = "<p>Nenhuma meta encontrada.</p>";
             return;
         }
 
         let html = '';
-        for (var etapa in obraObj.etapasPlanejamento) {
-            var dadosEtapa = obraObj.etapasPlanejamentoetapa;
+        for (var et in obraObj.etapasPlanejamento) {
+            var dadosEtapa = obraObj.etapasPlanejamento[et];
             html += `
                 <div class="etapa-linha">
-                    <label>${etapa} <span class="meta-badge">Meta: ${dadosEtapa.meta} | Saldo: ${dadosEtapa.sd}</span></label>
-                    <input type="number" class="input-pd" data-etapa="${etapa}" value="0" min="0" placeholder="PD">
+                    <label>${et} <span class="meta-badge">Meta: ${dadosEtapa.meta} | Saldo: ${dadosEtapa.sd}</span></label>
+                    <input type="number" class="input-pd" data-etapa="${et}" value="0" min="0" placeholder="PD">
                 </div>
             `;
         }
         container.innerHTML = html;
     }
 
-    function preencherDadosTesteInteligente() {
+    function renderizarConstrutorEtapasAdmin() {
+        const container = document.getElementById('containerConstrutorEtapas');
+        let html = '';
+        etapasPadraoEunapolis.forEach(et => {
+            html += `
+                <div class="etapa-linha">
+                    <label>${et}</label>
+                    <input type="number" class="input-meta-admin" data-etapa="${et}" value="500" placeholder="Meta Total">
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function preencherDadosTeste() {
         const inputs = document.querySelectorAll('.input-pd');
-        if(inputs.length > 0) inputs[0].value = "10"; // Laje Radier
-        if(inputs.length > 13) inputs[13].value = "20"; // Contrapiso
-        document.getElementById('diario_relato').value = "Produção diária executada conforme planejamento da matriz.";
-        alert("🧪 Dados de teste inseridos!");
+        if(inputs.length > 0) inputs[0].value = "10";
+        if(inputs.length > 13) inputs[13].value = "20";
+        document.getElementById('diario_relato').value = "Canteiro operando normalmente dentro das metas estabelecidas.";
+        alert("🧪 Produção do Dia preenchida para teste!");
     }
 
     function salvarRascunhoLocal() {
@@ -215,25 +331,8 @@
             obra: document.getElementById('diario_obra').value, data: document.getElementById('diario_data').value,
             efetivo: document.getElementById('efetivo_total').value, etapas: etapasProd, relato: document.getElementById('diario_relato').value
         };
-        localStorage.setItem('smartsync_rascunho_inteligente', JSON.stringify(rascunho));
-        alert("💾 Rascunho salvo com inteligência!");
-    }
-
-    function carregarRascunhoLocal() {
-        const salvo = localStorage.getItem('smartsync_rascunho_inteligente');
-        if (!salvo) return;
-        if (confirm("Deseja recuperar o rascunho salvo?")) {
-            const d = JSON.parse(salvo);
-            document.getElementById('diario_obra').value = d.obra;
-            renderizarEtapasDaObraSelecionada();
-            document.getElementById('efetivo_total').value = d.efetivo;
-            document.getElementById('diario_relato').value = d.relato;
-            if(d.etapas) {
-                document.querySelectorAll('.input-pd').forEach(inp => {
-                    if(d.etapas[inp.dataset.etapa]) inp.value = d.etapas[inp.dataset.etapa].pd;
-                });
-            }
-        }
+        localStorage.setItem('smartsync_rascunho_completo', JSON.stringify(rascunho));
+        alert("💾 Rascunho salvo no celular com sucesso!");
     }
 
     async function enviarDiario(event) {
@@ -241,7 +340,7 @@
         document.getElementById('sysOverlay').style.display = 'flex';
         document.getElementById('modalSpinner').style.display = 'block';
         document.getElementById('modalTitle').innerText = "Processando Diário";
-        document.getElementById('modalMsg').innerText = "Cruzando dados com a matriz e gerando PDF...";
+        document.getElementById('modalMsg').innerText = "Calculando saldos e gerando prancha oficial...";
 
         let etapasProd = {};
         document.querySelectorAll('.input-pd').forEach(inp => {
@@ -255,7 +354,7 @@
             clima: document.getElementById('clima_geral').value,
             efetivo_total: document.getElementById('efetivo_total').value,
             respostas: { etapas_producao: etapasProd, ocorrencias: document.getElementById('diario_relato').value },
-            responsavel: "Engenheiro Responsável"
+            responsavel: usuarioAtual ? usuarioAtual.nome : "Engenheiro Responsável"
         };
 
         const res = await apiPOST(payload);
@@ -263,15 +362,75 @@
         document.getElementById('modalBtn').style.display = 'inline-block';
         
         if (res.sucesso) {
-            localStorage.removeItem('smartsync_rascunho_inteligente');
-            document.getElementById('modalTitle').innerText = "Diário Publicado!";
+            localStorage.removeItem('smartsync_rascunho_completo');
+            document.getElementById('modalTitle').innerText = "Publicado com Sucesso!";
             document.getElementById('modalMsg').innerText = res.mensagem;
             document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold;">📄 Ver PDF no Drive</a>`;
             document.getElementById('formDiario').reset();
-            carregarDadosIniciais();
+            carregarSistemaCompleto();
         } else {
             document.getElementById('modalTitle').innerText = "Erro";
             document.getElementById('modalMsg').innerText = "Falha ao publicar diário.";
+        }
+    }
+
+    async function salvarNovaObraAdmin() {
+        const nome = document.getElementById('cfg_nome_obra').value;
+        if (!nome) return alert("Digite o nome da obra.");
+        
+        let metasArr = [];
+        document.querySelectorAll('.input-meta-admin').forEach(inp => {
+            metasArr.push({ nome: inp.dataset.etapa, meta: inp.value });
+        });
+
+        document.getElementById('sysOverlay').style.display = 'flex';
+        document.getElementById('modalSpinner').style.display = 'block';
+
+        const payload = {
+            acao: "salvar_obra", nome: nome, totalUHs: document.getElementById('cfg_total_uhs').value,
+            dataInicio: "2026-01-01", dataFim: "2026-12-31", empresa: document.getElementById('cfg_empresa').value,
+            corTema: "Azul", etapas: metasArr
+        };
+
+        const res = await apiPOST(payload);
+        document.getElementById('modalSpinner').style.display = 'none';
+        document.getElementById('modalBtn').style.display = 'inline-block';
+        
+        if (res.sucesso) {
+            document.getElementById('modalTitle').innerText = "Obra Cadastrada!";
+            document.getElementById('modalMsg').innerText = res.mensagem;
+            carregarSistemaCompleto();
+        } else {
+            document.getElementById('modalTitle').innerText = "Erro";
+            document.getElementById('modalMsg').innerText = "Erro ao cadastrar obra.";
+        }
+    }
+
+    async function salvarNovoUsuarioAdmin() {
+        const email = document.getElementById('usr_email').value;
+        const nome = document.getElementById('usr_nome').value;
+        if (!email || !nome) return alert("Preencha e-mail e nome.");
+
+        document.getElementById('sysOverlay').style.display = 'flex';
+        document.getElementById('modalSpinner').style.display = 'block';
+
+        const payload = {
+            acao: "salvar_usuario", email: email, nome: nome,
+            perfil: document.getElementById('usr_perfil').value,
+            obra: document.getElementById('usr_obra').value
+        };
+
+        const res = await apiPOST(payload);
+        document.getElementById('modalSpinner').style.display = 'none';
+        document.getElementById('modalBtn').style.display = 'inline-block';
+        
+        if (res.sucesso) {
+            document.getElementById('modalTitle').innerText = "Permissão Concedida!";
+            document.getElementById('modalMsg').innerText = res.mensagem;
+            carregarSistemaCompleto();
+        } else {
+            document.getElementById('modalTitle').innerText = "Erro";
+            document.getElementById('modalMsg').innerText = "Erro ao cadastrar usuário.";
         }
     }
 
