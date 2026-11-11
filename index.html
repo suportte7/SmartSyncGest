@@ -23,7 +23,6 @@
             --header-text: #ffffff;
         }
 
-        /* PALETAS DOS TEMAS */
         body[data-theme="verde"] { --primary: #1b5e20; --primary-hover: #0d3b10; --bg: #f1f8e9; --card-bg: #ffffff; --text-color: #1b2a1c; }
         body[data-theme="laranja"] { --primary: #e65100; --primary-hover: #b23c00; --bg: #fff3e0; --card-bg: #ffffff; --text-color: #2d1600; }
         body[data-theme="dark"] { --primary: #3700b3; --primary-hover: #220074; --bg: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --border-color: #333333; --subtext: #aaaaaa; }
@@ -41,24 +40,21 @@
         .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; margin-left: 15px; }
         .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; cursor: pointer; }
         
-        /* BOTÃO DISCRETO DE TEMA NO CANTO SUPERIOR DIREITO */
+        /* BOTÃO SUPER DISCRETO DE ALTERNAR TEMA */
         .theme-toggle-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.35);
             color: var(--header-text);
-            font-size: 16px;
-            padding: 5px 9px;
-            border-radius: 50%;
+            font-size: 12px;
+            padding: 3px 7px;
+            border-radius: 4px;
             cursor: pointer;
             width: auto;
             margin-top: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s, transform 0.1s;
+            opacity: 0.75;
+            transition: opacity 0.2s;
         }
-        .theme-toggle-btn:hover { background: rgba(255, 255, 255, 0.35); }
-        .theme-toggle-btn:active { transform: scale(0.9); }
+        .theme-toggle-btn:hover { opacity: 1; background: rgba(255, 255, 255, 0.15); }
 
         /* MENU LATERAL EXPANSÍVEL (DRAWER) */
         .sidebar { position: fixed; top: 0; left: -290px; width: 280px; height: 100%; background: var(--card-bg); box-shadow: 2px 0 12px rgba(0,0,0,0.3); transition: left 0.3s ease; z-index: 2500; display: flex; flex-direction: column; }
@@ -86,7 +82,6 @@
         .btn-primary { background: var(--primary); } .btn-primary:hover { background: var(--primary-hover); }
         .btn-success { background: #28a745; } .btn-info { background: #17a2b8; } .btn-danger { background: #dc3545; } .btn-secondary { background: #6c757d; }
 
-        /* PAGINAÇÃO DE FORMULÁRIO */
         .step-progress-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.04); padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; font-weight: bold; color: var(--primary); }
         .pagina-form { display: none; }
         .pagina-form.active { display: block; }
@@ -123,6 +118,8 @@
         <div class="sidebar-item active" onclick="navegarSidebar('login')">👤 Identificação / Perfil</div>
         <div class="sidebar-item" id="side-item-diario" onclick="navegarSidebar('diario')" style="display:none;">📝 Diário de Campo</div>
         <div class="sidebar-item admin-only" onclick="navegarSidebar('builder')" style="display:none;">🎨 Construtor GoogleForms</div>
+        <div class="sidebar-item admin-only" onclick="navegarSidebar('configuracoes')" style="display:none;">⚙️ Configurações Gerais</div>
+        <div class="sidebar-item admin-only" onclick="navegarSidebar('permissoes')" style="display:none;">🔐 Permissões e Perfis</div>
     </div>
 </div>
 
@@ -132,7 +129,7 @@
     <div class="brand-title">SmartSyncGest</div>
     <div style="display:flex; align-items:center; gap:10px;">
         <div id="usuario-logado" class="user-badge" onclick="navegarSidebar('login')">👤 Entrar</div>
-        <button class="theme-toggle-btn" title="Alternar Tema Visual" onclick="ciclarTemaVisual()">🎨</button>
+        <button class="theme-toggle-btn" title="Alternar Tema" onclick="ciclarTemaVisual()">◐</button>
     </div>
 </div>
 
@@ -148,11 +145,11 @@
     </div>
 </div>
 
-<!-- TELA 2: CONSTRUTOR DE FORMULÁRIOS (ADMIN) -->
+<!-- TELA 2: CONSTRUTOR DE FORMULÁRIOS COM EDIÇÃO DE CAMPOS (ADMIN) -->
 <div id="aba-builder" class="tab-content">
     <div class="container">
         <h2>🎨 Construtor de Formulário Personalizável</h2>
-        <p style="font-size:12px; color:var(--subtext);">Configure perguntas, metas e categorias divididas por páginas.</p>
+        <p style="font-size:12px; color:var(--subtext);">Configure o molde de perguntas, altere tipos e edite campos com 1 clique.</p>
         
         <div class="form-group">
             <label>Obra a Ser Configurada</label>
@@ -175,8 +172,9 @@
 
         <hr style="border:0; border-top:1px solid var(--border-color); margin:20px 0;">
 
+        <!-- PAINEL DE ADIÇÃO E EDIÇÃO DE PERGUNTAS -->
         <div style="background:rgba(0,0,0,0.02); padding:15px; border-radius:8px; border:1px dashed var(--primary); margin-bottom:20px;">
-            <h4 style="margin-top:0; color:var(--primary);">+ Adicionar Novo Campo / Pergunta</h4>
+            <h4 id="builder_form_label" style="margin-top:0; color:var(--primary);">+ Adicionar Novo Campo / Pergunta</h4>
             
             <div class="form-group">
                 <label>Seção / Página no Formulário</label>
@@ -185,21 +183,21 @@
 
             <div class="form-group">
                 <label>Título da Pergunta ou Nome da Etapa</label>
-                <input type="text" id="builder_novo_titulo" placeholder="Ex: Clima, Efetivo, 01-Laje Radier, Foto...">
+                <input type="text" id="builder_novo_titulo" placeholder="Ex: Clima, Condição de Trabalho, 01-Laje Radier...">
             </div>
             
             <div class="form-row">
                 <div class="form-group flex-1">
                     <label>Tipo de Pergunta</label>
                     <select id="builder_novo_tipo" onchange="alternarCamposAdicionaisBuilder()">
+                        <option value="radio">🔘 Escolha Única (Radio Buttons / Pontinhos)</option>
+                        <option value="select">🔽 Menu Suspenso (Dropdown)</option>
+                        <option value="checkbox">☑️ Caixas de Seleção (Múltiplas Escolhas)</option>
                         <option value="etapa_producao">🏗️ Etapa de Produção (com Meta Contratual)</option>
                         <option value="texto">📝 Texto Curto (Linha Única)</option>
                         <option value="textarea">📄 Texto Longo (Parágrafo / Relato)</option>
                         <option value="numero">🔢 Número Inteiro (Contagem / Efetivo)</option>
                         <option value="decimal">📐 Medição Decimal (m², m³, horas)</option>
-                        <option value="select">🔽 Menu Suspenso (Dropdown)</option>
-                        <option value="radio">🔘 Escolha Única (Radio Buttons)</option>
-                        <option value="checkbox">☑️ Caixas de Seleção (Múltiplas Escolhas)</option>
                         <option value="data">📅 Seleção de Data</option>
                         <option value="hora">⏰ Horário</option>
                         <option value="escala">⭐️ Escala de Avaliação / Nota (1 a 5)</option>
@@ -208,17 +206,20 @@
                 </div>
             </div>
 
-            <div class="form-group" id="builder_box_meta">
+            <div class="form-group" id="builder_box_meta" style="display:none;">
                 <label>Meta Contratual Total da Etapa (UHs / m² / m³)</label>
                 <input type="number" id="builder_nova_meta" value="500">
             </div>
 
-            <div class="form-group" id="builder_box_opcoes" style="display:none;">
+            <div class="form-group" id="builder_box_opcoes">
                 <label>Opções de Escolha (separadas por vírgula)</label>
-                <input type="text" id="builder_novas_opcoes" placeholder="Ex: Sol / Sol, Nublado / Nublado, Chuva Forte">
+                <input type="text" id="builder_novas_opcoes" placeholder="Ex: Trabalhos Normais, Parcialmente Paralisado, Paralisado por Chuva">
             </div>
 
-            <button class="btn-primary" onclick="adicionarCampoAoBuilder()">Adicionar Pergunta ao Formulário</button>
+            <div class="form-row">
+                <button class="btn-primary flex-1" id="btn_salvar_campo_builder" onclick="adicionarOuAtualizarCampoBuilder()">+ Adicionar Pergunta ao Formulário</button>
+                <button class="btn-secondary" id="btn_cancelar_edicao_builder" style="display:none; width:auto;" onclick="cancelarEdicaoBuilder()">Cancelar</button>
+            </div>
         </div>
 
         <h3 style="font-size:15px; color:var(--primary);">Perguntas do Formulário Desta Obra:</h3>
@@ -242,22 +243,41 @@
                 <input type="date" id="diario_data" required>
             </div>
 
-            <!-- BARRA DE PROGRESSO DE PÁGINAS -->
             <div class="step-progress-bar" id="stepProgressBar">
                 <span id="stepTitle">Página 1 de 1</span>
                 <span id="stepPercent">100%</span>
             </div>
 
-            <!-- CONTAINER DINÂMICO PAGINADO -->
             <div id="container_formulario_dinamico"></div>
 
-            <!-- CONTROLES DE NAVEGAÇÃO ENTRE PÁGINAS -->
             <div class="nav-paginacao">
                 <button type="button" id="btnPagAnterior" class="btn-secondary flex-1" onclick="mudarPaginaForm(-1)" style="display:none;">⬅️ Anterior</button>
                 <button type="button" id="btnPagProxima" class="btn-primary flex-1" onclick="mudarPaginaForm(1)">Próxima ➡️</button>
                 <button type="submit" id="btnPagSubmit" class="btn-success flex-1" style="display:none;">🚀 Publicar e Gerar PDF</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- TELA 4: CONFIGURAÇÕES GERAIS (ESTRUTURAL PARA EXPANSÃO) -->
+<div id="aba-configuracoes" class="tab-content">
+    <div class="container">
+        <h2>⚙️ Configurações do Sistema</h2>
+        <p style="font-size:13px; color:var(--subtext);">Painel administrativo para parâmetros globais da plataforma SmartSyncGest.</p>
+        <div style="padding: 15px; background: rgba(0,0,0,0.03); border-radius: 8px; font-size: 13px;">
+            <p><strong>Configurações ativas:</strong> Parâmetros de armazenamento PDF no Google Drive e retenção de diários.</p>
+        </div>
+    </div>
+</div>
+
+<!-- TELA 5: PERMISSÕES E PERFIS (ESTRUTURAL PARA EXPANSÃO) -->
+<div id="aba-permissoes" class="tab-content">
+    <div class="container">
+        <h2>🔐 Permissões e Perfis de Acesso</h2>
+        <p style="font-size:13px; color:var(--subtext);">Gerenciamento de funções (Administrador, Engenheiro, Fiscal e Coordenador).</p>
+        <div style="padding: 15px; background: rgba(0,0,0,0.03); border-radius: 8px; font-size: 13px;">
+            <p><strong>Status de Acesso:</strong> Níveis configurados com restrição aos construtores dinâmicos para contas operacionais.</p>
+        </div>
     </div>
 </div>
 
@@ -280,16 +300,15 @@
     let usuarioAtivo = null;
     let schemaFormularioAtual = [];
     let fotosAnexadasModulos = {};
+    let itemEditandoIndex = null;
     
     let paginaAtualIndex = 0;
     let totalPaginasForm = 1;
 
     window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('diario_data').valueAsDate = new Date();
-        
         const temaSalvo = localStorage.getItem('smartsync_tema') || 'azul';
         aplicarTemaVisual(temaSalvo);
-
         carregarDadosSistema();
     });
 
@@ -346,11 +365,11 @@
             baseGlobal = {
                 obras: [
                     { nome: "Obra Modelo Genérica", empresa: "Construtora Padrão", totalUHs: 500, schemaFormulario: [
-                        { id: "c1", secao: "1. Condições de Campo", tipo: "select", titulo: "Clima Manhã", opcoes: ["Sol", "Nublado", "Chuva Leve", "Chuva Forte"] },
-                        { id: "c2", secao: "1. Condições de Campo", tipo: "select", titulo: "Clima Tarde", opcoes: ["Sol", "Nublado", "Chuva Leve", "Chuva Forte"] },
-                        { id: "c3", secao: "2. Efetivo de Campo", tipo: "numero", titulo: "Efetivo Próprio - Produção" },
-                        { id: "c4", secao: "3. Matriz Habitação", tipo: "etapa_producao", titulo: "01-Laje Radier", meta: 500, ac: 0, sd: 500 },
-                        { id: "c5", secao: "3. Matriz Habitação", tipo: "etapa_producao", titulo: "02-Armação e Fixação de Tela Parede Inf", meta: 500, ac: 0, sd: 500 },
+                        { id: "c1", secao: "1. Condições de Campo", tipo: "radio", titulo: "Clima Manhã", opcoes: ["Sol", "Nublado", "Chuva Leve", "Chuva Forte"] },
+                        { id: "c2", secao: "1. Condições de Campo", tipo: "radio", titulo: "Clima Tarde", opcoes: ["Sol", "Nublado", "Chuva Leve", "Chuva Forte"] },
+                        { id: "c3", secao: "1. Condições de Campo", tipo: "radio", titulo: "Condição de Trabalho", opcoes: ["Trabalhos Normais", "Parcialmente Paralisado", "Paralisado por Chuva"] },
+                        { id: "c4", secao: "2. Efetivo de Campo", tipo: "numero", titulo: "Efetivo Próprio - Produção" },
+                        { id: "c5", secao: "3. Matriz Habitação", tipo: "etapa_producao", titulo: "01-Laje Radier", meta: 500, ac: 0, sd: 500 },
                         { id: "c6", secao: "4. Qualidade e Ocorrências", tipo: "textarea", titulo: "Relato Diário do Empreendimento" }
                     ]}
                 ],
@@ -413,6 +432,7 @@
         } else {
             schemaFormularioAtual = [];
         }
+        cancelarEdicaoBuilder();
         renderizarCardsBuilder();
     }
 
@@ -428,26 +448,63 @@
         carregarFormularioParaEdicao();
     }
 
-    function adicionarCampoAoBuilder() {
+    // =========================================================================
+    // EDIÇÃO DE PERGUNTAS / CAMPOS NO CONSTRUTOR GOOGLEFORMS
+    // =========================================================================
+    function editarCampoBuilder(index) {
+        itemEditandoIndex = index;
+        const campo = schemaFormularioAtual[index];
+
+        document.getElementById('builder_nova_secao').value = campo.secao || '';
+        document.getElementById('builder_novo_titulo').value = campo.titulo || '';
+        document.getElementById('builder_novo_tipo').value = campo.tipo || 'texto';
+        
+        alternarCamposAdicionaisBuilder();
+
+        if (campo.meta) document.getElementById('builder_nova_meta').value = campo.meta;
+        if (campo.opcoes) document.getElementById('builder_novas_opcoes').value = campo.opcoes.join(', ');
+
+        document.getElementById('builder_form_label').innerText = "✏️ Editando Pergunta do Formulário";
+        document.getElementById('btn_salvar_campo_builder').innerText = "🔄 Atualizar Pergunta";
+        document.getElementById('btn_cancelar_edicao_builder').style.display = "block";
+        
+        window.scrollTo({ top: document.getElementById('aba-builder').offsetTop, behavior: 'smooth' });
+    }
+
+    function cancelarEdicaoBuilder() {
+        itemEditandoIndex = null;
+        document.getElementById('builder_novo_titulo').value = '';
+        document.getElementById('builder_form_label').innerText = "+ Adicionar Novo Campo / Pergunta";
+        document.getElementById('btn_salvar_campo_builder').innerText = "+ Adicionar Pergunta ao Formulário";
+        document.getElementById('btn_cancelar_edicao_builder').style.display = "none";
+    }
+
+    function adicionarOuAtualizarCampoBuilder() {
         const titulo = document.getElementById('builder_novo_titulo').value;
         const tipo = document.getElementById('builder_novo_tipo').value;
         const secao = document.getElementById('builder_nova_secao').value || "1. Informações Gerais";
         if (!titulo) return alert("Digite o título da pergunta.");
 
-        let novoCampo = { id: "c_" + Date.now(), secao: secao, tipo: tipo, titulo: titulo };
-        if (tipo === 'etapa_producao') novoCampo.meta = Number(document.getElementById('builder_nova_meta').value || 500);
+        let campoDado = { id: itemEditandoIndex !== null ? schemaFormularioAtual[itemEditandoIndex].id : "c_" + Date.now(), secao: secao, tipo: tipo, titulo: titulo };
+        if (tipo === 'etapa_producao') campoDado.meta = Number(document.getElementById('builder_nova_meta').value || 500);
         if (['select', 'radio', 'checkbox'].includes(tipo)) {
             const ops = document.getElementById('builder_novas_opcoes').value;
-            novoCampo.opcoes = ops ? ops.split(',').map(s => s.trim()) : ["Opção 1", "Opção 2"];
+            campoDado.opcoes = ops ? ops.split(',').map(s => s.trim()) : ["Opção 1", "Opção 2"];
         }
 
-        schemaFormularioAtual.push(novoCampo);
+        if (itemEditandoIndex !== null) {
+            schemaFormularioAtual[itemEditandoIndex] = campoDado;
+        } else {
+            schemaFormularioAtual.push(campoDado);
+        }
+
+        cancelarEdicaoBuilder();
         renderizarCardsBuilder();
-        document.getElementById('builder_novo_titulo').value = '';
     }
 
     function removerCampoBuilder(index) {
         schemaFormularioAtual.splice(index, 1);
+        cancelarEdicaoBuilder();
         renderizarCardsBuilder();
     }
 
@@ -468,7 +525,7 @@
         const nomesTipos = {
             etapa_producao: "🏗️ Produção", texto: "📝 Texto Curto", textarea: "📄 Parágrafo",
             numero: "🔢 Inteiro", decimal: "📐 Decimal", select: "🔽 Dropdown",
-            radio: "🔘 Radio", checkbox: "☑️ Checkbox", data: "📅 Data",
+            radio: "🔘 Escolha Única (Radio)", checkbox: "☑️ Checkbox", data: "📅 Data",
             hora: "⏰ Hora", escala: "⭐️ Escala (1-5)", foto: "📸 Foto"
         };
 
@@ -478,6 +535,7 @@
             html += `
                 <div class="card-pergunta-builder">
                     <div class="card-actions">
+                        <button class="btn-card-action" title="Editar Pergunta" onclick="editarCampoBuilder(${idx})">✏️</button>
                         <button class="btn-card-action" onclick="moverCampoBuilder(${idx}, -1)">⬆️</button>
                         <button class="btn-card-action" onclick="moverCampoBuilder(${idx}, 1)">⬇️</button>
                         <button class="btn-card-action" style="color:var(--danger);" onclick="removerCampoBuilder(${idx})">🗑️</button>
