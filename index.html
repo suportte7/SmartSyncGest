@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Construtor de Diários de Engenharia</title>
+    <title>SmartSyncGest - Gestão & Construtor de Obras</title>
     
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" href="./icons/icon-192.png" type="image/png">
@@ -11,60 +11,108 @@
     <script src="./config.js"></script>
 
     <style>
-        :root { --primary: #0056b3; --success: #28a745; --warning: #ffc107; --danger: #dc3545; --info: #17a2b8; --bg: #f4f7f6; --text: #333; --border: #e0e0e0; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 30px; }
+        /* MOTOR DE TEMAS GLOBAIS (10 TEMAS) */
+        :root {
+            --primary: #0056b3;
+            --primary-hover: #004085;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+            --subtext: #666666;
+            --header-text: #ffffff;
+        }
+
+        /* PALETAS DOS TEMAS */
+        body[data-theme="verde"] { --primary: #1b5e20; --primary-hover: #0d3b10; --bg: #f1f8e9; --card-bg: #ffffff; --text-color: #1b2a1c; }
+        body[data-theme="laranja"] { --primary: #e65100; --primary-hover: #b23c00; --bg: #fff3e0; --card-bg: #ffffff; --text-color: #2d1600; }
+        body[data-theme="dark"] { --primary: #3700b3; --primary-hover: #220074; --bg: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --border-color: #333333; --subtext: #aaaaaa; }
+        body[data-theme="amarelo"] { --primary: #f57f17; --primary-hover: #bc6000; --bg: #fffde7; --card-bg: #ffffff; --text-color: #262000; }
+        body[data-theme="roxo"] { --primary: #4a148c; --primary-hover: #2c0057; --bg: #f3e5f5; --card-bg: #ffffff; --text-color: #210038; }
+        body[data-theme="vermelho"] { --primary: #b71c1c; --primary-hover: #7f0000; --bg: #ffebee; --card-bg: #ffffff; --text-color: #3b0000; }
+        body[data-theme="elegante"] { --primary: #37474f; --primary-hover: #102027; --bg: #eceff1; --card-bg: #ffffff; --text-color: #1a237e; }
+        body[data-theme="teal"] { --primary: #004d40; --primary-hover: #00251a; --bg: #e0f2f1; --card-bg: #ffffff; --text-color: #00251a; }
+        body[data-theme="terra"] { --primary: #4e342e; --primary-hover: #260e07; --bg: #efebe9; --card-bg: #ffffff; --text-color: #271c19; }
+
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text-color); margin: 0; padding-bottom: 30px; transition: background 0.3s, color 0.3s; }
         
-        .top-header { background: var(--primary); color: white; display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
-        .brand-title { font-size: 18px; font-weight: bold; }
-        .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+        .top-header { background: var(--primary); color: var(--header-text); display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 1000; }
+        .menu-hamburger { font-size: 22px; cursor: pointer; padding: 5px; }
+        .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; margin-left: 15px; }
+        .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; cursor: pointer; }
         
-        .tab-bar { display: flex; background: white; border-bottom: 1px solid var(--border); overflow-x: auto; }
-        .tab-btn { flex: 1; text-align: center; padding: 12px 10px; cursor: pointer; font-size: 13px; font-weight: bold; color: #666; white-space: nowrap; border-bottom: 3px solid transparent; }
-        .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: #f8f9fa; }
-        
+        /* MENU LATERAL EXPANSÍVEL (DRAWER) */
+        .sidebar { position: fixed; top: 0; left: -290px; width: 280px; height: 100%; background: var(--card-bg); box-shadow: 2px 0 12px rgba(0,0,0,0.3); transition: left 0.3s ease; z-index: 2500; display: flex; flex-direction: column; }
+        .sidebar.open { left: 0; }
+        .sidebar-header { background: var(--primary); color: var(--header-text); padding: 20px 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-close { cursor: pointer; font-size: 20px; }
+        .sidebar-menu { display: flex; flex-direction: column; padding: 15px 0; overflow-y: auto; }
+        .sidebar-item { padding: 14px 20px; font-weight: 600; font-size: 14px; cursor: pointer; border-left: 4px solid transparent; color: var(--text-color); display: flex; align-items: center; gap: 10px; }
+        .sidebar-item:hover, .sidebar-item.active { background: rgba(0,0,0,0.05); border-left: 4px solid var(--primary); color: var(--primary); }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2400; }
+        .sidebar-overlay.open { display: block; }
+
         .tab-content { display: none; padding: 20px 15px; max-width: 680px; margin: 0 auto; box-sizing: border-box; }
         .tab-content.active { display: block; }
-        .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .container { background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border-color); }
         
-        h2 { margin-top: 0; font-size: 19px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px; }
-        .secao-header { font-size: 15px; font-weight: bold; color: var(--primary); background: #e9ecef; padding: 8px 12px; border-radius: 6px; margin-top: 25px; margin-bottom: 15px; border-left: 4px solid var(--primary); }
+        h2 { margin-top: 0; font-size: 19px; color: var(--primary); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; }
+        .secao-header { font-size: 15px; font-weight: bold; color: var(--primary); background: rgba(0,0,0,0.04); padding: 10px 14px; border-radius: 6px; margin-top: 15px; margin-bottom: 15px; border-left: 4px solid var(--primary); }
         
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-row { display: flex; gap: 10px; } .flex-1 { flex: 1; }
         label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; box-sizing: border-box; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; box-sizing: border-box; background: var(--card-bg); color: var(--text-color); }
         button { padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; color: white; width: 100%; margin-top: 10px; transition: 0.2s; }
-        .btn-primary { background: var(--primary); } .btn-success { background: var(--success); } .btn-info { background: var(--info); } .btn-danger { background: var(--danger); }
-        
-        .card-pergunta-builder { background: #ffffff; border: 1px solid var(--border); border-left: 5px solid var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); position: relative; }
+        .btn-primary { background: var(--primary); } .btn-primary:hover { background: var(--primary-hover); }
+        .btn-success { background: #28a745; } .btn-info { background: #17a2b8; } .btn-danger { background: #dc3545; } .btn-secondary { background: #6c757d; }
+
+        /* PAGINAÇÃO DE FORMULÁRIO */
+        .step-progress-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.04); padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; font-weight: bold; color: var(--primary); }
+        .pagina-form { display: none; }
+        .pagina-form.active { display: block; }
+        .nav-paginacao { display: flex; gap: 10px; margin-top: 25px; }
+
+        .card-pergunta-builder { background: var(--card-bg); border: 1px solid var(--border-color); border-left: 5px solid var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); position: relative; }
         .card-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; }
-        .btn-card-action { background: none; border: none; font-size: 16px; cursor: pointer; padding: 2px 5px; color: #555; }
-        .badge-tipo { font-size: 11px; background: #e2e8f0; color: #4a5568; padding: 3px 8px; border-radius: 4px; font-weight: bold; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
+        .btn-card-action { background: none; border: none; font-size: 16px; cursor: pointer; padding: 2px 5px; color: var(--subtext); }
+        .badge-tipo { font-size: 11px; background: rgba(0,0,0,0.08); color: var(--text-color); padding: 3px 8px; border-radius: 4px; font-weight: bold; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
 
         .checkbox-group, .radio-group { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
         .checkbox-item, .radio-item { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
         .checkbox-item input, .radio-item input { width: auto; margin: 0; }
 
         .preview-foto-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-        .preview-foto { width: 75px; height: 75px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
+        .preview-foto { width: 75px; height: 75px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-color); }
 
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-box { background: white; padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 380px; }
-        .spinner { width: 36px; height: 36px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
+        .modal-box { background: var(--card-bg); padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 380px; border: 1px solid var(--border-color); }
+        .spinner { width: 36px; height: 36px; border: 4px solid rgba(0,0,0,0.1); border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body>
+<body data-theme="azul">
 
-<div class="top-header">
-    <div class="brand-title">SmartSyncGest</div>
-    <div id="usuario-logado" class="user-badge" onclick="trocarAba('login', null)">👤 Entrar</div>
+<!-- MASCARA E MENU LATERAL -->
+<div id="sidebarOverlay" class="sidebar-overlay" onclick="fecharSidebar()"></div>
+<div id="sidebarMenu" class="sidebar">
+    <div class="sidebar-header">
+        <span>SmartSyncGest</span>
+        <span class="sidebar-close" onclick="fecharSidebar()">✕</span>
+    </div>
+    <div class="sidebar-menu">
+        <div class="sidebar-item active" onclick="navegarSidebar('login')">👤 Identificação / Perfil</div>
+        <div class="sidebar-item" id="side-item-diario" onclick="navegarSidebar('diario')" style="display:none;">📝 Diário de Campo</div>
+        <div class="sidebar-item admin-only" onclick="navegarSidebar('builder')" style="display:none;">🎨 Construtor GoogleForms</div>
+        <div class="sidebar-item admin-only" onclick="navegarSidebar('temas')" style="display:none;">🎨 Alterar Tema Visual</div>
+    </div>
 </div>
 
-<div class="tab-bar">
-    <div class="tab-btn active" onclick="trocarAba('login', this)">👤 Login</div>
-    <div class="tab-btn admin-only" onclick="trocarAba('builder', this)" style="display:none;">🎨 Construtor GoogleForms</div>
-    <div class="tab-btn" id="tab-diario" onclick="trocarAba('diario', this)" style="display:none;">📝 Diário de Campo</div>
+<!-- TOP HEADER -->
+<div class="top-header">
+    <div class="menu-hamburger" onclick="abrirSidebar()">☰</div>
+    <div class="brand-title">SmartSyncGest</div>
+    <div id="usuario-logado" class="user-badge" onclick="navegarSidebar('login')">👤 Entrar</div>
 </div>
 
 <!-- TELA 1: LOGIN -->
@@ -79,11 +127,11 @@
     </div>
 </div>
 
-<!-- TELA 2: CONSTRUTOR DE FORMULÁRIOS DINÂMICO (PAINEL DO GESTOR / ADMIN) -->
+<!-- TELA 2: CONSTRUTOR DE FORMULÁRIOS (ADMIN) -->
 <div id="aba-builder" class="tab-content">
     <div class="container">
         <h2>🎨 Construtor de Formulário Personalizável</h2>
-        <p style="font-size:12px; color:#666;">Configure o molde de perguntas, etapas e categorias sem nomes engessados.</p>
+        <p style="font-size:12px; color:var(--subtext);">Configure perguntas, metas e categorias divididas por páginas.</p>
         
         <div class="form-group">
             <label>Obra a Ser Configurada</label>
@@ -104,14 +152,14 @@
             </div>
         </div>
 
-        <hr style="border:0; border-top:1px solid var(--border); margin:20px 0;">
+        <hr style="border:0; border-top:1px solid var(--border-color); margin:20px 0;">
 
-        <div style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px dashed var(--primary); margin-bottom:20px;">
+        <div style="background:rgba(0,0,0,0.02); padding:15px; border-radius:8px; border:1px dashed var(--primary); margin-bottom:20px;">
             <h4 style="margin-top:0; color:var(--primary);">+ Adicionar Novo Campo / Pergunta</h4>
             
             <div class="form-group">
-                <label>Seção / Categoria no Formulário</label>
-                <input type="text" id="builder_nova_secao" placeholder="Ex: 1. Condições Gerais, 2. Matriz Habitação...">
+                <label>Seção / Página no Formulário</label>
+                <input type="text" id="builder_nova_secao" placeholder="Ex: 1. Condições de Campo, 2. Matriz Habitação...">
             </div>
 
             <div class="form-group">
@@ -159,7 +207,7 @@
     </div>
 </div>
 
-<!-- TELA 3: DIÁRIO DE CAMPO (PAINEL DO ENGENHEIRO - AUTO-RENDERIZADO) -->
+<!-- TELA 3: DIÁRIO DE CAMPO PAGINADO (ENGENHEIRO) -->
 <div id="aba-diario" class="tab-content">
     <div class="container">
         <h2>Diário de Engenharia de Campo</h2>
@@ -173,10 +221,43 @@
                 <input type="date" id="diario_data" required>
             </div>
 
+            <!-- BARRA DE PROGRESSO DE PÁGINAS -->
+            <div class="step-progress-bar" id="stepProgressBar">
+                <span id="stepTitle">Página 1 de 1</span>
+                <span id="stepPercent">100%</span>
+            </div>
+
+            <!-- CONTAINER DINÂMICO PAGINADO -->
             <div id="container_formulario_dinamico"></div>
 
-            <button type="submit" class="btn-success" style="margin-top:20px; font-size:16px; padding:15px;">🚀 Publicar e Gerar Prancha PDF</button>
+            <!-- CONTROLES DE NAVEGAÇÃO ENTRE PÁGINAS -->
+            <div class="nav-paginacao">
+                <button type="button" id="btnPagAnterior" class="btn-secondary flex-1" onclick="mudarPaginaForm(-1)" style="display:none;">⬅️ Anterior</button>
+                <button type="button" id="btnPagProxima" class="btn-primary flex-1" onclick="mudarPaginaForm(1)">Próxima ➡️</button>
+                <button type="submit" id="btnPagSubmit" class="btn-success flex-1" style="display:none;">🚀 Publicar e Gerar PDF</button>
+            </div>
         </form>
+    </div>
+</div>
+
+<!-- TELA 4: SELETOR DE TEMAS VISUAIS (10 TEMAS) -->
+<div id="aba-temas" class="tab-content">
+    <div class="container">
+        <h2>🎨 Personalização Visual (10 Temas)</h2>
+        <p style="font-size:13px; color:var(--subtext);">Clique nos botões abaixo para alternar o tema do sistema instantaneamente:</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+            <button class="btn-primary" style="background:#0056b3;" onclick="aplicarTemaVisual('azul')">🔵 Azul Corporativo</button>
+            <button class="btn-primary" style="background:#1b5e20;" onclick="aplicarTemaVisual('verde')">🟢 Verde Engenharia</button>
+            <button class="btn-primary" style="background:#e65100;" onclick="aplicarTemaVisual('laranja')">🟠 Laranja Construtora</button>
+            <button class="btn-primary" style="background:#3700b3;" onclick="aplicarTemaVisual('dark')">🌙 Modo Escuro / Dark</button>
+            <button class="btn-primary" style="background:#f57f17; color:#000;" onclick="aplicarTemaVisual('amarelo')">🟡 Amarelo Visibilidade</button>
+            <button class="btn-primary" style="background:#4a148c;" onclick="aplicarTemaVisual('roxo')">🟣 Roxo Moderno</button>
+            <button class="btn-primary" style="background:#b71c1c;" onclick="aplicarTemaVisual('vermelho')">🔴 Vermelho Alerta</button>
+            <button class="btn-primary" style="background:#37474f;" onclick="aplicarTemaVisual('elegante')">⚙️ Cinza Elegante</button>
+            <button class="btn-primary" style="background:#004d40;" onclick="aplicarTemaVisual('teal')">🔷 Turquesa Teal</button>
+            <button class="btn-primary" style="background:#4e342e;" onclick="aplicarTemaVisual('terra')">🟤 Terra Café</button>
+        </div>
     </div>
 </div>
 
@@ -185,7 +266,7 @@
     <div class="modal-box">
         <div id="modalSpinner" class="spinner"></div>
         <h3 id="modalTitle" style="color:var(--primary); margin-top:0;">Processando...</h3>
-        <p id="modalMsg" style="font-size:14px; color:#666;">Comunicando com a API do Google.</p>
+        <p id="modalMsg" style="font-size:14px; color:var(--subtext);">Comunicando com a API do Google.</p>
         <div id="modalLink" style="margin-top: 15px;"></div>
         <button id="modalBtn" class="btn-primary" style="display:none;" onclick="fecharModal()">OK</button>
     </div>
@@ -197,17 +278,44 @@
     let usuarioAtivo = null;
     let schemaFormularioAtual = [];
     let fotosAnexadasModulos = {};
+    
+    // VARIÁVEIS DE PAGINAÇÃO DO FORMULÁRIO
+    let paginaAtualIndex = 0;
+    let totalPaginasForm = 1;
 
     window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('diario_data').valueAsDate = new Date();
+        
+        // Restaura Tema Salvo
+        const temaSalvo = localStorage.getItem('smartsync_tema') || 'azul';
+        aplicarTemaVisual(temaSalvo);
+
         carregarDadosSistema();
     });
 
+    // CONTROLE DE SIDEBAR NAVEGAÇÃO
+    function abrirSidebar() {
+        document.getElementById('sidebarMenu').classList.add('open');
+        document.getElementById('sidebarOverlay').classList.add('open');
+    }
+    function fecharSidebar() {
+        document.getElementById('sidebarMenu').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('open');
+    }
+    function navegarSidebar(abaId) {
+        trocarAba(abaId, null);
+        fecharSidebar();
+    }
+
+    function aplicarTemaVisual(nomeTema) {
+        document.body.setAttribute('data-theme', nomeTema);
+        localStorage.setItem('smartsync_tema', nomeTema);
+    }
+
     function trocarAba(abaId, el) {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.sidebar-item').forEach(c => c.classList.remove('active'));
         document.getElementById('aba-' + abaId).classList.add('active');
-        if(el) el.classList.add('active');
     }
 
     async function apiRequest(acao, metodo = "GET", payload = null) {
@@ -270,16 +378,16 @@
         localStorage.setItem('smartsync_user_email', usuarioAtivo.email);
 
         document.getElementById('usuario-logado').innerText = `${usuarioAtivo.nome} [${usuarioAtivo.perfil}]`;
-        document.getElementById('tab-diario').style.display = 'block';
+        document.getElementById('side-item-diario').style.display = 'block';
 
         if(usuarioAtivo.perfil === 'Administrador') {
-            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
         } else {
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
         }
 
         renderizarFormularioEngenheiro();
-        trocarAba('diario', document.getElementById('tab-diario'));
+        trocarAba('diario', null);
     }
 
     function alternarCamposAdicionaisBuilder() {
@@ -316,7 +424,7 @@
     function adicionarCampoAoBuilder() {
         const titulo = document.getElementById('builder_novo_titulo').value;
         const tipo = document.getElementById('builder_novo_tipo').value;
-        const secao = document.getElementById('builder_nova_secao').value || "Geral";
+        const secao = document.getElementById('builder_nova_secao').value || "1. Informações Gerais";
         if (!titulo) return alert("Digite o título da pergunta.");
 
         let novoCampo = { id: "c_" + Date.now(), secao: secao, tipo: tipo, titulo: titulo };
@@ -346,7 +454,7 @@
     function renderizarCardsBuilder() {
         const container = document.getElementById('container_builder_cards');
         if (schemaFormularioAtual.length === 0) {
-            container.innerHTML = "<p style='color:#888; text-align:center;'>Nenhum campo configurado. Adicione perguntas acima!</p>";
+            container.innerHTML = "<p style='color:var(--subtext); text-align:center;'>Nenhum campo configurado. Adicione perguntas acima!</p>";
             return;
         }
 
@@ -367,8 +475,8 @@
                         <button class="btn-card-action" onclick="moverCampoBuilder(${idx}, 1)">⬇️</button>
                         <button class="btn-card-action" style="color:var(--danger);" onclick="removerCampoBuilder(${idx})">🗑️</button>
                     </div>
-                    <span class="badge-tipo">${c.secao || 'Geral'}</span> | <span class="badge-tipo" style="background:#dbeafe; color:#1e40af;">${nomesTipos[c.tipo] || c.tipo}</span>
-                    <div style="font-weight:bold; font-size:14px; color:#333; margin-top:5px;">${idx + 1}. ${c.titulo}${labelExtra}</div>
+                    <span class="badge-tipo">${c.secao || '1. Gerais'}</span> | <span class="badge-tipo" style="background:var(--primary); color:#fff;">${nomesTipos[c.tipo] || c.tipo}</span>
+                    <div style="font-weight:bold; font-size:14px; margin-top:5px;">${idx + 1}. ${c.titulo}${labelExtra}</div>
                 </div>
             `;
         });
@@ -399,127 +507,177 @@
         fecharModal(titulo, mensagem, true);
     }
 
+    // =========================================================================
+    // RENDERIZAÇÃO DO FORMULÁRIO DIVIDIDO EM PÁGINAS (PAGINAÇÃO AUTOMÁTICA)
+    // =========================================================================
     function renderizarFormularioEngenheiro() {
         const nomeObra = document.getElementById('diario_select_obra').value;
         const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
         const container = document.getElementById('container_formulario_dinamico');
         fotosAnexadasModulos = {};
+        paginaAtualIndex = 0;
 
         if (!obraObj || !obraObj.schemaFormulario || obraObj.schemaFormulario.length === 0) {
             container.innerHTML = "<p>O gestor ainda não configurou perguntas para esta obra.</p>";
+            document.getElementById('stepProgressBar').style.display = 'none';
             return;
         }
 
+        // Agrupa os campos por Seções (Cada Seção vira uma Página)
+        let secoesMap = {};
+        obraObj.schemaFormulario.forEach((c) => {
+            let secNome = c.secao || "1. Informações Gerais";
+            if (!secoesMap[secNome]) secoesMap[secNome] = [];
+            secoesMap[secNome].push(c);
+        });
+
+        const secoesLista = Object.keys(secoesMap);
+        totalPaginasForm = secoesLista.length;
+
         let html = '';
-        let ultimaSecao = '';
+        
+        secoesLista.forEach((secNome, pageIdx) => {
+            const activeClass = pageIdx === 0 ? 'active' : '';
+            html += `<div class="pagina-form ${activeClass}" id="pagina_form_${pageIdx}" data-secao-nome="${secNome}">`;
+            html += `<div class="secao-header">${secNome}</div>`;
 
-        obraObj.schemaFormulario.forEach((c, idx) => {
-            const fieldId = "campo_din_" + idx;
-            
-            if (c.secao && c.secao !== ultimaSecao) {
-                html += `<div class="secao-header">${c.secao}</div>`;
-                ultimaSecao = c.secao;
-            }
+            secoesMap[secNome].forEach((c, idx) => {
+                const fieldId = "campo_din_" + pageIdx + "_" + idx;
+                
+                if (c.tipo === 'etapa_producao') {
+                    html += `
+                        <div class="form-group" style="background:rgba(0,0,0,0.02); padding:12px; border-radius:8px; border:1px solid var(--border-color);">
+                            <label>🏗️ ${c.titulo} <span style="font-size:11px; background:rgba(0,0,0,0.08); padding:2px 6px; border-radius:4px;">Meta: ${c.meta} | Saldo: ${c.sd !== undefined ? c.sd : c.meta}</span></label>
+                            <input type="number" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="etapa_producao" data-meta="${c.meta}" value="0" placeholder="Produção do Dia (PD)">
+                        </div>
+                    `;
+                } else if (c.tipo === 'select') {
+                    let options = c.opcoes.map(op => `<option value="${op}">${op}</option>`).join('');
+                    html += `
+                        <div class="form-group">
+                            <label>🔽 ${c.titulo}</label>
+                            <select class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="select">${options}</select>
+                        </div>
+                    `;
+                } else if (c.tipo === 'radio') {
+                    let radios = c.opcoes.map((op, i) => `
+                        <label class="radio-item">
+                            <input type="radio" name="${fieldId}" value="${op}" ${i===0?'checked':''}> ${op}
+                        </label>
+                    `).join('');
+                    html += `
+                        <div class="form-group">
+                            <label>🔘 ${c.titulo}</label>
+                            <div class="radio-group" data-titulo="${c.titulo}" data-tipo="radio" data-radio-group="${fieldId}">${radios}</div>
+                        </div>
+                    `;
+                } else if (c.tipo === 'checkbox') {
+                    let chks = c.opcoes.map(op => `
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="chk_${fieldId}" value="${op}"> ${op}
+                        </label>
+                    `).join('');
+                    html += `
+                        <div class="form-group">
+                            <label>☑️ ${c.titulo}</label>
+                            <div class="checkbox-group" data-titulo="${c.titulo}" data-tipo="checkbox" data-chk-group="${fieldId}">${chks}</div>
+                        </div>
+                    `;
+                } else if (c.tipo === 'escala') {
+                    html += `
+                        <div class="form-group">
+                            <label>⭐️ ${c.titulo}</label>
+                            <select class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="escala">
+                                <option value="5">⭐️⭐️⭐️⭐️⭐️ (5 - Bom / Pleno)</option>
+                                <option value="4">⭐️⭐️⭐️⭐️ (4 - Satisfatório)</option>
+                                <option value="3">⭐️⭐️⭐️ (3 - Regular)</option>
+                                <option value="2">⭐️⭐️ (2 - Ruim)</option>
+                                <option value="1">⭐️ (1 - Crítico / Inexistente)</option>
+                            </select>
+                        </div>
+                    `;
+                } else if (c.tipo === 'textarea') {
+                    html += `
+                        <div class="form-group">
+                            <label>📄 ${c.titulo}</label>
+                            <textarea class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="textarea" rows="3" placeholder="Digite seu relato detalhado..."></textarea>
+                        </div>
+                    `;
+                } else if (c.tipo === 'decimal') {
+                    html += `
+                        <div class="form-group">
+                            <label>📐 ${c.titulo}</label>
+                            <input type="number" step="0.01" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="decimal" placeholder="0.00">
+                        </div>
+                    `;
+                } else if (c.tipo === 'data') {
+                    html += `
+                        <div class="form-group">
+                            <label>📅 ${c.titulo}</label>
+                            <input type="date" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="data">
+                        </div>
+                    `;
+                } else if (c.tipo === 'hora') {
+                    html += `
+                        <div class="form-group">
+                            <label>⏰ ${c.titulo}</label>
+                            <input type="time" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="hora">
+                        </div>
+                    `;
+                } else if (c.tipo === 'foto') {
+                    html += `
+                        <div class="form-group">
+                            <label>📸 ${c.titulo}</label>
+                            <input type="file" accept="image/*" capture="environment" multiple onchange="processarFotoCampo(event, '${c.titulo}')">
+                            <div class="preview-foto-container" id="prev_foto_${c.titulo.replace(/[^a-zA-Z0-9]/g, '')}"></div>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="form-group">
+                            <label>📝 ${c.titulo}</label>
+                            <input type="text" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="texto" placeholder="Sua resposta...">
+                        </div>
+                    `;
+                }
+            });
 
-            if (c.tipo === 'etapa_producao') {
-                html += `
-                    <div class="form-group" style="background:#f8f9fa; padding:12px; border-radius:8px; border:1px solid #e0e0e0;">
-                        <label>🏗️ ${c.titulo} <span style="font-size:11px; background:#e2e8f0; padding:2px 6px; border-radius:4px;">Meta: ${c.meta} | Saldo: ${c.sd !== undefined ? c.sd : c.meta}</span></label>
-                        <input type="number" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="etapa_producao" data-meta="${c.meta}" value="0" placeholder="Produção do Dia (PD)">
-                    </div>
-                `;
-            } else if (c.tipo === 'select') {
-                let options = c.opcoes.map(op => `<option value="${op}">${op}</option>`).join('');
-                html += `
-                    <div class="form-group">
-                        <label>🔽 ${c.titulo}</label>
-                        <select class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="select">${options}</select>
-                    </div>
-                `;
-            } else if (c.tipo === 'radio') {
-                let radios = c.opcoes.map((op, i) => `
-                    <label class="radio-item">
-                        <input type="radio" name="${fieldId}" value="${op}" ${i===0?'checked':''}> ${op}
-                    </label>
-                `).join('');
-                html += `
-                    <div class="form-group">
-                        <label>🔘 ${c.titulo}</label>
-                        <div class="radio-group" data-titulo="${c.titulo}" data-tipo="radio" data-radio-group="${fieldId}">${radios}</div>
-                    </div>
-                `;
-            } else if (c.tipo === 'checkbox') {
-                let chks = c.opcoes.map(op => `
-                    <label class="checkbox-item">
-                        <input type="checkbox" class="chk_${fieldId}" value="${op}"> ${op}
-                    </label>
-                `).join('');
-                html += `
-                    <div class="form-group">
-                        <label>☑️ ${c.titulo}</label>
-                        <div class="checkbox-group" data-titulo="${c.titulo}" data-tipo="checkbox" data-chk-group="${fieldId}">${chks}</div>
-                    </div>
-                `;
-            } else if (c.tipo === 'escala') {
-                html += `
-                    <div class="form-group">
-                        <label>⭐️ ${c.titulo}</label>
-                        <select class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="escala">
-                            <option value="5">⭐️⭐️⭐️⭐️⭐️ (5 - Bom / Pleno)</option>
-                            <option value="4">⭐️⭐️⭐️⭐️ (4 - Satisfatório)</option>
-                            <option value="3">⭐️⭐️⭐️ (3 - Regular)</option>
-                            <option value="2">⭐️⭐️ (2 - Ruim)</option>
-                            <option value="1">⭐️ (1 - Crítico / Inexistente)</option>
-                        </select>
-                    </div>
-                `;
-            } else if (c.tipo === 'textarea') {
-                html += `
-                    <div class="form-group">
-                        <label>📄 ${c.titulo}</label>
-                        <textarea class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="textarea" rows="3" placeholder="Digite seu relato detalhado..."></textarea>
-                    </div>
-                `;
-            } else if (c.tipo === 'decimal') {
-                html += `
-                    <div class="form-group">
-                        <label>📐 ${c.titulo}</label>
-                        <input type="number" step="0.01" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="decimal" placeholder="0.00">
-                    </div>
-                `;
-            } else if (c.tipo === 'data') {
-                html += `
-                    <div class="form-group">
-                        <label>📅 ${c.titulo}</label>
-                        <input type="date" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="data">
-                    </div>
-                `;
-            } else if (c.tipo === 'hora') {
-                html += `
-                    <div class="form-group">
-                        <label>⏰ ${c.titulo}</label>
-                        <input type="time" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="hora">
-                    </div>
-                `;
-            } else if (c.tipo === 'foto') {
-                html += `
-                    <div class="form-group">
-                        <label>📸 ${c.titulo}</label>
-                        <input type="file" accept="image/*" capture="environment" multiple onchange="processarFotoCampo(event, '${c.titulo}')">
-                        <div class="preview-foto-container" id="prev_foto_${c.titulo.replace(/[^a-zA-Z0-9]/g, '')}"></div>
-                    </div>
-                `;
-            } else {
-                html += `
-                    <div class="form-group">
-                        <label>📝 ${c.titulo}</label>
-                        <input type="text" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="texto" placeholder="Sua resposta...">
-                    </div>
-                `;
-            }
+            html += `</div>`; // Fecha .pagina-form
         });
 
         container.innerHTML = html;
+        atualizarControlesPaginacao();
+    }
+
+    function mudarPaginaForm(direcao) {
+        const novaPag = paginaAtualIndex + direcao;
+        if (novaPag >= 0 && novaPag < totalPaginasForm) {
+            document.getElementById(`pagina_form_${paginaAtualIndex}`).classList.remove('active');
+            paginaAtualIndex = novaPag;
+            document.getElementById(`pagina_form_${paginaAtualIndex}`).classList.add('active');
+            atualizarControlesPaginacao();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    function atualizarControlesPaginacao() {
+        document.getElementById('stepProgressBar').style.display = 'flex';
+        const elActive = document.getElementById(`pagina_form_${paginaAtualIndex}`);
+        const secNome = elActive ? elActive.dataset.secaoNome : "";
+
+        document.getElementById('stepTitle').innerText = `Página ${paginaAtualIndex + 1} de ${totalPaginasForm} (${secNome})`;
+        const pct = Math.round(((paginaAtualIndex + 1) / totalPaginasForm) * 100);
+        document.getElementById('stepPercent').innerText = `${pct}%`;
+
+        document.getElementById('btnPagAnterior').style.display = paginaAtualIndex > 0 ? 'block' : 'none';
+        
+        if (paginaAtualIndex === totalPaginasForm - 1) {
+            document.getElementById('btnPagProxima').style.display = 'none';
+            document.getElementById('btnPagSubmit').style.display = 'block';
+        } else {
+            document.getElementById('btnPagProxima').style.display = 'block';
+            document.getElementById('btnPagSubmit').style.display = 'none';
+        }
     }
 
     function processarFotoCampo(event, tituloCampo) {
