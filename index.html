@@ -106,7 +106,6 @@
 
         <hr style="border:0; border-top:1px solid var(--border); margin:20px 0;">
 
-        <!-- PAINEL ADICIONAR NOVO CAMPO COM SEÇÃO CUSTOMIZÁVEL -->
         <div style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px dashed var(--primary); margin-bottom:20px;">
             <h4 style="margin-top:0; color:var(--primary);">+ Adicionar Novo Campo / Pergunta</h4>
             
@@ -174,7 +173,6 @@
                 <input type="date" id="diario_data" required>
             </div>
 
-            <!-- O FORMULÁRIO COMPLETO É RENDERIZADO DINAMICAMENTE DIVIDIDO POR SEÇÕES -->
             <div id="container_formulario_dinamico"></div>
 
             <button type="submit" class="btn-success" style="margin-top:20px; font-size:16px; padding:15px;">🚀 Publicar e Gerar Prancha PDF</button>
@@ -382,15 +380,25 @@
         const empresa = document.getElementById('builder_empresa').value;
         const totalUHs = document.getElementById('builder_total_uhs').value;
 
-        abrirModal("Salvando Formulário...", "Gravando estrutura completa no banco de dados.");
+        abrirModal("Salvando Formulário...", "Gravando estrutura no banco de dados.");
 
-        const payload = { acao: "salvar_schema_obra", nome: nomeObra, empresa: empresa, totalUHs: totalUHs, schemaFormulario: schemaFormularioAtual };
+        const payload = { 
+            acao: "salvar_schema_obra", 
+            nome: nomeObra, 
+            empresa: empresa, 
+            totalUHs: totalUHs, 
+            schemaFormulario: schemaFormularioAtual 
+        };
+
         const res = await apiRequest("salvar_schema_obra", "POST", payload);
         await carregarDadosSistema();
-        fecharModal(res.sucesso ? "Formulário Salvo!" : "Erro", res.mensagem, true);
+        
+        const titulo = (res && res.sucesso) ? "Formulário Salvo!" : "Aviso do Sistema";
+        const mensagem = res ? (res.mensagem || res.erro || "Estrutura gravada com sucesso.") : "Sem resposta do servidor.";
+        
+        fecharModal(titulo, mensagem, true);
     }
 
-    // FORMULÁRIO DO ENGENHEIRO (DIVIDIDO DINAMICAMENTE POR SEÇÕES)
     function renderizarFormularioEngenheiro() {
         const nomeObra = document.getElementById('diario_select_obra').value;
         const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
@@ -408,7 +416,6 @@
         obraObj.schemaFormulario.forEach((c, idx) => {
             const fieldId = "campo_din_" + idx;
             
-            // Adiciona divisor visual de Seção se a categoria mudar
             if (c.secao && c.secao !== ultimaSecao) {
                 html += `<div class="secao-header">${c.secao}</div>`;
                 ultimaSecao = c.secao;
@@ -551,7 +558,7 @@
 
     async function enviarDiario(event) {
         event.preventDefault();
-        abrirModal("Publicando Diário...", "Processando campos e gerando Prancha PDF no Google Drive.");
+        abrirModal("Publicando Diário...", "Processando campos e gerando PDF no Google Drive.");
 
         let respostas = {};
         let todasFotos = [];
@@ -562,7 +569,7 @@
             if (tipo === 'etapa_producao') {
                 respostas[titulo] = { pd: Number(inp.value || 0), meta: Number(inp.dataset.meta || 500) };
             } else {
-                respostas[titulo] = inp.value;
+                respostas[titulo] = inp.value || "";
             }
         });
 
@@ -588,18 +595,25 @@
         }
 
         const payload = {
-            acao: "salvar_diario", obra: document.getElementById('diario_select_obra').value,
+            acao: "salvar_diario", 
+            obra: document.getElementById('diario_select_obra').value,
             data_diario: document.getElementById('diario_data').value,
             responsavel: usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável",
-            respostas: respostas, fotos: todasFotos
+            respostas: respostas, 
+            fotos: todasFotos
         };
 
         const res = await apiRequest("salvar_diario", "POST", payload);
-        if(res.sucesso) {
+        
+        if (res && res.sucesso) {
             document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold;">📄 Visualizar Prancha PDF Oficial no Drive</a>`;
             await carregarDadosSistema();
         }
-        fecharModal(res.sucesso ? "Diário Publicado!" : "Erro", res.mensagem, true);
+        
+        const titulo = (res && res.sucesso) ? "Diário Publicado!" : "Aviso do Sistema";
+        const mensagem = res ? (res.mensagem || res.erro || "Processamento concluído.") : "Não foi possível obter resposta do servidor.";
+        
+        fecharModal(titulo, mensagem, true);
     }
 
     function abrirModal(titulo, msg) {
