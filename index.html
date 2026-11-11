@@ -41,6 +41,25 @@
         .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; margin-left: 15px; }
         .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; cursor: pointer; }
         
+        /* BOTÃO DISCRETO DE TEMA NO CANTO SUPERIOR DIREITO */
+        .theme-toggle-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: var(--header-text);
+            font-size: 16px;
+            padding: 5px 9px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: auto;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .theme-toggle-btn:hover { background: rgba(255, 255, 255, 0.35); }
+        .theme-toggle-btn:active { transform: scale(0.9); }
+
         /* MENU LATERAL EXPANSÍVEL (DRAWER) */
         .sidebar { position: fixed; top: 0; left: -290px; width: 280px; height: 100%; background: var(--card-bg); box-shadow: 2px 0 12px rgba(0,0,0,0.3); transition: left 0.3s ease; z-index: 2500; display: flex; flex-direction: column; }
         .sidebar.open { left: 0; }
@@ -104,7 +123,6 @@
         <div class="sidebar-item active" onclick="navegarSidebar('login')">👤 Identificação / Perfil</div>
         <div class="sidebar-item" id="side-item-diario" onclick="navegarSidebar('diario')" style="display:none;">📝 Diário de Campo</div>
         <div class="sidebar-item admin-only" onclick="navegarSidebar('builder')" style="display:none;">🎨 Construtor GoogleForms</div>
-        <div class="sidebar-item admin-only" onclick="navegarSidebar('temas')" style="display:none;">🎨 Alterar Tema Visual</div>
     </div>
 </div>
 
@@ -112,7 +130,10 @@
 <div class="top-header">
     <div class="menu-hamburger" onclick="abrirSidebar()">☰</div>
     <div class="brand-title">SmartSyncGest</div>
-    <div id="usuario-logado" class="user-badge" onclick="navegarSidebar('login')">👤 Entrar</div>
+    <div style="display:flex; align-items:center; gap:10px;">
+        <div id="usuario-logado" class="user-badge" onclick="navegarSidebar('login')">👤 Entrar</div>
+        <button class="theme-toggle-btn" title="Alternar Tema Visual" onclick="ciclarTemaVisual()">🎨</button>
+    </div>
 </div>
 
 <!-- TELA 1: LOGIN -->
@@ -240,27 +261,6 @@
     </div>
 </div>
 
-<!-- TELA 4: SELETOR DE TEMAS VISUAIS (10 TEMAS) -->
-<div id="aba-temas" class="tab-content">
-    <div class="container">
-        <h2>🎨 Personalização Visual (10 Temas)</h2>
-        <p style="font-size:13px; color:var(--subtext);">Clique nos botões abaixo para alternar o tema do sistema instantaneamente:</p>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
-            <button class="btn-primary" style="background:#0056b3;" onclick="aplicarTemaVisual('azul')">🔵 Azul Corporativo</button>
-            <button class="btn-primary" style="background:#1b5e20;" onclick="aplicarTemaVisual('verde')">🟢 Verde Engenharia</button>
-            <button class="btn-primary" style="background:#e65100;" onclick="aplicarTemaVisual('laranja')">🟠 Laranja Construtora</button>
-            <button class="btn-primary" style="background:#3700b3;" onclick="aplicarTemaVisual('dark')">🌙 Modo Escuro / Dark</button>
-            <button class="btn-primary" style="background:#f57f17; color:#000;" onclick="aplicarTemaVisual('amarelo')">🟡 Amarelo Visibilidade</button>
-            <button class="btn-primary" style="background:#4a148c;" onclick="aplicarTemaVisual('roxo')">🟣 Roxo Moderno</button>
-            <button class="btn-primary" style="background:#b71c1c;" onclick="aplicarTemaVisual('vermelho')">🔴 Vermelho Alerta</button>
-            <button class="btn-primary" style="background:#37474f;" onclick="aplicarTemaVisual('elegante')">⚙️ Cinza Elegante</button>
-            <button class="btn-primary" style="background:#004d40;" onclick="aplicarTemaVisual('teal')">🔷 Turquesa Teal</button>
-            <button class="btn-primary" style="background:#4e342e;" onclick="aplicarTemaVisual('terra')">🟤 Terra Café</button>
-        </div>
-    </div>
-</div>
-
 <!-- MODAL OVERLAY -->
 <div id="sysOverlay" class="overlay">
     <div class="modal-box">
@@ -274,26 +274,38 @@
 
 <script>
     const API_URL = typeof CONFIG !== 'undefined' ? CONFIG.API_URL : "SUA_URL_AQUI/exec";
+    const LISTA_TEMAS = ['azul', 'verde', 'laranja', 'dark', 'amarelo', 'roxo', 'vermelho', 'elegante', 'teal', 'terra'];
+    
     let baseGlobal = { obras: [], usuarios: [] };
     let usuarioAtivo = null;
     let schemaFormularioAtual = [];
     let fotosAnexadasModulos = {};
     
-    // VARIÁVEIS DE PAGINAÇÃO DO FORMULÁRIO
     let paginaAtualIndex = 0;
     let totalPaginasForm = 1;
 
     window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('diario_data').valueAsDate = new Date();
         
-        // Restaura Tema Salvo
         const temaSalvo = localStorage.getItem('smartsync_tema') || 'azul';
         aplicarTemaVisual(temaSalvo);
 
         carregarDadosSistema();
     });
 
-    // CONTROLE DE SIDEBAR NAVEGAÇÃO
+    function ciclarTemaVisual() {
+        const temaAtual = localStorage.getItem('smartsync_tema') || 'azul';
+        let idx = LISTA_TEMAS.indexOf(temaAtual);
+        idx = (idx + 1) % LISTA_TEMAS.length;
+        const novoTema = LISTA_TEMAS[idx];
+        aplicarTemaVisual(novoTema);
+    }
+
+    function aplicarTemaVisual(nomeTema) {
+        document.body.setAttribute('data-theme', nomeTema);
+        localStorage.setItem('smartsync_tema', nomeTema);
+    }
+
     function abrirSidebar() {
         document.getElementById('sidebarMenu').classList.add('open');
         document.getElementById('sidebarOverlay').classList.add('open');
@@ -305,11 +317,6 @@
     function navegarSidebar(abaId) {
         trocarAba(abaId, null);
         fecharSidebar();
-    }
-
-    function aplicarTemaVisual(nomeTema) {
-        document.body.setAttribute('data-theme', nomeTema);
-        localStorage.setItem('smartsync_tema', nomeTema);
     }
 
     function trocarAba(abaId, el) {
@@ -507,9 +514,6 @@
         fecharModal(titulo, mensagem, true);
     }
 
-    // =========================================================================
-    // RENDERIZAÇÃO DO FORMULÁRIO DIVIDIDO EM PÁGINAS (PAGINAÇÃO AUTOMÁTICA)
-    // =========================================================================
     function renderizarFormularioEngenheiro() {
         const nomeObra = document.getElementById('diario_select_obra').value;
         const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
@@ -523,7 +527,6 @@
             return;
         }
 
-        // Agrupa os campos por Seções (Cada Seção vira uma Página)
         let secoesMap = {};
         obraObj.schemaFormulario.forEach((c) => {
             let secNome = c.secao || "1. Informações Gerais";
@@ -642,7 +645,7 @@
                 }
             });
 
-            html += `</div>`; // Fecha .pagina-form
+            html += `</div>`;
         });
 
         container.innerHTML = html;
