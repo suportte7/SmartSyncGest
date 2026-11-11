@@ -1,10 +1,9 @@
-<!-- index.html (Ajustado para ler apenas a API_URL do config.js) -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Form Builder Profissional</title>
+    <title>SmartSyncGest - Construtor de Diários de Engenharia</title>
     
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" href="./icons/icon-192.png" type="image/png">
@@ -23,11 +22,13 @@
         .tab-btn { flex: 1; text-align: center; padding: 12px 10px; cursor: pointer; font-size: 13px; font-weight: bold; color: #666; white-space: nowrap; border-bottom: 3px solid transparent; }
         .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: #f8f9fa; }
         
-        .tab-content { display: none; padding: 20px 15px; max-width: 650px; margin: 0 auto; box-sizing: border-box; }
+        .tab-content { display: none; padding: 20px 15px; max-width: 680px; margin: 0 auto; box-sizing: border-box; }
         .tab-content.active { display: block; }
         .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
         h2 { margin-top: 0; font-size: 19px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px; }
+        .secao-header { font-size: 15px; font-weight: bold; color: var(--primary); background: #e9ecef; padding: 8px 12px; border-radius: 6px; margin-top: 25px; margin-bottom: 15px; border-left: 4px solid var(--primary); }
+        
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-row { display: flex; gap: 10px; } .flex-1 { flex: 1; }
         label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
@@ -78,11 +79,11 @@
     </div>
 </div>
 
-<!-- TELA 2: CONSTRUTOR DE FORMULÁRIOS DINÂMICO (PAINEL GESTOR / ADMIN) -->
+<!-- TELA 2: CONSTRUTOR DE FORMULÁRIOS DINÂMICO (PAINEL DO GESTOR / ADMIN) -->
 <div id="aba-builder" class="tab-content">
     <div class="container">
-        <h2>🎨 Construtor de Formulário (Google Forms Estilo)</h2>
-        <p style="font-size:12px; color:#666;">Monte a estrutura e tipos de perguntas que o engenheiro preencherá em campo.</p>
+        <h2>🎨 Construtor de Formulário Personalizável</h2>
+        <p style="font-size:12px; color:#666;">Configure o molde de perguntas, etapas e categorias sem nomes engessados.</p>
         
         <div class="form-group">
             <label>Obra a Ser Configurada</label>
@@ -92,11 +93,28 @@
             </div>
         </div>
 
+        <div class="form-row">
+            <div class="form-group flex-1">
+                <label>Empresa Construtora</label>
+                <input type="text" id="builder_empresa" placeholder="Ex: Sua Construtora Ltda">
+            </div>
+            <div class="form-group" style="width: 120px;">
+                <label>Meta Global UHs</label>
+                <input type="number" id="builder_total_uhs" value="500">
+            </div>
+        </div>
+
         <hr style="border:0; border-top:1px solid var(--border); margin:20px 0;">
 
+        <!-- PAINEL ADICIONAR NOVO CAMPO COM SEÇÃO CUSTOMIZÁVEL -->
         <div style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px dashed var(--primary); margin-bottom:20px;">
             <h4 style="margin-top:0; color:var(--primary);">+ Adicionar Novo Campo / Pergunta</h4>
             
+            <div class="form-group">
+                <label>Seção / Categoria no Formulário</label>
+                <input type="text" id="builder_nova_secao" placeholder="Ex: 1. Condições Gerais, 2. Matriz Habitação...">
+            </div>
+
             <div class="form-group">
                 <label>Título da Pergunta ou Nome da Etapa</label>
                 <input type="text" id="builder_novo_titulo" placeholder="Ex: Clima, Efetivo, 01-Laje Radier, Foto...">
@@ -123,7 +141,7 @@
             </div>
 
             <div class="form-group" id="builder_box_meta">
-                <label>Meta Contratual Total (UHs / m² / m³)</label>
+                <label>Meta Contratual Total da Etapa (UHs / m² / m³)</label>
                 <input type="number" id="builder_nova_meta" value="500">
             </div>
 
@@ -135,7 +153,7 @@
             <button class="btn-primary" onclick="adicionarCampoAoBuilder()">Adicionar Pergunta ao Formulário</button>
         </div>
 
-        <h3 style="font-size:15px; color:var(--primary);">Estrutura Atual do Formulário:</h3>
+        <h3 style="font-size:15px; color:var(--primary);">Perguntas do Formulário Desta Obra:</h3>
         <div id="container_builder_cards"></div>
 
         <button class="btn-success" style="font-size:16px; padding:15px;" onclick="salvarFormularioNoBanco()">💾 Salvar Formulário da Obra</button>
@@ -156,13 +174,10 @@
                 <input type="date" id="diario_data" required>
             </div>
 
-            <h3 style="font-size:15px; color:var(--primary); border-bottom:1px solid var(--border); padding-bottom:5px; margin-top:20px;">
-                Formulário da Obra (Auto-Renderizado):
-            </h3>
-
+            <!-- O FORMULÁRIO COMPLETO É RENDERIZADO DINAMICAMENTE DIVIDIDO POR SEÇÕES -->
             <div id="container_formulario_dinamico"></div>
 
-            <button type="submit" class="btn-success" style="margin-top:20px; font-size:16px; padding:15px;">🚀 Publicar e Gerar PDF</button>
+            <button type="submit" class="btn-success" style="margin-top:20px; font-size:16px; padding:15px;">🚀 Publicar e Gerar Prancha PDF</button>
         </form>
     </div>
 </div>
@@ -217,19 +232,18 @@
         } else {
             baseGlobal = {
                 obras: [
-                    { nome: "Empreendimento Eunápolis - BA", empresa: "Construtora Quali", schemaFormulario: [
-                        { id: "c1", tipo: "select", titulo: "Condição Climática (Manhã/Tarde)", opcoes: ["Sol / Sol", "Nublado / Nublado", "Chuva Forte"] },
-                        { id: "c2", tipo: "numero", titulo: "Efetivo Total de Operários em Campo" },
-                        { id: "c3", tipo: "checkbox", titulo: "Equipamentos em Operação", opcoes: ["Escavadeira", "Betoneira", "Guindaste"] },
-                        { id: "c4", tipo: "etapa_producao", titulo: "01-Laje Radier", meta: 500, ac: 0, sd: 500 },
-                        { id: "c5", tipo: "etapa_producao", titulo: "02-Armação Tela Parede Inf", meta: 500, ac: 0, sd: 500 },
-                        { id: "c6", tipo: "escala", titulo: "Avaliação da Segurança no Canteiro (1 a 5)" },
-                        { id: "c7", tipo: "textarea", titulo: "Ocorrências e Registros de Campo" }
+                    { nome: "Obra Modelo Genérica", empresa: "Construtora Padrão", totalUHs: 500, schemaFormulario: [
+                        { id: "c1", secao: "1. Condições de Campo", tipo: "select", titulo: "Clima Manhã", opcoes: ["Sol", "Nublado", "Chuva Leve", "Chuva Forte"] },
+                        { id: "c2", secao: "1. Condições de Campo", tipo: "select", titulo: "Clima Tarde", opcoes: ["Sol", "Nublado", "Chuva Leve", "Chuva Forte"] },
+                        { id: "c3", secao: "2. Efetivo de Campo", tipo: "numero", titulo: "Efetivo Próprio - Produção" },
+                        { id: "c4", secao: "3. Matriz Habitação", tipo: "etapa_producao", titulo: "01-Laje Radier", meta: 500, ac: 0, sd: 500 },
+                        { id: "c5", secao: "3. Matriz Habitação", tipo: "etapa_producao", titulo: "02-Armação e Fixação de Tela Parede Inf", meta: 500, ac: 0, sd: 500 },
+                        { id: "c6", secao: "4. Qualidade e Ocorrências", tipo: "textarea", titulo: "Relato Diário do Empreendimento" }
                     ]}
                 ],
                 usuarios: [
                     { email: "waldomiroferreira@gmail.com", nome: "Waldomiro Ferreira", perfil: "Administrador", obra: "Todas" },
-                    { email: "engenheiro@smartsync.com", nome: "Engenheiro Residente", perfil: "Engenheiro", obra: "Empreendimento Eunápolis - BA" }
+                    { email: "engenheiro@smartsync.com", nome: "Engenheiro Residente", perfil: "Engenheiro", obra: "Obra Modelo Genérica" }
                 ]
             };
         }
@@ -279,14 +293,20 @@
     function carregarFormularioParaEdicao() {
         const nomeObra = document.getElementById('builder_select_obra').value;
         const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
-        schemaFormularioAtual = (obraObj && obraObj.schemaFormulario) ? JSON.parse(JSON.stringify(obraObj.schemaFormulario)) : [];
+        if (obraObj) {
+            document.getElementById('builder_empresa').value = obraObj.empresa || "Construtora Padrão";
+            document.getElementById('builder_total_uhs').value = obraObj.totalUHs || 500;
+            schemaFormularioAtual = obraObj.schemaFormulario ? JSON.parse(JSON.stringify(obraObj.schemaFormulario)) : [];
+        } else {
+            schemaFormularioAtual = [];
+        }
         renderizarCardsBuilder();
     }
 
     function criarNovaObraPrompt() {
         const nome = prompt("Digite o nome da nova obra:");
         if (!nome) return;
-        baseGlobal.obras.push({ nome: nome, empresa: "Construtora Quali", schemaFormulario: [] });
+        baseGlobal.obras.push({ nome: nome, empresa: "Sua Construtora", totalUHs: 500, schemaFormulario: [] });
         
         let htmlObras = '';
         baseGlobal.obras.forEach(o => htmlObras += `<option value="${o.nome}">${o.nome}</option>`);
@@ -298,9 +318,10 @@
     function adicionarCampoAoBuilder() {
         const titulo = document.getElementById('builder_novo_titulo').value;
         const tipo = document.getElementById('builder_novo_tipo').value;
+        const secao = document.getElementById('builder_nova_secao').value || "Geral";
         if (!titulo) return alert("Digite o título da pergunta.");
 
-        let novoCampo = { id: "c_" + Date.now(), tipo: tipo, titulo: titulo };
+        let novoCampo = { id: "c_" + Date.now(), secao: secao, tipo: tipo, titulo: titulo };
         if (tipo === 'etapa_producao') novoCampo.meta = Number(document.getElementById('builder_nova_meta').value || 500);
         if (['select', 'radio', 'checkbox'].includes(tipo)) {
             const ops = document.getElementById('builder_novas_opcoes').value;
@@ -348,8 +369,8 @@
                         <button class="btn-card-action" onclick="moverCampoBuilder(${idx}, 1)">⬇️</button>
                         <button class="btn-card-action" style="color:var(--danger);" onclick="removerCampoBuilder(${idx})">🗑️</button>
                     </div>
-                    <span class="badge-tipo">${nomesTipos[c.tipo] || c.tipo}</span>
-                    <div style="font-weight:bold; font-size:14px; color:#333;">${idx + 1}. ${c.titulo}${labelExtra}</div>
+                    <span class="badge-tipo">${c.secao || 'Geral'}</span> | <span class="badge-tipo" style="background:#dbeafe; color:#1e40af;">${nomesTipos[c.tipo] || c.tipo}</span>
+                    <div style="font-weight:bold; font-size:14px; color:#333; margin-top:5px;">${idx + 1}. ${c.titulo}${labelExtra}</div>
                 </div>
             `;
         });
@@ -358,14 +379,18 @@
 
     async function salvarFormularioNoBanco() {
         const nomeObra = document.getElementById('builder_select_obra').value;
+        const empresa = document.getElementById('builder_empresa').value;
+        const totalUHs = document.getElementById('builder_total_uhs').value;
+
         abrirModal("Salvando Formulário...", "Gravando estrutura completa no banco de dados.");
 
-        const payload = { acao: "salvar_schema_obra", nome: nomeObra, schemaFormulario: schemaFormularioAtual };
+        const payload = { acao: "salvar_schema_obra", nome: nomeObra, empresa: empresa, totalUHs: totalUHs, schemaFormulario: schemaFormularioAtual };
         const res = await apiRequest("salvar_schema_obra", "POST", payload);
         await carregarDadosSistema();
         fecharModal(res.sucesso ? "Formulário Salvo!" : "Erro", res.mensagem, true);
     }
 
+    // FORMULÁRIO DO ENGENHEIRO (DIVIDIDO DINAMICAMENTE POR SEÇÕES)
     function renderizarFormularioEngenheiro() {
         const nomeObra = document.getElementById('diario_select_obra').value;
         const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
@@ -378,14 +403,22 @@
         }
 
         let html = '';
+        let ultimaSecao = '';
+
         obraObj.schemaFormulario.forEach((c, idx) => {
             const fieldId = "campo_din_" + idx;
             
+            // Adiciona divisor visual de Seção se a categoria mudar
+            if (c.secao && c.secao !== ultimaSecao) {
+                html += `<div class="secao-header">${c.secao}</div>`;
+                ultimaSecao = c.secao;
+            }
+
             if (c.tipo === 'etapa_producao') {
                 html += `
                     <div class="form-group" style="background:#f8f9fa; padding:12px; border-radius:8px; border:1px solid #e0e0e0;">
-                        <label>🏗️ ${c.titulo} <span style="font-size:11px; background:#e2e8f0; padding:2px 6px; border-radius:4px;">Meta: ${c.meta} | Saldo: ${c.sd || c.meta}</span></label>
-                        <input type="number" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="etapa_producao" value="0" placeholder="Produção do Dia (PD)">
+                        <label>🏗️ ${c.titulo} <span style="font-size:11px; background:#e2e8f0; padding:2px 6px; border-radius:4px;">Meta: ${c.meta} | Saldo: ${c.sd !== undefined ? c.sd : c.meta}</span></label>
+                        <input type="number" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="etapa_producao" data-meta="${c.meta}" value="0" placeholder="Produção do Dia (PD)">
                     </div>
                 `;
             } else if (c.tipo === 'select') {
@@ -425,11 +458,11 @@
                     <div class="form-group">
                         <label>⭐️ ${c.titulo}</label>
                         <select class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="escala">
-                            <option value="5">⭐️⭐️⭐️⭐️⭐️ (5 - Excelente)</option>
-                            <option value="4">⭐️⭐️⭐️⭐️ (4 - Bom)</option>
+                            <option value="5">⭐️⭐️⭐️⭐️⭐️ (5 - Bom / Pleno)</option>
+                            <option value="4">⭐️⭐️⭐️⭐️ (4 - Satisfatório)</option>
                             <option value="3">⭐️⭐️⭐️ (3 - Regular)</option>
                             <option value="2">⭐️⭐️ (2 - Ruim)</option>
-                            <option value="1">⭐️ (1 - Crítico)</option>
+                            <option value="1">⭐️ (1 - Crítico / Inexistente)</option>
                         </select>
                     </div>
                 `;
@@ -518,7 +551,7 @@
 
     async function enviarDiario(event) {
         event.preventDefault();
-        abrirModal("Publicando Diário...", "Processando campos dinâmicos e gerando PDF no Google Drive.");
+        abrirModal("Publicando Diário...", "Processando campos e gerando Prancha PDF no Google Drive.");
 
         let respostas = {};
         let todasFotos = [];
@@ -527,7 +560,7 @@
             const titulo = inp.dataset.titulo;
             const tipo = inp.dataset.tipo;
             if (tipo === 'etapa_producao') {
-                respostas[titulo] = { pd: Number(inp.value || 0) };
+                respostas[titulo] = { pd: Number(inp.value || 0), meta: Number(inp.dataset.meta || 500) };
             } else {
                 respostas[titulo] = inp.value;
             }
@@ -563,7 +596,7 @@
 
         const res = await apiRequest("salvar_diario", "POST", payload);
         if(res.sucesso) {
-            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold;">📄 Visualizar PDF no Drive</a>`;
+            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold;">📄 Visualizar Prancha PDF Oficial no Drive</a>`;
             await carregarDadosSistema();
         }
         fecharModal(res.sucesso ? "Diário Publicado!" : "Erro", res.mensagem, true);
