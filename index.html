@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - PWA Construtor</title>
+    <title>SmartSyncGest - Form Builder Profissional</title>
     
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" href="./icons/icon-192.png" type="image/png">
@@ -35,8 +35,16 @@
         .btn-primary { background: var(--primary); } .btn-success { background: var(--success); } .btn-info { background: var(--info); } .btn-danger { background: var(--danger); }
         
         .card-pergunta-builder { background: #ffffff; border: 1px solid var(--border); border-left: 5px solid var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); position: relative; }
-        .card-pergunta-builder .btn-remover { position: absolute; top: 10px; right: 10px; background: none; color: var(--danger); border: none; font-size: 18px; cursor: pointer; width: auto; margin:0; }
+        .card-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; }
+        .btn-card-action { background: none; border: none; font-size: 16px; cursor: pointer; padding: 2px 5px; color: #555; }
         .badge-tipo { font-size: 11px; background: #e2e8f0; color: #4a5568; padding: 3px 8px; border-radius: 4px; font-weight: bold; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
+
+        .checkbox-group, .radio-group { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
+        .checkbox-item, .radio-item { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+        .checkbox-item input, .radio-item input { width: auto; margin: 0; }
+
+        .preview-foto-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+        .preview-foto { width: 75px; height: 75px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
 
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 3000; align-items: center; justify-content: center; }
         .modal-box { background: white; padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 380px; }
@@ -69,11 +77,11 @@
     </div>
 </div>
 
-<!-- TELA 2: CONSTRUTOR DE FORMULÁRIOS (PAINEL GESTOR / ADMIN) -->
+<!-- TELA 2: CONSTRUTOR DE FORMULÁRIOS DINÂMICO (PAINEL DO GESTOR / ADMIN) -->
 <div id="aba-builder" class="tab-content">
     <div class="container">
         <h2>🎨 Construtor de Formulário (Google Forms Estilo)</h2>
-        <p style="font-size:12px; color:#666;">Monte o esqueleto do formulário que o engenheiro preencherá no canteiro.</p>
+        <p style="font-size:12px; color:#666;">Monte a estrutura e tipos de perguntas que o engenheiro preencherá em campo.</p>
         
         <div class="form-group">
             <label>Obra a Ser Configurada</label>
@@ -85,44 +93,58 @@
 
         <hr style="border:0; border-top:1px solid var(--border); margin:20px 0;">
 
-        <!-- PAINEL ADICIONAR NOVA PERGUNTA -->
+        <!-- PAINEL ADICIONAR NOVO CAMPO COM TODAS AS OPÇÕES -->
         <div style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px dashed var(--primary); margin-bottom:20px;">
             <h4 style="margin-top:0; color:var(--primary);">+ Adicionar Novo Campo / Pergunta</h4>
+            
             <div class="form-group">
-                <label>Título da Pergunta / Nome da Etapa</label>
+                <label>Título da Pergunta ou Nome da Etapa</label>
                 <input type="text" id="builder_novo_titulo" placeholder="Ex: Clima, Efetivo, 01-Laje Radier, Foto...">
             </div>
+            
             <div class="form-row">
                 <div class="form-group flex-1">
-                    <label>Tipo de Campo</label>
+                    <label>Tipo de Pergunta</label>
                     <select id="builder_novo_tipo" onchange="alternarCamposAdicionaisBuilder()">
-                        <option value="etapa_producao">🏗️ Etapa de Produção (com Meta)</option>
-                        <option value="texto">📝 Texto Curto / Resposta Aberta</option>
-                        <option value="numero">🔢 Número / Contagem</option>
-                        <option value="select">🔘 Seleção Única (Dropdown)</option>
+                        <option value="etapa_producao">🏗️ Etapa de Produção (com Meta Contratual)</option>
+                        <option value="texto">📝 Texto Curto (Linha Única)</option>
+                        <option value="textarea">📄 Texto Longo (Parágrafo / Relato)</option>
+                        <option value="numero">🔢 Número Inteiro (Contagem / Efetivo)</option>
+                        <option value="decimal">📐 Medição Decimal (m², m³, horas)</option>
+                        <option value="select">🔽 Menu Suspenso (Dropdown)</option>
+                        <option value="radio">🔘 Escolha Única (Radio Buttons)</option>
+                        <option value="checkbox">☑️ Caixas de Seleção (Múltiplas Escolhas)</option>
+                        <option value="data">📅 Seleção de Data</option>
+                        <option value="hora">⏰ Horário</option>
+                        <option value="escala">⭐️ Escala de Avaliação / Nota (1 a 5)</option>
+                        <option value="foto">📸 Anexo Fotográfico (Câmera / Galeria)</option>
                     </select>
                 </div>
-                <div class="form-group flex-1" id="builder_box_meta">
-                    <label>Meta Contratual (UHs/m³)</label>
-                    <input type="number" id="builder_nova_meta" value="500">
-                </div>
             </div>
+
+            <!-- OPÇÃO ADICIONAL PARA ETAPA DE PRODUÇÃO -->
+            <div class="form-group" id="builder_box_meta">
+                <label>Meta Contratual Total (UHs / m² / m³)</label>
+                <input type="number" id="builder_nova_meta" value="500">
+            </div>
+
+            <!-- OPÇÃO ADICIONAL PARA SELECT, RADIO E CHECKBOX -->
             <div class="form-group" id="builder_box_opcoes" style="display:none;">
-                <label>Opções de Seleção (separadas por vírgula)</label>
-                <input type="text" id="builder_novas_opcoes" placeholder="Ex: Sol / Sol, Nublado, Chuva Forte">
+                <label>Opções de Escolha (separadas por vírgula)</label>
+                <input type="text" id="builder_novas_opcoes" placeholder="Ex: Sol / Sol, Nublado / Nublado, Chuva Forte">
             </div>
-            <button class="btn-primary" onclick="adicionarCampoAoBuilder()">Adicionar Campo ao Formulário</button>
+
+            <button class="btn-primary" onclick="adicionarCampoAoBuilder()">Adicionar Pergunta ao Formulário</button>
         </div>
 
-        <!-- LISTA DINÂMICA DE CARDS ESTILO GOOGLE FORMS -->
-        <h3 style="font-size:15px; color:var(--primary);">Perguntas do Formulário Desta Obra:</h3>
+        <h3 style="font-size:15px; color:var(--primary);">Estrutura Atual do Formulário:</h3>
         <div id="container_builder_cards"></div>
 
         <button class="btn-success" style="font-size:16px; padding:15px;" onclick="salvarFormularioNoBanco()">💾 Salvar Formulário da Obra</button>
     </div>
 </div>
 
-<!-- TELA 3: DIÁRIO DE CAMPO (PAINEL ENGENHEIRO) -->
+<!-- TELA 3: DIÁRIO DE CAMPO (PAINEL DO ENGENHEIRO - AUTO-RENDERIZADO) -->
 <div id="aba-diario" class="tab-content">
     <div class="container">
         <h2>Diário de Engenharia de Campo</h2>
@@ -137,9 +159,10 @@
             </div>
 
             <h3 style="font-size:15px; color:var(--primary); border-bottom:1px solid var(--border); padding-bottom:5px; margin-top:20px;">
-                Formulário da Obra:
+                Formulário da Obra (Auto-Renderizado):
             </h3>
 
+            <!-- O FORMULÁRIO COMPLETO É RENDERIZADO DINAMICAMENTE AQUI -->
             <div id="container_formulario_dinamico"></div>
 
             <button type="submit" class="btn-success" style="margin-top:20px; font-size:16px; padding:15px;">🚀 Publicar e Gerar PDF</button>
@@ -163,6 +186,7 @@
     let baseGlobal = { obras: [], usuarios: [] };
     let usuarioAtivo = null;
     let schemaFormularioAtual = [];
+    let fotosAnexadasModulos = {};
 
     window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('diario_data').valueAsDate = new Date();
@@ -191,19 +215,19 @@
     async function carregarDadosSistema() {
         const res = await apiRequest("listar_dados", "GET");
         
-        // FALLBACK DE SEGURANÇA: Garante que os usuários de teste apareçam mesmo se a API falhar
         if (res && res.sucesso && res.dados && res.dados.usuarios && res.dados.usuarios.length > 0) {
             baseGlobal = res.dados;
         } else {
             baseGlobal = {
                 obras: [
                     { nome: "Empreendimento Eunápolis - BA", empresa: "Construtora Quali", schemaFormulario: [
-                        { id: "c1", tipo: "select", titulo: "Condição Climática (Manhã/Tarde)", opcoes: ["Sol / Sol", "Nublado / Nublado", "Chuva / Chuva"] },
+                        { id: "c1", tipo: "select", titulo: "Condição Climática (Manhã/Tarde)", opcoes: ["Sol / Sol", "Nublado / Nublado", "Chuva Forte"] },
                         { id: "c2", tipo: "numero", titulo: "Efetivo Total de Operários em Campo" },
-                        { id: "c3", tipo: "etapa_producao", titulo: "01-Laje Radier", meta: 500, ac: 0, sd: 500 },
-                        { id: "c4", tipo: "etapa_producao", titulo: "02-Armação Tela Parede Inf", meta: 500, ac: 0, sd: 500 },
-                        { id: "c5", tipo: "etapa_producao", titulo: "14-Contrapiso", meta: 500, ac: 0, sd: 500 },
-                        { id: "c6", tipo: "texto", titulo: "Ocorrências e Registros de Campo" }
+                        { id: "c3", tipo: "checkbox", titulo: "Equipamentos em Operação", opcoes: ["Escavadeira", "Betoneira", "Guindaste"] },
+                        { id: "c4", tipo: "etapa_producao", titulo: "01-Laje Radier", meta: 500, ac: 0, sd: 500 },
+                        { id: "c5", tipo: "etapa_producao", titulo: "02-Armação Tela Parede Inf", meta: 500, ac: 0, sd: 500 },
+                        { id: "c6", tipo: "escala", titulo: "Avaliação da Segurança no Canteiro (1 a 5)" },
+                        { id: "c7", tipo: "textarea", titulo: "Ocorrências e Registros de Campo" }
                     ]}
                 ],
                 usuarios: [
@@ -249,11 +273,11 @@
         trocarAba('diario', document.getElementById('tab-diario'));
     }
 
-    // CONSTRUTOR DE FORMULÁRIOS (ADMIN)
+    // CONSTRUTOR DE FORMULÁRIOS
     function alternarCamposAdicionaisBuilder() {
         const tipo = document.getElementById('builder_novo_tipo').value;
         document.getElementById('builder_box_meta').style.display = (tipo === 'etapa_producao') ? 'block' : 'none';
-        document.getElementById('builder_box_opcoes').style.display = (tipo === 'select') ? 'block' : 'none';
+        document.getElementById('builder_box_opcoes').style.display = (['select', 'radio', 'checkbox'].includes(tipo)) ? 'block' : 'none';
     }
 
     function carregarFormularioParaEdicao() {
@@ -282,7 +306,7 @@
 
         let novoCampo = { id: "c_" + Date.now(), tipo: tipo, titulo: titulo };
         if (tipo === 'etapa_producao') novoCampo.meta = Number(document.getElementById('builder_nova_meta').value || 500);
-        if (tipo === 'select') {
+        if (['select', 'radio', 'checkbox'].includes(tipo)) {
             const ops = document.getElementById('builder_novas_opcoes').value;
             novoCampo.opcoes = ops ? ops.split(',').map(s => s.trim()) : ["Opção 1", "Opção 2"];
         }
@@ -297,21 +321,39 @@
         renderizarCardsBuilder();
     }
 
+    function moverCampoBuilder(index, direcao) {
+        if ((direcao === -1 && index === 0) || (direcao === 1 && index === schemaFormularioAtual.length - 1)) return;
+        const item = schemaFormularioAtual.splice(index, 1)[0];
+        schemaFormularioAtual.splice(index + direcao, 0, item);
+        renderizarCardsBuilder();
+    }
+
     function renderizarCardsBuilder() {
         const container = document.getElementById('container_builder_cards');
         if (schemaFormularioAtual.length === 0) {
-            container.innerHTML = "<p style='color:#888; text-align:center;'>Nenhum campo neste formulário. Adicione campos acima!</p>";
+            container.innerHTML = "<p style='color:#888; text-align:center;'>Nenhum campo configurado. Adicione perguntas acima!</p>";
             return;
         }
 
+        const nomesTipos = {
+            etapa_producao: "🏗️ Produção", texto: "📝 Texto Curto", textarea: "📄 Parágrafo",
+            numero: "🔢 Inteiro", decimal: "📐 Decimal", select: "🔽 Dropdown",
+            radio: "🔘 Radio", checkbox: "☑️ Checkbox", data: "📅 Data",
+            hora: "⏰ Hora", escala: "⭐️ Escala (1-5)", foto: "📸 Foto"
+        };
+
         let html = '';
         schemaFormularioAtual.forEach((c, idx) => {
-            let labelTipo = c.tipo === 'etapa_producao' ? `🏗️ Produção (Meta: ${c.meta})` : c.tipo === 'select' ? `🔘 Seleção (${c.opcoes.join(', ')})` : c.tipo === 'numero' ? '🔢 Número' : '📝 Texto';
+            let labelExtra = c.meta ? ` (Meta: ${c.meta})` : c.opcoes ? ` (${c.opcoes.join(', ')})` : '';
             html += `
                 <div class="card-pergunta-builder">
-                    <button class="btn-remover" onclick="removerCampoBuilder(${idx})">🗑️</button>
-                    <span class="badge-tipo">${labelTipo}</span>
-                    <div style="font-weight:bold; font-size:15px; color:#333;">${idx + 1}. ${c.titulo}</div>
+                    <div class="card-actions">
+                        <button class="btn-card-action" onclick="moverCampoBuilder(${idx}, -1)">⬆️</button>
+                        <button class="btn-card-action" onclick="moverCampoBuilder(${idx}, 1)">⬇️</button>
+                        <button class="btn-card-action" style="color:var(--danger);" onclick="removerCampoBuilder(${idx})">🗑️</button>
+                    </div>
+                    <span class="badge-tipo">${nomesTipos[c.tipo] || c.tipo}</span>
+                    <div style="font-weight:bold; font-size:14px; color:#333;">${idx + 1}. ${c.titulo}${labelExtra}</div>
                 </div>
             `;
         });
@@ -320,7 +362,7 @@
 
     async function salvarFormularioNoBanco() {
         const nomeObra = document.getElementById('builder_select_obra').value;
-        abrirModal("Salvando Formulário...", "Gravando o molde personalizado no banco de dados.");
+        abrirModal("Salvando Formulário...", "Gravando estrutura completa no banco de dados.");
 
         const payload = { acao: "salvar_schema_obra", nome: nomeObra, schemaFormulario: schemaFormularioAtual };
         const res = await apiRequest("salvar_schema_obra", "POST", payload);
@@ -328,46 +370,115 @@
         fecharModal(res.sucesso ? "Formulário Salvo!" : "Erro", res.mensagem, true);
     }
 
-    // FORMULÁRIO DO ENGENHEIRO
+    // FORMULÁRIO DO ENGENHEIRO (AUTO-RENDERIZAÇÃO COMPLETA)
     function renderizarFormularioEngenheiro() {
         const nomeObra = document.getElementById('diario_select_obra').value;
         const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
         const container = document.getElementById('container_formulario_dinamico');
+        fotosAnexadasModulos = {};
 
         if (!obraObj || !obraObj.schemaFormulario || obraObj.schemaFormulario.length === 0) {
-            container.innerHTML = "<p>O gestor ainda não criou perguntas/etapas para esta obra.</p>";
+            container.innerHTML = "<p>O gestor ainda não configurou perguntas para esta obra.</p>";
             return;
         }
 
         let html = '';
-        obraObj.schemaFormulario.forEach(c => {
+        obraObj.schemaFormulario.forEach((c, idx) => {
+            const fieldId = "campo_din_" + idx;
+            
             if (c.tipo === 'etapa_producao') {
                 html += `
                     <div class="form-group" style="background:#f8f9fa; padding:12px; border-radius:8px; border:1px solid #e0e0e0;">
                         <label>🏗️ ${c.titulo} <span style="font-size:11px; background:#e2e8f0; padding:2px 6px; border-radius:4px;">Meta: ${c.meta} | Saldo: ${c.sd || c.meta}</span></label>
-                        <input type="number" class="campo-dinamico" data-titulo="${c.titulo}" data-tipo="etapa_producao" value="0" placeholder="Produção do Dia (PD)">
+                        <input type="number" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="etapa_producao" value="0" placeholder="Produção do Dia (PD)">
                     </div>
                 `;
             } else if (c.tipo === 'select') {
                 let options = c.opcoes.map(op => `<option value="${op}">${op}</option>`).join('');
                 html += `
                     <div class="form-group">
-                        <label>🔘 ${c.titulo}</label>
-                        <select class="campo-dinamico" data-titulo="${c.titulo}" data-tipo="select">${options}</select>
+                        <label>🔽 ${c.titulo}</label>
+                        <select class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="select">${options}</select>
                     </div>
                 `;
-            } else if (c.tipo === 'numero') {
+            } else if (c.tipo === 'radio') {
+                let radios = c.opcoes.map((op, i) => `
+                    <label class="radio-item">
+                        <input type="radio" name="${fieldId}" value="${op}" ${i===0?'checked':''}> ${op}
+                    </label>
+                `).join('');
                 html += `
                     <div class="form-group">
-                        <label>🔢 ${c.titulo}</label>
-                        <input type="number" class="campo-dinamico" data-titulo="${c.titulo}" data-tipo="numero" placeholder="Digite a quantidade">
+                        <label>🔘 ${c.titulo}</label>
+                        <div class="radio-group" data-titulo="${c.titulo}" data-tipo="radio" data-radio-group="${fieldId}">${radios}</div>
+                    </div>
+                `;
+            } else if (c.tipo === 'checkbox') {
+                let chks = c.opcoes.map(op => `
+                    <label class="checkbox-item">
+                        <input type="checkbox" class="chk_${fieldId}" value="${op}"> ${op}
+                    </label>
+                `).join('');
+                html += `
+                    <div class="form-group">
+                        <label>☑️ ${c.titulo}</label>
+                        <div class="checkbox-group" data-titulo="${c.titulo}" data-tipo="checkbox" data-chk-group="${fieldId}">${chks}</div>
+                    </div>
+                `;
+            } else if (c.tipo === 'escala') {
+                html += `
+                    <div class="form-group">
+                        <label>⭐️ ${c.titulo}</label>
+                        <select class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="escala">
+                            <option value="5">⭐️⭐️⭐️⭐️⭐️ (5 - Excelente)</option>
+                            <option value="4">⭐️⭐️⭐️⭐️ (4 - Bom)</option>
+                            <option value="3">⭐️⭐️⭐️ (3 - Regular)</option>
+                            <option value="2">⭐️⭐️ (2 - Ruim)</option>
+                            <option value="1">⭐️ (1 - Crítico)</option>
+                        </select>
+                    </div>
+                `;
+            } else if (c.tipo === 'textarea') {
+                html += `
+                    <div class="form-group">
+                        <label>📄 ${c.titulo}</label>
+                        <textarea class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="textarea" rows="3" placeholder="Digite seu relato detalhado..."></textarea>
+                    </div>
+                `;
+            } else if (c.tipo === 'decimal') {
+                html += `
+                    <div class="form-group">
+                        <label>📐 ${c.titulo}</label>
+                        <input type="number" step="0.01" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="decimal" placeholder="0.00">
+                    </div>
+                `;
+            } else if (c.tipo === 'data') {
+                html += `
+                    <div class="form-group">
+                        <label>📅 ${c.titulo}</label>
+                        <input type="date" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="data">
+                    </div>
+                `;
+            } else if (c.tipo === 'hora') {
+                html += `
+                    <div class="form-group">
+                        <label>⏰ ${c.titulo}</label>
+                        <input type="time" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="hora">
+                    </div>
+                `;
+            } else if (c.tipo === 'foto') {
+                html += `
+                    <div class="form-group">
+                        <label>📸 ${c.titulo}</label>
+                        <input type="file" accept="image/*" capture="environment" multiple onchange="processarFotoCampo(event, '${c.titulo}')">
+                        <div class="preview-foto-container" id="prev_foto_${c.titulo.replace(/[^a-zA-Z0-9]/g, '')}"></div>
                     </div>
                 `;
             } else {
                 html += `
                     <div class="form-group">
                         <label>📝 ${c.titulo}</label>
-                        <textarea class="campo-dinamico" data-titulo="${c.titulo}" data-tipo="texto" rows="2" placeholder="Sua resposta..."></textarea>
+                        <input type="text" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="texto" placeholder="Sua resposta...">
                     </div>
                 `;
             }
@@ -376,11 +487,48 @@
         container.innerHTML = html;
     }
 
+    function processarFotoCampo(event, tituloCampo) {
+        const files = event.target.files;
+        if (!files || files.length === 0) return;
+        if (!fotosAnexadasModulos[tituloCampo]) fotosAnexadasModulos[tituloCampo] = [];
+        
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 800;
+                    const scale = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scale;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const b64 = canvas.toDataURL('image/jpeg', 0.7);
+                    
+                    fotosAnexadasModulos[tituloCampo].push(b64);
+                    
+                    const prevId = "prev_foto_" + tituloCampo.replace(/[^a-zA-Z0-9]/g, '');
+                    const prevEl = document.getElementById(prevId);
+                    if (prevEl) {
+                        prevEl.innerHTML += `<img src="${b64}" class="preview-foto">`;
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
     async function enviarDiario(event) {
         event.preventDefault();
-        abrirModal("Publicando Diário...", "Calculando saldos e gerando prancha em PDF no Google Drive.");
+        abrirModal("Publicando Diário...", "Processando campos dinâmicos e gerando PDF no Google Drive.");
 
         let respostas = {};
+        let todasFotos = [];
+
+        // Captura de Inputs Padrão
         document.querySelectorAll('.campo-dinamico').forEach(inp => {
             const titulo = inp.dataset.titulo;
             const tipo = inp.dataset.tipo;
@@ -391,11 +539,35 @@
             }
         });
 
+        // Captura de Radios
+        document.querySelectorAll('.radio-group').forEach(group => {
+            const titulo = group.dataset.titulo;
+            const groupName = group.dataset.radioGroup;
+            const sel = document.querySelector(`input[name="${groupName}"]:checked`);
+            respostas[titulo] = sel ? sel.value : "";
+        });
+
+        // Captura de Checkboxes
+        document.querySelectorAll('.checkbox-group').forEach(group => {
+            const titulo = group.dataset.titulo;
+            const groupName = group.dataset.chkGroup;
+            const chks = document.querySelectorAll(`.chk_${groupName}:checked`);
+            let marcados = [];
+            chks.forEach(c => marcados.push(c.value));
+            respostas[titulo] = marcados;
+        });
+
+        // Captura de Fotos por Campo
+        for (var k in fotosAnexadasModulos) {
+            todasFotos = todasFotos.concat(fotosAnexadasModulos[k]);
+            respostas[k] = `[${fotosAnexadasModulos[k].length} foto(s) anexada(s)]`;
+        }
+
         const payload = {
             acao: "salvar_diario", obra: document.getElementById('diario_select_obra').value,
             data_diario: document.getElementById('diario_data').value,
             responsavel: usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável",
-            respostas: respostas
+            respostas: respostas, fotos: todasFotos
         };
 
         const res = await apiRequest("salvar_diario", "POST", payload);
