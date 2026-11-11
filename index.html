@@ -12,14 +12,14 @@
 
     <style>
         :root { --primary: #0056b3; --success: #28a745; --warning: #ffc107; --danger: #dc3545; --info: #17a2b8; --bg: #f4f7f6; --text: #333; --border: #e0e0e0; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 30px; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 30px; }
         
         .top-header { background: var(--primary); color: white; display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
         .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; }
         .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; cursor: pointer; }
         
-        .tab-bar { display: flex; background: white; border-bottom: 1px solid var(--border); overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .tab-btn { flex: 1; text-align: center; padding: 12px 10px; cursor: pointer; font-size: 13px; font-weight: bold; color: #666; white-space: nowrap; border-bottom: 3px solid transparent; transition: 0.2s; }
+        .tab-bar { display: flex; background: white; border-bottom: 1px solid var(--border); overflow-x: auto; }
+        .tab-btn { flex: 1; text-align: center; padding: 12px 10px; cursor: pointer; font-size: 13px; font-weight: bold; color: #666; white-space: nowrap; border-bottom: 3px solid transparent; }
         .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: #f8f9fa; }
         
         .tab-content { display: none; padding: 20px 15px; max-width: 650px; margin: 0 auto; box-sizing: border-box; }
@@ -41,8 +41,11 @@
         .etapa-linha input { flex: 1; text-align: center; font-weight: bold; }
         .badge { font-size: 11px; background: #e2e8f0; padding: 3px 6px; border-radius: 4px; display: inline-block; margin-top: 4px; color: #4a5568; }
         
+        .preview-foto-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+        .preview-foto { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
+
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-box { background: white; padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 380px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+        .modal-box { background: white; padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 380px; }
         .spinner { width: 36px; height: 36px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -61,11 +64,10 @@
     <div class="tab-btn admin-only" onclick="trocarAba('admin-users', this)" style="display:none;">🔒 Permissões</div>
 </div>
 
-<!-- TELA 1: LOGIN E SELEÇÃO DE PERFIL -->
+<!-- LOGIN -->
 <div id="aba-login" class="tab-content active">
     <div class="container" style="text-align: center;">
         <h2>Identificação de Acesso</h2>
-        <p style="font-size: 13px; color:#666;">Selecione quem está acessando o sistema:</p>
         <div class="form-group">
             <label>Usuário Cadastrado</label>
             <select id="select_usuario" style="padding: 12px;"><option>Carregando dados da API...</option></select>
@@ -74,11 +76,11 @@
     </div>
 </div>
 
-<!-- TELA 2: DIÁRIO DE ENGENHARIA (CAMPO) -->
+<!-- DIÁRIO DE ENGENHARIA -->
 <div id="aba-diario" class="tab-content">
     <div class="container">
-        <h2>Diário de Engenharia</h2>
-        <button type="button" class="btn-info" style="margin-bottom: 20px; font-size: 13px; padding: 8px;" onclick="preencherDadosTeste()">🧪 Preencher Produção do Dia (Teste)</button>
+        <h2>Diário de Engenharia de Campo</h2>
+        <button type="button" class="btn-info" style="margin-bottom: 20px; font-size: 13px; padding: 8px;" onclick="preencherDadosTeste()">🧪 Preencher Teste Rápido</button>
 
         <form id="formDiario" onsubmit="enviarDiario(event)">
             <h3 class="section-title">1. Informações Gerais</h3>
@@ -87,15 +89,30 @@
                 <div class="form-group flex-1"><label>Data</label><input type="date" id="diario_data" required></div>
                 <div class="form-group flex-1"><label>Clima Manhã / Tarde</label><select id="diario_clima"><option>Sol / Sol</option><option>Nublado / Nublado</option><option>Chuva Forte</option></select></div>
             </div>
-            <div class="form-group"><label>Efetivo Total em Campo</label><input type="number" id="diario_efetivo" value="105" required></div>
 
-            <h3 class="section-title">2. Acompanhamento de Produção (PD)</h3>
-            <p style="font-size:12px; color:#666; margin-top:-10px;">Informe o executado <strong>hoje</strong>. O acumulado e saldo calculam sozinhos:</p>
-            
+            <h3 class="section-title">2. Quadro de Efetivo por Categoria</h3>
+            <div class="form-row">
+                <div class="form-group flex-1"><label>Engenharia/Admin</label><input type="number" id="ef_admin" value="3" onchange="calcularTotalEfetivo()"></div>
+                <div class="form-group flex-1"><label>Equipe Própria</label><input type="number" id="ef_propria" value="45" onchange="calcularTotalEfetivo()"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group flex-1"><label>Empreiteiras/Terceiros</label><input type="number" id="ef_terceiros" value="50" onchange="calcularTotalEfetivo()"></div>
+                <div class="form-group flex-1"><label>Apoio / Serviços</label><input type="number" id="ef_apoio" value="7" onchange="calcularTotalEfetivo()"></div>
+            </div>
+            <div class="form-group"><label>Efetivo Total em Campo (Calculado)</label><input type="number" id="diario_efetivo" value="105" readonly style="background:#e9ecef; font-weight:bold;"></div>
+
+            <h3 class="section-title">3. Acompanhamento de Produção (PD)</h3>
             <div id="container_etapas_diario"></div>
 
-            <h3 class="section-title">3. Ocorrências e Relatos</h3>
-            <div class="form-group"><textarea id="diario_relato" rows="3">Trabalhos executados normalmente no canteiro de obras.</textarea></div>
+            <h3 class="section-title">4. Registro Fotográfico de Campo</h3>
+            <div class="form-group">
+                <label>Selecionar ou Tirar Foto (Compressão Automática)</label>
+                <input type="file" id="input_fotos" accept="image/*" capture="environment" multiple onchange="processarFotosCanteiro(event)">
+                <div class="preview-foto-container" id="preview_fotos"></div>
+            </div>
+
+            <h3 class="section-title">5. Ocorrências</h3>
+            <div class="form-group"><textarea id="diario_relato" rows="3">Trabalhos executados normalmente no canteiro.</textarea></div>
             
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
                 <input type="checkbox" id="diario_termo" required style="width:auto;"><label style="margin:0; font-size:12px;">Assino e atesto as informações de campo.</label>
@@ -109,7 +126,7 @@
     </div>
 </div>
 
-<!-- TELA 3: CONSTRUTOR DE OBRAS ESTILO GOOGLE FORMS (ADMIN) -->
+<!-- CONSTRUTOR DE OBRAS -->
 <div id="aba-admin-obra" class="tab-content">
     <div class="container">
         <h2>Construtor de Obras & Metas (Admin)</h2>
@@ -131,7 +148,7 @@
     </div>
 </div>
 
-<!-- TELA 4: LOGINS & PERMISSÕES (ADMIN) -->
+<!-- PERMISSÕES -->
 <div id="aba-admin-users" class="tab-content">
     <div class="container">
         <h2>Controle de Acessos & Permissões</h2>
@@ -145,7 +162,7 @@
     </div>
 </div>
 
-<!-- MODAL SYSTEM OVERLAY -->
+<!-- MODAL OVERLAY -->
 <div id="sysOverlay" class="overlay">
     <div class="modal-box">
         <div id="modalSpinner" class="spinner"></div>
@@ -161,6 +178,7 @@
     let baseGlobal = { obras: [], usuarios: [] };
     let usuarioAtivo = null;
     let etapasAdminTemp = [];
+    let fotosProcessadas = [];
 
     window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('diario_data').valueAsDate = new Date();
@@ -174,6 +192,50 @@
         if(el) el.classList.add('active');
     }
 
+    function calcularTotalEfetivo() {
+        const ad = Number(document.getElementById('ef_admin').value || 0);
+        const pr = Number(document.getElementById('ef_propria').value || 0);
+        const te = Number(document.getElementById('ef_terceiros').value || 0);
+        const ap = Number(document.getElementById('ef_apoio').value || 0);
+        document.getElementById('diario_efetivo').value = ad + pr + te + ap;
+    }
+
+    function processarFotosCanteiro(event) {
+        const files = event.target.files;
+        if (!files || files.length === 0) return;
+        
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 800;
+                    const scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scaleSize;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    
+                    fotosProcessadas.push(compressedBase64);
+                    renderizarPreviewsFotos();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function renderizarPreviewsFotos() {
+        const container = document.getElementById('preview_fotos');
+        container.innerHTML = '';
+        fotosProcessadas.forEach(b64 => {
+            container.innerHTML += `<img src="${b64}" class="preview-foto">`;
+        });
+    }
+
     async function apiRequest(acao, metodo = "GET", payload = null) {
         try {
             if(metodo === "GET") {
@@ -183,9 +245,7 @@
                 const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
                 return await res.json();
             }
-        } catch(e) {
-            return null;
-        }
+        } catch(e) { return null; }
     }
 
     async function carregarDadosSistema() {
@@ -214,8 +274,8 @@
         localStorage.setItem('smartsync_user_email', usuarioAtivo.email);
 
         document.getElementById('usuario-logado').innerText = `${usuarioAtivo.nome} [${usuarioAtivo.perfil}]`;
-
         document.getElementById('tab-diario').style.display = 'block';
+        
         if(usuarioAtivo.perfil === 'Administrador') {
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
         } else {
@@ -230,57 +290,6 @@
         trocarAba('diario', document.getElementById('tab-diario'));
     }
 
-    // --- CONSTRUTOR DE OBRAS (ADMIN) ---
-    function adicionarEtapaAdmin() {
-        const nome = document.getElementById('add_etapa_nome').value;
-        const meta = document.getElementById('add_etapa_meta').value;
-        if(!nome || !meta) return alert("Digite o nome e a meta da etapa.");
-        etapasAdminTemp.push({ nome: nome, meta: meta });
-        renderizarListaEtapasAdmin();
-        document.getElementById('add_etapa_nome').value = '';
-    }
-
-    function renderizarListaEtapasAdmin() {
-        let html = '';
-        etapasAdminTemp.forEach(et => {
-            html += `<div class="etapa-linha"><div class="info"><b>${et.nome}</b></div><div style="font-weight:bold;">Meta: ${et.meta}</div></div>`;
-        });
-        document.getElementById('lista_etapas_admin').innerHTML = html;
-    }
-
-    async function salvarObraAdmin() {
-        const nome = document.getElementById('nova_obra_nome').value;
-        if(!nome || etapasAdminTemp.length === 0) return alert("Digite o nome da obra e adicione pelo menos uma etapa.");
-        
-        abrirModal("Salvando Obra...", "Gravando matriz de planejamento no banco de dados.");
-
-        const payload = {
-            acao: "salvar_obra", nome: nome, totalUHs: document.getElementById('nova_obra_uhs').value,
-            empresa: document.getElementById('nova_obra_emp').value, etapas: etapasAdminTemp
-        };
-        const res = await apiRequest("salvar_obra", "POST", payload);
-        etapasAdminTemp = []; renderizarListaEtapasAdmin();
-        await carregarDadosSistema();
-        fecharModal(res.sucesso ? "Obra Cadastrada!" : "Erro", res.mensagem, true);
-    }
-
-    async function salvarUsuarioAdmin() {
-        const email = document.getElementById('usr_email').value;
-        const nome = document.getElementById('usr_nome').value;
-        if(!email || !nome) return alert("Preencha e-mail e nome do usuário.");
-        
-        abrirModal("Concedendo Permissão...", "Registrando usuário na base corporativa.");
-
-        const payload = {
-            acao: "salvar_usuario", email: email, nome: nome,
-            perfil: document.getElementById('usr_perfil').value, obra: document.getElementById('usr_obra').value
-        };
-        const res = await apiRequest("salvar_usuario", "POST", payload);
-        await carregarDadosSistema();
-        fecharModal(res.sucesso ? "Usuário Cadastrado!" : "Erro", res.mensagem, true);
-    }
-
-    // --- FORMULÁRIO DO ENGENHEIRO (CAMPO) ---
     function renderizarFormularioEngenheiro() {
         const nomeObra = document.getElementById('diario_obra').value;
         const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
@@ -312,22 +321,9 @@
         alert("🧪 Produção de teste preenchida!");
     }
 
-    function salvarRascunhoLocal() {
-        let etapasProd = {};
-        document.querySelectorAll('.input-pd').forEach(inp => {
-            if(Number(inp.value) > 0) etapasProd[inp.dataset.etapa] = { pd: inp.value };
-        });
-        const rascunho = {
-            obra: document.getElementById('diario_obra').value, data: document.getElementById('diario_data').value,
-            efetivo: document.getElementById('diario_efetivo').value, etapas: etapasProd, relato: document.getElementById('diario_relato').value
-        };
-        localStorage.setItem('smartsync_rascunho_pwa', JSON.stringify(rascunho));
-        alert("💾 Rascunho salvo no celular!");
-    }
-
     async function enviarDiario(event) {
         event.preventDefault();
-        abrirModal("Publicando Diário...", "Calculando saldos da matriz e gerando PDF no Google Drive.");
+        abrirModal("Publicando Diário...", "Enviando fotos otimizadas e gerando PDF no Google Drive.");
 
         let etapasProd = {};
         document.querySelectorAll('.input-pd').forEach(inp => {
@@ -335,23 +331,30 @@
             if(val > 0) etapasProd[inp.dataset.etapa] = { pd: val };
         });
 
+        const efDetalhado = {
+            admin: document.getElementById('ef_admin').value,
+            propria: document.getElementById('ef_propria').value,
+            terceiros: document.getElementById('ef_terceiros').value,
+            apoio: document.getElementById('ef_apoio').value
+        };
+
         const payload = {
             acao: "salvar_diario", obra: document.getElementById('diario_obra').value,
             data_diario: document.getElementById('diario_data').value, clima: document.getElementById('diario_clima').value,
             efetivo_total: document.getElementById('diario_efetivo').value, responsavel: usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável",
-            respostas: { etapas_producao: etapasProd, ocorrencias: document.getElementById('diario_relato').value }
+            fotos: fotosProcessadas,
+            respostas: { etapas_producao: etapasProd, efetivo_detalhado: efDetalhado, ocorrencias: document.getElementById('diario_relato').value }
         };
 
         const res = await apiRequest("salvar_diario", "POST", payload);
         if(res.sucesso) {
-            localStorage.removeItem('smartsync_rascunho_pwa');
-            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold; font-size:15px;">📄 Visualizar PDF Oficial no Drive</a>`;
+            fotosProcessadas = []; renderizarPreviewsFotos();
+            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold; font-size:15px;">📄 Visualizar PDF Oficial com Fotos</a>`;
             await carregarDadosSistema();
         }
         fecharModal(res.sucesso ? "Diário Publicado!" : "Erro", res.mensagem, true);
     }
 
-    // --- MODAIS ---
     function abrirModal(titulo, msg) {
         document.getElementById('sysOverlay').style.display = 'flex';
         document.getElementById('modalSpinner').style.display = 'block';
