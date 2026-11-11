@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Diário de Engenharia</title>
+    <title>SmartSyncGest - Construtor de Formulários</title>
     
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" href="./icons/icon-192.png" type="image/png">
@@ -15,8 +15,8 @@
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 30px; }
         
         .top-header { background: var(--primary); color: white; display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
-        .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; }
-        .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+        .brand-title { font-size: 18px; font-weight: bold; }
+        .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 4px; }
         
         .tab-bar { display: flex; background: white; border-bottom: 1px solid var(--border); overflow-x: auto; }
         .tab-btn { flex: 1; text-align: center; padding: 12px 10px; cursor: pointer; font-size: 13px; font-weight: bold; color: #666; white-space: nowrap; border-bottom: 3px solid transparent; }
@@ -27,22 +27,17 @@
         .container { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
         h2 { margin-top: 0; font-size: 19px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px; }
-        h3.section-title { font-size: 14px; background: #e9ecef; padding: 8px 12px; border-radius: 6px; margin-top: 25px; margin-bottom: 15px; color: var(--primary); font-weight: bold; }
-        
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-row { display: flex; gap: 10px; } .flex-1 { flex: 1; }
         label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
         input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; box-sizing: border-box; }
         button { padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; color: white; width: 100%; margin-top: 10px; transition: 0.2s; }
-        .btn-primary { background: var(--primary); } .btn-success { background: var(--success); } .btn-info { background: var(--info); } .btn-warning { background: var(--warning); color: #000; }
+        .btn-primary { background: var(--primary); } .btn-success { background: var(--success); } .btn-info { background: var(--info); } .btn-danger { background: var(--danger); }
         
-        .etapa-linha { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; margin-bottom: 10px; gap: 10px; }
-        .etapa-linha .info { flex: 2; font-size: 13px; }
-        .etapa-linha input { flex: 1; text-align: center; font-weight: bold; }
-        .badge { font-size: 11px; background: #e2e8f0; padding: 3px 6px; border-radius: 4px; display: inline-block; margin-top: 4px; color: #4a5568; }
-        
-        .preview-foto-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-        .preview-foto { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
+        /* CARD ESTILO GOOGLE FORMS */
+        .card-pergunta-builder { background: #ffffff; border: 1px solid var(--border); border-left: 5px solid var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); position: relative; }
+        .card-pergunta-builder .btn-remover { position: absolute; top: 10px; right: 10px; background: none; color: var(--danger); border: none; font-size: 18px; cursor: pointer; width: auto; margin:0; }
+        .badge-tipo { font-size: 11px; background: #e2e8f0; color: #4a5568; padding: 3px 8px; border-radius: 4px; font-weight: bold; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
 
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 3000; align-items: center; justify-content: center; }
         .modal-box { background: white; padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 380px; }
@@ -59,106 +54,98 @@
 
 <div class="tab-bar">
     <div class="tab-btn active" onclick="trocarAba('login', this)">👤 Login</div>
-    <div class="tab-btn" id="tab-diario" onclick="trocarAba('diario', this)" style="display:none;">📝 Diário</div>
-    <div class="tab-btn admin-only" onclick="trocarAba('admin-obra', this)" style="display:none;">⚙️ Construtor Obras</div>
-    <div class="tab-btn admin-only" onclick="trocarAba('admin-users', this)" style="display:none;">🔒 Permissões</div>
+    <div class="tab-btn admin-only" onclick="trocarAba('builder', this)" style="display:none;">🎨 Construtor GoogleForms</div>
+    <div class="tab-btn" id="tab-diario" onclick="trocarAba('diario', this)" style="display:none;">📝 Diário de Campo</div>
 </div>
 
-<!-- LOGIN -->
+<!-- TELA 1: LOGIN -->
 <div id="aba-login" class="tab-content active">
     <div class="container" style="text-align: center;">
         <h2>Identificação de Acesso</h2>
         <div class="form-group">
-            <label>Usuário Cadastrado</label>
-            <select id="select_usuario" style="padding: 12px;"><option>Carregando dados da API...</option></select>
+            <label>Selecione o Usuário</label>
+            <select id="select_usuario" style="padding: 12px;"><option>Carregando API...</option></select>
         </div>
         <button class="btn-primary" onclick="efetuarLogin()">Entrar no Sistema</button>
     </div>
 </div>
 
-<!-- DIÁRIO DE ENGENHARIA -->
+<!-- TELA 2: CONSTRUTOR DE FORMULÁRIOS (PAINEL DO GESTOR / ADMIN) -->
+<div id="aba-builder" class="tab-content">
+    <div class="container">
+        <h2>🎨 Construtor de Formulário (Google Forms Estilo)</h2>
+        <p style="font-size:12px; color:#666;">Monte o esqueleto do formulário que o engenheiro preencherá no canteiro.</p>
+        
+        <div class="form-group">
+            <label>Obra a Ser Configurada</label>
+            <div class="form-row">
+                <select id="builder_select_obra" class="flex-1" onchange="carregarFormularioParaEdicao()"></select>
+                <button class="btn-info" style="width:auto; margin:0;" onclick="criarNovaObraPrompt()">+ Nova Obra</button>
+            </div>
+        </div>
+
+        <hr style="border:0; border-top:1px solid var(--border); margin:20px 0;">
+
+        <!-- PAINEL ADICIONAR NOVA PERGUNTA -->
+        <div style="background:#f8f9fa; padding:15px; border-radius:8px; border:1px dashed var(--primary); margin-bottom:20px;">
+            <h4 style="margin-top:0; color:var(--primary);">+ Adicionar Novo Campo / Pergunta</h4>
+            <div class="form-group">
+                <label>Título da Pergunta / Nome da Etapa</label>
+                <input type="text" id="builder_novo_titulo" placeholder="Ex: Clima, Efetivo, 01-Laje Radier, Foto...">
+            </div>
+            <div class="form-row">
+                <div class="form-group flex-1">
+                    <label>Tipo de Campo</label>
+                    <select id="builder_novo_tipo" onchange="alternarCamposAdicionaisBuilder()">
+                        <option value="etapa_producao">🏗️ Etapa de Produção (com Meta)</option>
+                        <option value="texto">📝 Texto Curto / Resposta Aberta</option>
+                        <option value="numero">🔢 Número / Contagem</option>
+                        <option value="select">🔘 Seleção Única (Dropdown)</option>
+                    </select>
+                </div>
+                <div class="form-group flex-1" id="builder_box_meta">
+                    <label>Meta Contratual (UHs/m³)</label>
+                    <input type="number" id="builder_nova_meta" value="500">
+                </div>
+            </div>
+            <div class="form-group" id="builder_box_opcoes" style="display:none;">
+                <label>Opções de Seleção (separadas por vírgula)</label>
+                <input type="text" id="builder_novas_opcoes" placeholder="Ex: Sol / Sol, Nublado, Chuva Forte">
+            </div>
+            <button class="btn-primary" onclick="adicionarCampoAoBuilder()">Adicionar Campo ao Formulário</button>
+        </div>
+
+        <!-- LISTA DINÂMICA DE CARDS ESTILO GOOGLE FORMS -->
+        <h3 style="font-size:15px; color:var(--primary);">Perguntas do Formulário Desta Obra:</h3>
+        <div id="container_builder_cards"></div>
+
+        <button class="btn-success" style="font-size:16px; padding:15px;" onclick="salvarFormularioNoBanco()">💾 Salvar Formulário da Obra</button>
+    </div>
+</div>
+
+<!-- TELA 3: DIÁRIO DE CAMPO (PAINEL DO ENGENHEIRO - AUTO-RENDERIZADO) -->
 <div id="aba-diario" class="tab-content">
     <div class="container">
         <h2>Diário de Engenharia de Campo</h2>
-        <button type="button" class="btn-info" style="margin-bottom: 20px; font-size: 13px; padding: 8px;" onclick="preencherDadosTeste()">🧪 Preencher Teste Rápido</button>
-
         <form id="formDiario" onsubmit="enviarDiario(event)">
-            <h3 class="section-title">1. Informações Gerais</h3>
-            <div class="form-group"><label>Obra / Empreendimento</label><select id="diario_obra" onchange="renderizarFormularioEngenheiro()"></select></div>
-            <div class="form-row">
-                <div class="form-group flex-1"><label>Data</label><input type="date" id="diario_data" required></div>
-                <div class="form-group flex-1"><label>Clima Manhã / Tarde</label><select id="diario_clima"><option>Sol / Sol</option><option>Nublado / Nublado</option><option>Chuva Forte</option></select></div>
-            </div>
-
-            <h3 class="section-title">2. Quadro de Efetivo por Categoria</h3>
-            <div class="form-row">
-                <div class="form-group flex-1"><label>Engenharia/Admin</label><input type="number" id="ef_admin" value="3" onchange="calcularTotalEfetivo()"></div>
-                <div class="form-group flex-1"><label>Equipe Própria</label><input type="number" id="ef_propria" value="45" onchange="calcularTotalEfetivo()"></div>
-            </div>
-            <div class="form-row">
-                <div class="form-group flex-1"><label>Empreiteiras/Terceiros</label><input type="number" id="ef_terceiros" value="50" onchange="calcularTotalEfetivo()"></div>
-                <div class="form-group flex-1"><label>Apoio / Serviços</label><input type="number" id="ef_apoio" value="7" onchange="calcularTotalEfetivo()"></div>
-            </div>
-            <div class="form-group"><label>Efetivo Total em Campo (Calculado)</label><input type="number" id="diario_efetivo" value="105" readonly style="background:#e9ecef; font-weight:bold;"></div>
-
-            <h3 class="section-title">3. Acompanhamento de Produção (PD)</h3>
-            <div id="container_etapas_diario"></div>
-
-            <h3 class="section-title">4. Registro Fotográfico de Campo</h3>
             <div class="form-group">
-                <label>Selecionar ou Tirar Foto (Compressão Automática)</label>
-                <input type="file" id="input_fotos" accept="image/*" capture="environment" multiple onchange="processarFotosCanteiro(event)">
-                <div class="preview-foto-container" id="preview_fotos"></div>
+                <label>Obra Selecionada</label>
+                <select id="diario_select_obra" onchange="renderizarFormularioEngenheiro()"></select>
+            </div>
+            <div class="form-group">
+                <label>Data do Diário</label>
+                <input type="date" id="diario_data" required>
             </div>
 
-            <h3 class="section-title">5. Ocorrências</h3>
-            <div class="form-group"><textarea id="diario_relato" rows="3">Trabalhos executados normalmente no canteiro.</textarea></div>
-            
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
-                <input type="checkbox" id="diario_termo" required style="width:auto;"><label style="margin:0; font-size:12px;">Assino e atesto as informações de campo.</label>
-            </div>
+            <h3 style="font-size:15px; color:var(--primary); border-bottom:1px solid var(--border); padding-bottom:5px; margin-top:20px;">
+                Formulário da Obra:
+            </h3>
 
-            <div style="display: flex; gap: 10px;">
-                <button type="button" class="btn-warning flex-1" onclick="salvarRascunhoLocal()">💾 Salvar Rascunho</button>
-                <button type="submit" class="btn-success flex-1">🚀 Publicar e Gerar PDF</button>
-            </div>
+            <!-- AQUI O FORMULÁRIO É MONTADO DINAMICAMENTE -->
+            <div id="container_formulario_dinamico"></div>
+
+            <button type="submit" class="btn-success" style="margin-top:20px; font-size:16px; padding:15px;">🚀 Publicar e Gerar PDF</button>
         </form>
-    </div>
-</div>
-
-<!-- CONSTRUTOR DE OBRAS -->
-<div id="aba-admin-obra" class="tab-content">
-    <div class="container">
-        <h2>Construtor de Obras & Metas (Admin)</h2>
-        <div class="form-group"><label>Nome da Nova Obra</label><input type="text" id="nova_obra_nome" placeholder="Ex: Residencial Parque das Flores"></div>
-        <div class="form-row">
-            <div class="form-group flex-1"><label>Total UHs / Metas</label><input type="number" id="nova_obra_uhs" value="200"></div>
-            <div class="form-group flex-1"><label>Empresa Construtora</label><input type="text" id="nova_obra_emp" value="SGO Engenharia"></div>
-        </div>
-        
-        <h3 class="section-title">Definir Matriz de Etapas (Google Forms Estilo)</h3>
-        <div class="form-row" style="align-items: flex-end;">
-            <div class="form-group flex-1"><label>Nome da Etapa</label><input type="text" id="add_etapa_nome" placeholder="Ex: Terraplanagem"></div>
-            <div class="form-group" style="width: 90px;"><label>Meta Total</label><input type="number" id="add_etapa_meta" value="100"></div>
-            <button class="btn-info" style="width: auto; padding: 10px 15px; margin-bottom:15px;" onclick="adicionarEtapaAdmin()">+</button>
-        </div>
-        
-        <div id="lista_etapas_admin" style="margin-bottom: 15px;"></div>
-        <button class="btn-success" onclick="salvarObraAdmin()">💾 Salvar Obra no Banco</button>
-    </div>
-</div>
-
-<!-- PERMISSÕES -->
-<div id="aba-admin-users" class="tab-content">
-    <div class="container">
-        <h2>Controle de Acessos & Permissões</h2>
-        <div class="form-group"><label>E-mail do Colaborador</label><input type="email" id="usr_email" placeholder="engenheiro@empresa.com"></div>
-        <div class="form-group"><label>Nome Completo</label><input type="text" id="usr_nome" placeholder="Nome do Profissional"></div>
-        <div class="form-row">
-            <div class="form-group flex-1"><label>Perfil de Acesso</label><select id="usr_perfil"><option>Engenheiro</option><option>Administrador</option><option>Fiscal</option></select></div>
-            <div class="form-group flex-1"><label>Obra Vinculada</label><select id="usr_obra"></select></div>
-        </div>
-        <button class="btn-primary" onclick="salvarUsuarioAdmin()">🔒 Conceder Permissão</button>
     </div>
 </div>
 
@@ -166,8 +153,8 @@
 <div id="sysOverlay" class="overlay">
     <div class="modal-box">
         <div id="modalSpinner" class="spinner"></div>
-        <h3 id="modalTitle" style="color:var(--primary); margin-top:0;">Carregando...</h3>
-        <p id="modalMsg" style="font-size:14px; color:#666;">Comunicando com o servidor.</p>
+        <h3 id="modalTitle" style="color:var(--primary); margin-top:0;">Processando...</h3>
+        <p id="modalMsg" style="font-size:14px; color:#666;">Comunicando com a API do Google.</p>
         <div id="modalLink" style="margin-top: 15px;"></div>
         <button id="modalBtn" class="btn-primary" style="display:none;" onclick="fecharModal()">OK</button>
     </div>
@@ -177,8 +164,7 @@
     const API_URL = typeof CONFIG !== 'undefined' ? CONFIG.API_URL : "SUA_URL_AQUI/exec";
     let baseGlobal = { obras: [], usuarios: [] };
     let usuarioAtivo = null;
-    let etapasAdminTemp = [];
-    let fotosProcessadas = [];
+    let schemaFormularioAtual = [];
 
     window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('diario_data').valueAsDate = new Date();
@@ -190,50 +176,6 @@
         document.querySelectorAll('.tab-btn').forEach(c => c.classList.remove('active'));
         document.getElementById('aba-' + abaId).classList.add('active');
         if(el) el.classList.add('active');
-    }
-
-    function calcularTotalEfetivo() {
-        const ad = Number(document.getElementById('ef_admin').value || 0);
-        const pr = Number(document.getElementById('ef_propria').value || 0);
-        const te = Number(document.getElementById('ef_terceiros').value || 0);
-        const ap = Number(document.getElementById('ef_apoio').value || 0);
-        document.getElementById('diario_efetivo').value = ad + pr + te + ap;
-    }
-
-    function processarFotosCanteiro(event) {
-        const files = event.target.files;
-        if (!files || files.length === 0) return;
-        
-        Array.from(files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800;
-                    const scaleSize = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH;
-                    canvas.height = img.height * scaleSize;
-
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
-                    
-                    fotosProcessadas.push(compressedBase64);
-                    renderizarPreviewsFotos();
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        });
-    }
-
-    function renderizarPreviewsFotos() {
-        const container = document.getElementById('preview_fotos');
-        container.innerHTML = '';
-        fotosProcessadas.forEach(b64 => {
-            container.innerHTML += `<img src="${b64}" class="preview-foto">`;
-        });
     }
 
     async function apiRequest(acao, metodo = "GET", payload = null) {
@@ -252,13 +194,17 @@
         const res = await apiRequest("listar_dados", "GET");
         if(res && res.sucesso) {
             baseGlobal = res.dados || { obras: [], usuarios: [] };
+            
             let htmlUsr = '';
             baseGlobal.usuarios.forEach(u => htmlUsr += `<option value="${u.email}">${u.nome} (${u.perfil})</option>`);
             document.getElementById('select_usuario').innerHTML = htmlUsr;
 
-            let htmlObraUsr = '';
-            baseGlobal.obras.forEach(o => htmlObraUsr += `<option value="${o.nome}">${o.nome}</option>`);
-            document.getElementById('usr_obra').innerHTML = htmlObraUsr;
+            let htmlObras = '';
+            baseGlobal.obras.forEach(o => htmlObras += `<option value="${o.nome}">${o.nome}</option>`);
+            document.getElementById('builder_select_obra').innerHTML = htmlObras;
+            document.getElementById('diario_select_obra').innerHTML = htmlObras;
+
+            carregarFormularioParaEdicao();
 
             const salvoEmail = localStorage.getItem('smartsync_user_email');
             if (salvoEmail) {
@@ -275,81 +221,173 @@
 
         document.getElementById('usuario-logado').innerText = `${usuarioAtivo.nome} [${usuarioAtivo.perfil}]`;
         document.getElementById('tab-diario').style.display = 'block';
-        
+
         if(usuarioAtivo.perfil === 'Administrador') {
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
         } else {
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
         }
 
-        let htmlObra = '';
-        baseGlobal.obras.forEach(o => htmlObra += `<option value="${o.nome}">${o.nome}</option>`);
-        document.getElementById('diario_obra').innerHTML = htmlObra;
         renderizarFormularioEngenheiro();
-        
         trocarAba('diario', document.getElementById('tab-diario'));
     }
 
-    function renderizarFormularioEngenheiro() {
-        const nomeObra = document.getElementById('diario_obra').value;
+    // =========================================================================
+    // LÓGICA DO CONSTRUTOR DE FORMULÁRIOS (PAINEL GESTOR - ESTILO GOOGLE FORMS)
+    // =========================================================================
+    function alternarCamposAdicionaisBuilder() {
+        const tipo = document.getElementById('builder_novo_tipo').value;
+        document.getElementById('builder_box_meta').style.display = (tipo === 'etapa_producao') ? 'block' : 'none';
+        document.getElementById('builder_box_opcoes').style.display = (tipo === 'select') ? 'block' : 'none';
+    }
+
+    function carregarFormularioParaEdicao() {
+        const nomeObra = document.getElementById('builder_select_obra').value;
         const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
-        const container = document.getElementById('container_etapas_diario');
+        schemaFormularioAtual = (obraObj && obraObj.schemaFormulario) ? JSON.parse(JSON.stringify(obraObj.schemaFormulario)) : [];
+        renderizarCardsBuilder();
+    }
+
+    function criarNovaObraPrompt() {
+        const nome = prompt("Digite o nome da nova obra:");
+        if (!nome) return;
+        baseGlobal.obras.push({ nome: nome, empresa: "Construtora Quali", schemaFormulario: [] });
         
-        if(!obraObj || !obraObj.etapasPlanejamento) return container.innerHTML = "<p>Nenhuma meta configurada para esta obra.</p>";
+        let htmlObras = '';
+        baseGlobal.obras.forEach(o => htmlObras += `<option value="${o.nome}">${o.nome}</option>`);
+        document.getElementById('builder_select_obra').innerHTML = htmlObras;
+        document.getElementById('builder_select_obra').value = nome;
+        carregarFormularioParaEdicao();
+    }
+
+    function adicionarCampoAoBuilder() {
+        const titulo = document.getElementById('builder_novo_titulo').value;
+        const tipo = document.getElementById('builder_novo_tipo').value;
+        if (!titulo) return alert("Digite o título da pergunta.");
+
+        let novoCampo = { id: "c_" + Date.now(), tipo: tipo, titulo: titulo };
+        if (tipo === 'etapa_producao') novoCampo.meta = Number(document.getElementById('builder_nova_meta').value || 500);
+        if (tipo === 'select') {
+            const ops = document.getElementById('builder_novas_opcoes').value;
+            novoCampo.opcoes = ops ? ops.split(',').map(s => s.trim()) : ["Opção 1", "Opção 2"];
+        }
+
+        schemaFormularioAtual.push(novoCampo);
+        renderizarCardsBuilder();
+        document.getElementById('builder_novo_titulo').value = '';
+    }
+
+    function removerCampoBuilder(index) {
+        schemaFormularioAtual.splice(index, 1);
+        renderizarCardsBuilder();
+    }
+
+    function renderizarCardsBuilder() {
+        const container = document.getElementById('container_builder_cards');
+        if (schemaFormularioAtual.length === 0) {
+            container.innerHTML = "<p style='color:#888; text-align:center;'>Nenhum campo neste formulário. Adicione campos acima!</p>";
+            return;
+        }
 
         let html = '';
-        for (var et in obraObj.etapasPlanejamento) {
-            var dados = obraObj.etapasPlanejamento[et];
+        schemaFormularioAtual.forEach((c, idx) => {
+            let labelTipo = c.tipo === 'etapa_producao' ? `🏗️ Produção (Meta: ${c.meta})` : c.tipo === 'select' ? `🔘 Seleção (${c.opcoes.join(', ')})` : c.tipo === 'numero' ? '🔢 Número' : '📝 Texto';
             html += `
-                <div class="etapa-linha">
-                    <div class="info">
-                        <b>${et}</b>
-                        <span class="badge">Meta: ${dados.meta} | Saldo: ${dados.sd}</span>
-                    </div>
-                    <input type="number" class="input-pd" data-etapa="${et}" value="0" min="0" placeholder="PD">
+                <div class="card-pergunta-builder">
+                    <button class="btn-remover" onclick="removerCampoBuilder(${idx})">🗑️</button>
+                    <span class="badge-tipo">${labelTipo}</span>
+                    <div style="font-weight:bold; font-size:15px; color:#333;">${idx + 1}. ${c.titulo}</div>
                 </div>
             `;
-        }
+        });
         container.innerHTML = html;
     }
 
-    function preencherDadosTeste() {
-        const inputs = document.querySelectorAll('.input-pd');
-        if(inputs.length > 0) inputs[0].value = "10";
-        if(inputs.length > 5) inputs[5].value = "5";
-        document.getElementById('diario_relato').value = "Trabalhos executados com ritmo normal no canteiro.";
-        alert("🧪 Produção de teste preenchida!");
+    async function salvarFormularioNoBanco() {
+        const nomeObra = document.getElementById('builder_select_obra').value;
+        abrirModal("Salvando Formulario...", "Gravando o molde personalizado no banco de dados.");
+
+        const payload = { acao: "salvar_schema_obra", nome: nomeObra, schemaFormulario: schemaFormularioAtual };
+        const res = await apiRequest("salvar_schema_obra", "POST", payload);
+        await carregarDadosSistema();
+        fecharModal(res.sucesso ? "Formulário Salvo!" : "Erro", res.mensagem, true);
+    }
+
+    // =========================================================================
+    // RENDERIZADOR DINÂMICO DO FORMULÁRIO (PAINEL DO ENGENHEIRO)
+    // =========================================================================
+    function renderizarFormularioEngenheiro() {
+        const nomeObra = document.getElementById('diario_select_obra').value;
+        const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
+        const container = document.getElementById('container_formulario_dinamico');
+
+        if (!obraObj || !obraObj.schemaFormulario || obraObj.schemaFormulario.length === 0) {
+            container.innerHTML = "<p>O gestor ainda não criou perguntas/etapas para esta obra.</p>";
+            return;
+        }
+
+        let html = '';
+        obraObj.schemaFormulario.forEach(c => {
+            if (c.tipo === 'etapa_producao') {
+                html += `
+                    <div class="form-group" style="background:#f8f9fa; padding:12px; border-radius:8px; border:1px solid #e0e0e0;">
+                        <label>🏗️ ${c.titulo} <span style="font-size:11px; background:#e2e8f0; padding:2px 6px; border-radius:4px;">Meta: ${c.meta} | Saldo: ${c.sd}</span></label>
+                        <input type="number" class="campo-dinamico" data-titulo="${c.titulo}" data-tipo="etapa_producao" value="0" placeholder="Produção do Dia (PD)">
+                    </div>
+                `;
+            } else if (c.tipo === 'select') {
+                let options = c.opcoes.map(op => `<option value="${op}">${op}</option>`).join('');
+                html += `
+                    <div class="form-group">
+                        <label>🔘 ${c.titulo}</label>
+                        <select class="campo-dinamico" data-titulo="${c.titulo}" data-tipo="select">${options}</select>
+                    </div>
+                `;
+            } else if (c.tipo === 'numero') {
+                html += `
+                    <div class="form-group">
+                        <label>🔢 ${c.titulo}</label>
+                        <input type="number" class="campo-dinamico" data-titulo="${c.titulo}" data-tipo="numero" placeholder="Digite a quantidade">
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="form-group">
+                        <label>📝 ${c.titulo}</label>
+                        <textarea class="campo-dinamico" data-titulo="${c.titulo}" data-tipo="texto" rows="2" placeholder="Sua resposta..."></textarea>
+                    </div>
+                `;
+            }
+        });
+
+        container.innerHTML = html;
     }
 
     async function enviarDiario(event) {
         event.preventDefault();
-        abrirModal("Publicando Diário...", "Enviando fotos otimizadas e gerando PDF no Google Drive.");
+        abrirModal("Publicando Diário...", "Calculando saldos e gerando prancha em PDF no Google Drive.");
 
-        let etapasProd = {};
-        document.querySelectorAll('.input-pd').forEach(inp => {
-            var val = Number(inp.value);
-            if(val > 0) etapasProd[inp.dataset.etapa] = { pd: val };
+        let respostas = {};
+        document.querySelectorAll('.campo-dinamico').forEach(inp => {
+            const titulo = inp.dataset.titulo;
+            const tipo = inp.dataset.tipo;
+            if (tipo === 'etapa_producao') {
+                respostas[titulo] = { pd: Number(inp.value || 0) };
+            } else {
+                respostas[titulo] = inp.value;
+            }
         });
 
-        const efDetalhado = {
-            admin: document.getElementById('ef_admin').value,
-            propria: document.getElementById('ef_propria').value,
-            terceiros: document.getElementById('ef_terceiros').value,
-            apoio: document.getElementById('ef_apoio').value
-        };
-
         const payload = {
-            acao: "salvar_diario", obra: document.getElementById('diario_obra').value,
-            data_diario: document.getElementById('diario_data').value, clima: document.getElementById('diario_clima').value,
-            efetivo_total: document.getElementById('diario_efetivo').value, responsavel: usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável",
-            fotos: fotosProcessadas,
-            respostas: { etapas_producao: etapasProd, efetivo_detalhado: efDetalhado, ocorrencias: document.getElementById('diario_relato').value }
+            acao: "salvar_diario", obra: document.getElementById('diario_select_obra').value,
+            data_diario: document.getElementById('diario_data').value,
+            responsavel: usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável",
+            respostas: respostas
         };
 
         const res = await apiRequest("salvar_diario", "POST", payload);
         if(res.sucesso) {
-            fotosProcessadas = []; renderizarPreviewsFotos();
-            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold; font-size:15px;">📄 Visualizar PDF Oficial com Fotos</a>`;
+            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold;">📄 Visualizar PDF no Drive</a>`;
             await carregarDadosSistema();
         }
         fecharModal(res.sucesso ? "Diário Publicado!" : "Erro", res.mensagem, true);
