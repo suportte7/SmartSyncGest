@@ -1,49 +1,70 @@
-const CACHE_NAME = 'smartsyncgest-pwa-v1';
-const ASSETS_TO_CACHE = [
+// =========================================================================
+// SmartSyncGest - SERVICE WORKER (CACHE OFFLINE PWA)
+// =========================================================================
+
+const CACHE_NAME = 'smartsyncgest-pwa-v6';
+const ASSETS_LOCAIS = [
   './',
   './index.html',
   './config.js',
-  './manifest.json'
+  './manifest.json',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+      return Promise.allSettled(
+        ASSETS_LOCAIS.map((url) => cache.add(url).catch(() => null))
+      );
     })
   );
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
-  // Não intercepta chamadas da API do Google Apps Script (tratadas pelo IndexedDB)
-  if (event.request.url.includes('script.google.com') || event.request.method !== 'GET') {
+  const req = event.request;
+
+  // Ignora chamadas POST ou requisições diretas à API do Google Apps Script
+  if (req.method !== 'GET' || req.url.includes('script.google.com') || req.url.includes('script.googleusercontent.com')) {
     return;
   }
 
+  // Estratégia Network-First com fallback instantâneo para o Cache Local
   event.respondWith(
-    fetch(event.request)
+    fetch(req)
       .then((networkResponse) => {
-        const cloned = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, cloned);
-        });
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(req, responseClone);
+          });
+        }
         return networkResponse;
       })
       .catch(() => {
-        return caches.match(event.request).then((cachedResponse) => {
-          return cachedResponse || caches.match('./index.html');
+        return caches.match(req).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          if (req.mode === 'navigate') {
+            return caches.match('./index.html');
+          }
         });
       })
   );
