@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - SaaS Multi-Tenant com Trava Jurídica RDO</title>
+    <title>SmartSyncGest - SaaS Multi-Tenant com Otimização de Fotos</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -131,7 +131,7 @@
 
         <div id="formBuilderContainer" style="margin-top:15px; text-align:left;"></div>
 
-        <h3>📸 Evidências Fotográficas</h3>
+        <h3>📸 Evidências Fotográficas (Comprimidas & Otimizadas)</h3>
         <input type="file" id="rdo_camera" accept="image/*" capture="environment" multiple onchange="processarFotos(event)" style="margin-bottom:10px;">
         <div id="previewFotos" style="display:flex; gap:10px; overflow-x:auto; margin-bottom:15px;"></div>
 
@@ -274,8 +274,8 @@
     <div class="container">
         <h2>📚 Manual do Sistema</h2>
         <div class="tutorial-box">
-            <h3>Trava Jurídica de RDO (Ponto 2)</h3>
-            <p style="font-size:13px;">Os diários possuem ciclos (Aberto, Em Análise e Trancado). Diários trancados geram o PDF oficial e ficam congelados contra qualquer edição ou exclusão, assegurando validade jurídica e técnica.</p>
+            <h3>Compressão e Nuvem (Ponto 3)</h3>
+            <p style="font-size:13px;">As fotos tiradas no canteiro passam por um redimensionamento automático de largura (800px) e taxa otimizada (60%). Isso garante que o Google Drive e o Google Sheets não fiquem lotados, mantendo o SaaS veloz e econômico.</p>
         </div>
     </div>
 </div>
@@ -383,6 +383,7 @@
         } catch(e) { document.getElementById('sysOverlay').style.display = 'none'; }
     }
 
+    // PONTO 3: COMPRESSÃO INTELIGENTE DE FOTOS NO CLIENTE (OTIMIZAÇÃO DE NUVEM)
     function processarFotos(event) {
         const files = event.target.files; const preview = document.getElementById('previewFotos');
         for (let i = 0; i < files.length; i++) {
@@ -391,9 +392,10 @@
                 const img = new Image();
                 img.onload = () => {
                     const cvs = document.createElement('canvas'); const cCtx = cvs.getContext('2d');
+                    // Redimensiona largura para max 800px mantendo proporção para poupar banda e espaço na nuvem
                     cvs.width = 800; cvs.height = img.height * (800 / img.width);
                     cCtx.drawImage(img, 0, 0, cvs.width, cvs.height);
-                    const b64 = cvs.toDataURL('image/jpeg', 0.6);
+                    const b64 = cvs.toDataURL('image/jpeg', 0.6); // Compressão otimizada a 60%
                     fotosBase64Array.push(b64);
                     const thumb = document.createElement('img'); thumb.src = b64; thumb.style.height = '70px'; thumb.style.borderRadius = '6px';
                     preview.appendChild(thumb);
@@ -754,13 +756,12 @@
                 else { const el = document.getElementById(`resp_${campo.id}`); if (el) respostasObj[campo.titulo] = el.value; }
             });
         }
-        // PONTO 2: INCLUSÃO DE STATUS JURÍDICO INICIAL TRANCADO (VALIDADO)
         const payload = { 
             acao: "salvar_diario", 
             responsavel: usuarioAtivo.nome, 
             obra: obraNome, 
             data_diario: document.getElementById('rdo_data').value, 
-            status_juridico: "trancado", // Bloqueio jurídico automático no fechamento
+            status_juridico: "trancado", 
             respostas: respostasObj, 
             fotos: fotosBase64Array, 
             client_sync_id: "SYNC-" + Date.now() 
