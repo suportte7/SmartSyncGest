@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Builder Master com Preview Interativo Real</title>
+    <title>SmartSyncGest - Builder Master com Lógica Condicional</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -119,11 +119,11 @@
     </div>
 </div>
 
-<!-- TELA 3: CONSTRUTOR DE FORMULÁRIOS (BUILDER MASTER COM PREVIEW INTERATIVO) -->
+<!-- TELA 3: CONSTRUTOR DE FORMULÁRIOS (BUILDER MASTER COM CONDICIONAL) -->
 <div id="aba-builder" class="tab-content">
     <div class="container">
         <h2>🛠️ Construtor de Formulários (Builder Master)</h2>
-        <p style="font-size:13px; color:var(--subtext);">Crie perguntas, edite e clique no Preview Interativo para testar de verdade o preenchimento antes de salvar.</p>
+        <p style="font-size:13px; color:var(--subtext);">Crie perguntas avançadas com lógica condicional ("Se X então exiba Y"), edite e teste com Preview Real.</p>
         
         <div class="form-group"><label>Selecione a Obra</label><select id="builder_select_obra" onchange="carregarSchemaNaTela()"></select></div>
         
@@ -149,6 +149,18 @@
             </div>
             <div class="form-group"><label>Opções (Para Radio, Checkbox ou Select - separadas por vírgula)</label><input type="text" id="novo_campo_opcoes" placeholder="Sol, Nublado, Chuva"></div>
             <div class="form-group"><label>Meta Contratual (Apenas para Etapa de Produção)</label><input type="number" id="novo_campo_meta" value="500"></div>
+            
+            <!-- RECURSO AVANÇADO: LÓGICA CONDICIONAL -->
+            <div style="background:#eef4f9; padding:12px; border-radius:8px; border:1px dashed var(--primary); margin-bottom:15px;">
+                <h4 style="margin:0 0 8px 0; font-size:13px; color:var(--primary);">🔀 Lógica Condicional (Opcional)</h4>
+                <div class="form-group" style="margin-bottom:8px;"><label style="font-size:12px;">Exibir esta pergunta SOMENTE SE:</label>
+                    <select id="novo_cond_pergunta_alvo"><option value="">-- Nenhuma condição (Sempre visível) --</option></select>
+                </div>
+                <div class="form-group" style="margin-bottom:0;"><label style="font-size:12px;">Receber exatamente a resposta:</label>
+                    <input type="text" id="novo_cond_valor" placeholder="Ex: Sim ou Chuva Forte">
+                </div>
+            </div>
+
             <div class="form-group"><label><input type="checkbox" id="novo_campo_obrigatoria" style="width:auto; margin-right:5px;"> Pergunta Obrigatória</label></div>
             
             <button class="btn-primary" id="btnSalvarOuAdicionar" onclick="salvarOuAdicionarPergunta()">Adicionar Pergunta ao Formulário</button>
@@ -207,8 +219,8 @@
     <div class="container">
         <h2>📚 Manual do Sistema</h2>
         <div class="tutorial-box">
-            <h3>Guia do Preview Interativo</h3>
-            <p style="font-size:13px;">O Preview Interativo Real simula o formulário ativo: você pode clicar nas opções, digitar nos campos, testar a barra de progresso e o aceite jurídico sem enviar nenhum dado para a nuvem.</p>
+            <h3>Guia de Lógica Condicional</h3>
+            <p style="font-size:13px;">Agora você pode configurar regras condicionais em cada pergunta. Se a pergunta gatilho receber a resposta exata estipulada, a pergunta dependente aparecerá automaticamente no formulário e no preview.</p>
         </div>
     </div>
 </div>
@@ -216,8 +228,8 @@
 <!-- MODAL PREVIEW INTERATIVO REAL -->
 <div id="modalPreviewReal" class="overlay" onclick="document.getElementById('modalPreviewReal').style.display='none'">
     <div class="modal-box" onclick="event.stopPropagation()">
-        <h3 style="margin-top:0; color:var(--primary);">👁️ Preview Interativo Real</h3>
-        <p style="font-size:12px; color:var(--subtext); margin-bottom:15px;">Teste livremente o preenchimento, cliques e barra de progresso abaixo (Simulação local).</p>
+        <h3 style="margin-top:0; color:var(--primary);">👁️ Preview Interativo com Lógica Condicional</h3>
+        <p style="font-size:12px; color:var(--subtext); margin-bottom:15px;">Teste as condições alterando as respostas e veja os campos aparecerem dinamicamente.</p>
         
         <label style="font-size:12px; margin-bottom:4px; text-align:left;">Progresso do Teste: <span id="lblPreviewPercentual">0%</span></label>
         <div class="progress-bar-container"><div id="progressBarPreviewFill" class="progress-bar-fill"></div></div>
@@ -232,7 +244,7 @@
             </label>
         </div>
 
-        <button class="btn-success" onclick="alert('Teste concluído com sucesso! Nenhum dado foi enviado.')" style="margin-top:15px;">Testar Envio (Simulado)</button>
+        <button class="btn-success" onclick="alert('Teste concluído com sucesso! Lógica condicional validada.')" style="margin-top:15px;">Testar Envio (Simulado)</button>
         <button class="btn-danger" onclick="document.getElementById('modalPreviewReal').style.display='none'" style="margin-top:8px;">Fechar Preview</button>
     </div>
 </div>
@@ -372,13 +384,23 @@
         renderizarHistorico();
     }
 
-    // --- BUILDER MASTER COM PREVIEW INTERATIVO REAL ---
+    // --- BUILDER MASTER COM CONDICIONAL ---
     function carregarSchemaNaTela() {
         const obraNome = document.getElementById('builder_select_obra').value;
         const obra = baseGlobal.obras.find(o => o.nome === obraNome);
         schemaEdicaoAtual = obra && obra.schemaFormulario ? JSON.parse(JSON.stringify(obra.schemaFormulario)) : [];
         cancelarEdicaoPergunta();
+        atualizarSelectsCondicionaisBuilder();
         renderizarListaSchemaBuilder();
+    }
+
+    function atualizarSelectsCondicionaisBuilder() {
+        const sel = document.getElementById('novo_cond_pergunta_alvo');
+        let html = '<option value="">-- Nenhuma condição (Sempre visível) --</option>';
+        schemaEdicaoAtual.forEach(c => {
+            html += `<option value="${c.id}">${c.titulo} (${c.tipo})</option>`;
+        });
+        sel.innerHTML = html;
     }
 
     function renderizarListaSchemaBuilder() {
@@ -387,10 +409,15 @@
         let html = '';
         schemaEdicaoAtual.forEach((c, idx) => {
             const icone = iconesTipos[c.tipo] || '❓';
+            let condInfo = '';
+            if (c.condicao && c.condicao.perguntaId) {
+                const alvo = schemaEdicaoAtual.find(x => x.id === c.condicao.perguntaId);
+                condInfo = `<br><span style="font-size:11.5px; color:#856404; background:#fff3cd; padding:2px 6px; border-radius:4px;">🔀 Condicional: Exibir se "${alvo ? alvo.titulo : 'Outra'}" = "${c.condicao.valor}"</span>`;
+            }
             html += `<div class="builder-card">
                         <div style="font-size:11px; font-weight:bold; color:var(--primary); text-transform:uppercase;">${c.secao || 'Geral'}</div>
                         <div style="font-size:15px; font-weight:bold; margin:4px 0;">${icone} ${c.titulo} ${c.obrigatoria?'*':''}</div>
-                        <div style="font-size:12px; color:var(--subtext);">Tipo: <b>${c.tipo}</b> ${c.opcoes && c.opcoes.length>0 ? '| Opções: '+c.opcoes.join(', ') : ''}</div>
+                        <div style="font-size:12px; color:var(--subtext);">Tipo: <b>${c.tipo}</b> ${c.opcoes && c.opcoes.length>0 ? '| Opções: '+c.opcoes.join(', ') : ''} ${condInfo}</div>
                         <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
                             <button class="btn-warning" style="width:auto; padding:5px 10px; font-size:11px; margin-top:0; color:#000;" onclick="carregarPerguntaParaEdicao(${idx})">✏️ Editar</button>
                             ${idx > 0 ? `<button class="btn-primary" style="width:auto; padding:5px 10px; font-size:11px; margin-top:0;" onclick="moverPergunta(${idx}, -1)">⬆️ Subir</button>` : ''}
@@ -403,55 +430,100 @@
     }
 
     function abrirModalPreviewReal() {
-        const container = document.getElementById('containerPreviewRealConteudo');
-        if (schemaEdicaoAtual.length === 0) {
-            container.innerHTML = "<p>Nenhuma pergunta configurada para testar.</p>";
-        } else {
-            let html = '';
-            schemaEdicaoAtual.forEach(campo => {
-                const icone = iconesTipos[campo.tipo] || '❓';
-                html += `<div class="form-group" oninput="atualizarProgressoPreview()" onchange="atualizarProgressoPreview()">
-                            <label>${icone} ${campo.titulo} ${campo.obrigatoria?'<span style="color:red;">*</span>':''}</label>`;
-                
-                if (campo.tipo === 'text') html += `<input type="text" class="form-campo-preview" placeholder="Resposta curta">`;
-                else if (campo.tipo === 'textarea') html += `<textarea class="form-campo-preview" rows="3" placeholder="Parágrafo / Observações"></textarea>`;
-                else if (campo.tipo === 'number') html += `<input type="number" class="form-campo-preview" placeholder="Valor numérico">`;
-                else if (campo.tipo === 'date') html += `<input type="date" class="form-campo-preview">`;
-                else if (campo.tipo === 'time') html += `<input type="time" class="form-campo-preview">`;
-                else if (campo.tipo === 'rating') {
-                    html += `<div style="display:flex; gap:10px;">`;
-                    for(let r=1; r<=5; r++) {
-                        html += `<label style="font-weight:normal;"><input type="radio" name="prev_${campo.id}" class="form-campo-preview" value="${r}" style="width:auto; margin-right:4px;"> ${r}</label>`;
-                    }
-                    html += `</div>`;
-                }
-                else if (campo.tipo === 'radio') {
-                    (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="radio" name="prev_${campo.id}" class="form-campo-preview" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
-                } else if (campo.tipo === 'checkbox') {
-                    (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="checkbox" name="prev_${campo.id}" class="form-campo-preview" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
-                } else if (campo.tipo === 'select') {
-                    html += `<select class="form-campo-preview"><option value="">Selecione...</option>`;
-                    (campo.opcoes||[]).forEach(op => html += `<option value="${op}">${op}</option>`);
-                    html += `</select>`;
-                } else if (campo.tipo === 'etapa_producao') {
-                    html += `<input type="number" class="form-campo-preview" placeholder="Qtd Produzida Hoje (Meta: ${campo.meta})">`;
-                }
-                html += `</div>`;
-            });
-            container.innerHTML = html;
-        }
+        renderizarPreviewDinamico();
         document.getElementById('chkTermosPreview').checked = false;
         atualizarProgressoPreview();
         document.getElementById('modalPreviewReal').style.display = 'flex';
     }
 
+    function renderizarPreviewDinamico() {
+        const container = document.getElementById('containerPreviewRealConteudo');
+        if (schemaEdicaoAtual.length === 0) {
+            container.innerHTML = "<p>Nenhuma pergunta configurada para testar.</p>";
+            return;
+        }
+
+        let html = '';
+        schemaEdicaoAtual.forEach(campo => {
+            const icone = iconesTipos[campo.tipo] || '❓';
+            let estiloDiv = '';
+            if (campo.condicao && campo.condicao.perguntaId) {
+                estiloDiv = `id="wrapper_prev_${campo.id}" style="display:none; border-left:3px solid #ffc107; padding-left:10px; margin-left:5px;"`;
+            } else {
+                estiloDiv = `id="wrapper_prev_${campo.id}"`;
+            }
+
+            html += `<div class="form-group" ${estiloDiv} oninput="avaliarCondicionaisPreview(); atualizarProgressoPreview();" onchange="avaliarCondicionaisPreview(); atualizarProgressoPreview();">
+                        <label>${icone} ${campo.titulo} ${campo.obrigatoria?'<span style="color:red;">*</span>':''}</label>`;
+            
+            if (campo.tipo === 'text') html += `<input type="text" id="prev_input_${campo.id}" data-id="${campo.id}" class="form-campo-preview" placeholder="Resposta curta">`;
+            else if (campo.tipo === 'textarea') html += `<textarea id="prev_input_${campo.id}" data-id="${campo.id}" class="form-campo-preview" rows="3" placeholder="Parágrafo / Observações"></textarea>`;
+            else if (campo.tipo === 'number') html += `<input type="number" id="prev_input_${campo.id}" data-id="${campo.id}" class="form-campo-preview" placeholder="Valor numérico">`;
+            else if (campo.tipo === 'date') html += `<input type="date" id="prev_input_${campo.id}" data-id="${campo.id}" class="form-campo-preview">`;
+            else if (campo.tipo === 'time') html += `<input type="time" id="prev_input_${campo.id}" data-id="${campo.id}" class="form-campo-preview">`;
+            else if (campo.tipo === 'rating') {
+                html += `<div style="display:flex; gap:10px;">`;
+                for(let r=1; r<=5; r++) {
+                    html += `<label style="font-weight:normal;"><input type="radio" name="prev_${campo.id}" data-id="${campo.id}" class="form-campo-preview" value="${r}" style="width:auto; margin-right:4px;"> ${r}</label>`;
+                }
+                html += `</div>`;
+            }
+            else if (campo.tipo === 'radio') {
+                (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="radio" name="prev_${campo.id}" data-id="${campo.id}" class="form-campo-preview" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
+            } else if (campo.tipo === 'checkbox') {
+                (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="checkbox" name="prev_${campo.id}" data-id="${campo.id}" class="form-campo-preview" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
+            } else if (campo.tipo === 'select') {
+                html += `<select id="prev_input_${campo.id}" data-id="${campo.id}" class="form-campo-preview"><option value="">Selecione...</option>`;
+                (campo.opcoes||[]).forEach(op => html += `<option value="${op}">${op}</option>`);
+                html += `</select>`;
+            } else if (campo.tipo === 'etapa_producao') {
+                html += `<input type="number" id="prev_input_${campo.id}" data-id="${campo.id}" class="form-campo-preview" placeholder="Qtd Produzida Hoje (Meta: ${campo.meta})">`;
+            }
+            html += `</div>`;
+        });
+        container.innerHTML = html;
+        avaliarCondicionaisPreview();
+    }
+
+    function avaliarCondicionaisPreview() {
+        schemaEdicaoAtual.forEach(campo => {
+            if (campo.condicao && campo.condicao.perguntaId) {
+                const wrapper = document.getElementById(`wrapper_prev_${campo.id}`);
+                if (!wrapper) return;
+                
+                const alvoCampo = schemaEdicaoAtual.find(x => x.id === campo.condicao.perguntaId);
+                let valorAtualAlvo = "";
+                
+                if (alvoCampo.tipo === 'radio' || alvoCampo.tipo === 'rating') {
+                    const sel = document.querySelector(`input[name="prev_${alvoCampo.id}"]:checked`);
+                    valorAtualAlvo = sel ? sel.value : "";
+                } else if (alvoCampo.tipo === 'select') {
+                    const el = document.getElementById(`prev_input_${alvoCampo.id}`);
+                    valorAtualAlvo = el ? el.value : "";
+                } else {
+                    const el = document.getElementById(`prev_input_${alvoCampo.id}`);
+                    valorAtualAlvo = el ? el.value : "";
+                }
+
+                if (valorAtualAlvo.trim().toLowerCase() === campo.condicao.valor.trim().toLowerCase()) {
+                    wrapper.style.display = 'block';
+                } else {
+                    wrapper.style.display = 'none';
+                    // Limpar valor ao ocultar
+                    const inputs = wrapper.querySelectorAll('input, select, textarea');
+                    inputs.forEach(i => { if(i.type==='checkbox'||i.type==='radio') i.checked=false; else i.value=''; });
+                }
+            }
+        });
+    }
+
     function atualizarProgressoPreview() {
-        const campos = document.querySelectorAll('.form-campo-preview');
+        const visiveis = document.querySelectorAll('#containerPreviewRealConteudo .form-group:not([style*="display: none"]) .form-campo-preview');
         const termoCheck = document.getElementById('chkTermosPreview')?.checked ? 1 : 0;
         let preenchidos = 0;
-        const total = campos.length + 1;
+        const total = visiveis.length + 1;
 
-        campos.forEach(c => {
+        visiveis.forEach(c => {
             if (c.type === 'radio' || c.type === 'checkbox') { if (c.checked) preenchidos++; }
             else if (c.value.trim() !== '') { preenchidos++; }
         });
@@ -471,6 +543,9 @@
         document.getElementById('novo_campo_meta').value = c.meta || 500;
         document.getElementById('novo_campo_opcoes').value = c.opcoes ? c.opcoes.join(', ') : '';
         document.getElementById('novo_campo_obrigatoria').checked = !!c.obrigatoria;
+        
+        document.getElementById('novo_cond_pergunta_alvo').value = c.condicao ? c.condicao.perguntaId || '' : '';
+        document.getElementById('novo_cond_valor').value = c.condicao ? c.condicao.valor || '' : '';
 
         document.getElementById('lblBuilderTituloAcao').innerText = `Editando Pergunta #${idx + 1}`;
         document.getElementById('btnSalvarOuAdicionar').innerText = "Salvar Alterações da Pergunta";
@@ -486,6 +561,8 @@
         document.getElementById('novo_campo_meta').value = 500;
         document.getElementById('novo_campo_opcoes').value = '';
         document.getElementById('novo_campo_obrigatoria').checked = false;
+        document.getElementById('novo_cond_pergunta_alvo').value = '';
+        document.getElementById('novo_cond_valor').value = '';
 
         document.getElementById('lblBuilderTituloAcao').innerText = "Adicionar Nova Pergunta";
         document.getElementById('btnSalvarOuAdicionar').innerText = "Adicionar Pergunta ao Formulário";
@@ -501,6 +578,9 @@
         const opcoesStr = document.getElementById('novo_campo_opcoes').value.trim();
         const obrigatoria = document.getElementById('novo_campo_obrigatoria').checked;
         
+        const condPerguntaId = document.getElementById('novo_cond_pergunta_alvo').value;
+        const condValor = document.getElementById('novo_cond_valor').value.trim();
+
         if (!titulo) return alert("Digite o título da pergunta.");
         
         let opcoesArr = [];
@@ -508,13 +588,19 @@
             opcoesArr = opcoesStr.split(',').map(s => s.trim());
         }
 
+        const condicaoObj = condPerguntaId && condValor ? { perguntaId: condPerguntaId, valor: condValor } : null;
+        const idCampo = idxEdicao >= 0 ? schemaEdicaoAtual[idxEdicao].id : "c_" + Date.now();
+
+        const novoCampo = { id: idCampo, tipo, secao, titulo, meta, opcoes: opcoesArr, obrigatoria, condicao: condicaoObj };
+
         if (idxEdicao >= 0) {
-            schemaEdicaoAtual[idxEdicao] = { id: schemaEdicaoAtual[idxEdicao].id, tipo, secao, titulo, meta, opcoes: opcoesArr, obrigatoria };
+            schemaEdicaoAtual[idxEdicao] = novoCampo;
         } else {
-            schemaEdicaoAtual.push({ id: "c_" + Date.now(), tipo, secao, titulo, meta, opcoes: opcoesArr, obrigatoria });
+            schemaEdicaoAtual.push(novoCampo);
         }
 
         cancelarEdicaoPergunta();
+        atualizarSelectsCondicionaisBuilder();
         renderizarListaSchemaBuilder();
     }
 
@@ -524,12 +610,14 @@
         const temp = schemaEdicaoAtual[idx];
         schemaEdicaoAtual[idx] = schemaEdicaoAtual[novoIdx];
         schemaEdicaoAtual[novoIdx] = temp;
+        atualizarSelectsCondicionaisBuilder();
         renderizarListaSchemaBuilder();
     }
 
     function removerCampoSchema(idx) {
         if (!confirm("Deseja realmente remover esta pergunta?")) return;
         schemaEdicaoAtual.splice(idx, 1);
+        atualizarSelectsCondicionaisBuilder();
         renderizarListaSchemaBuilder();
     }
 
@@ -538,7 +626,7 @@
         const obra = baseGlobal.obras.find(o => o.nome === obraNome);
         const payload = { acao: "salvar_schema_obra", nome: obraNome, empresa: obra ? obra.empresa : "Construtora Padrão", totalUHs: obra ? obra.totalUHs : 500, schemaFormulario: schemaEdicaoAtual };
 
-        mostrarLoadingUI("Salvando...", "Gravando estrutura no Google Sheets.");
+        mostrarLoadingUI("Salvando...", "Gravando estrutura avançada no Google Sheets.");
         const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
         if (res.sucesso) { baseGlobal = res.base; mostrarAlertaUI("Sucesso!", res.mensagem); popularselectsGerais(); }
         else { mostrarAlertaUI("Erro", res.erro); }
@@ -559,48 +647,91 @@
         let html = '';
         obra.schemaFormulario.forEach(campo => {
             const icone = iconesTipos[campo.tipo] || '';
-            html += `<div class="form-group" oninput="atualizarProgressoFormulario()" onchange="atualizarProgressoFormulario()">
+            let estiloDiv = '';
+            if (campo.condicao && campo.condicao.perguntaId) {
+                estiloDiv = `id="wrapper_rdo_${campo.id}" style="display:none; border-left:3px solid #ffc107; padding-left:10px; margin-left:5px;"`;
+            } else {
+                estiloDiv = `id="wrapper_rdo_${campo.id}"`;
+            }
+
+            html += `<div class="form-group" ${estiloDiv} oninput="avaliarCondicionaisRDO(); atualizarProgressoFormulario();" onchange="avaliarCondicionaisRDO(); atualizarProgressoFormulario();">
                         <label>${icone} ${campo.titulo} ${campo.obrigatoria?'<span style="color:red;">*</span>':''}</label>`;
             
-            if (campo.tipo === 'text') html += `<input type="text" id="resp_${campo.id}" class="form-campo-rdo" placeholder="Resposta curta">`;
-            else if (campo.tipo === 'textarea') html += `<textarea id="resp_${campo.id}" class="form-campo-rdo" rows="3" placeholder="Parágrafo / Observações"></textarea>`;
-            else if (campo.tipo === 'number') html += `<input type="number" id="resp_${campo.id}" class="form-campo-rdo" placeholder="Valor numérico">`;
-            else if (campo.tipo === 'date') html += `<input type="date" id="resp_${campo.id}" class="form-campo-rdo">`;
-            else if (campo.tipo === 'time') html += `<input type="time" id="resp_${campo.id}" class="form-campo-rdo">`;
+            if (campo.tipo === 'text') html += `<input type="text" id="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo" placeholder="Resposta curta">`;
+            else if (campo.tipo === 'textarea') html += `<textarea id="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo" rows="3" placeholder="Parágrafo / Observações"></textarea>`;
+            else if (campo.tipo === 'number') html += `<input type="number" id="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo" placeholder="Valor numérico">`;
+            else if (campo.tipo === 'date') html += `<input type="date" id="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo">`;
+            else if (campo.tipo === 'time') html += `<input type="time" id="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo">`;
             else if (campo.tipo === 'rating') {
                 html += `<div style="display:flex; gap:10px;">`;
                 for(let r=1; r<=5; r++) {
-                    html += `<label style="font-weight:normal;"><input type="radio" name="resp_${campo.id}" class="form-campo-rdo" value="${r}" style="width:auto; margin-right:4px;"> ${r}</label>`;
+                    html += `<label style="font-weight:normal;"><input type="radio" name="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo" value="${r}" style="width:auto; margin-right:4px;"> ${r}</label>`;
                 }
                 html += `</div>`;
             }
             else if (campo.tipo === 'radio') {
-                (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="radio" name="resp_${campo.id}" class="form-campo-rdo" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
+                (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="radio" name="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
             } else if (campo.tipo === 'checkbox') {
-                (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="checkbox" name="resp_${campo.id}" class="form-campo-rdo" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
+                (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="checkbox" name="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
             } else if (campo.tipo === 'select') {
-                html += `<select id="resp_${campo.id}" class="form-campo-rdo"><option value="">Selecione...</option>`;
+                html += `<select id="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo"><option value="">Selecione...</option>`;
                 (campo.opcoes||[]).forEach(op => html += `<option value="${op}">${op}</option>`);
                 html += `</select>`;
             } else if (campo.tipo === 'etapa_producao') {
                 html += `<div style="display:flex; gap:10px; align-items:center;">
-                            <input type="number" id="resp_${campo.id}_pd" class="form-campo-rdo" placeholder="Qtd Produzida Hoje" style="flex:1;">
+                            <input type="number" id="resp_${campo.id}_pd" data-id="${campo.id}" class="form-campo-rdo" placeholder="Qtd Produzida Hoje" style="flex:1;">
                             <span style="font-size:12px; color:var(--subtext);">Meta: ${campo.meta || 500} | Exec: ${campo.ac || 0}</span>
                          </div>`;
             }
             html += `</div>`;
         });
         container.innerHTML = html;
+        avaliarCondicionaisRDO();
         atualizarProgressoFormulario();
     }
 
+    function avaliarCondicionaisRDO() {
+        const obraNome = document.getElementById('rdo_obra').value;
+        const obra = baseGlobal.obras.find(o => o.nome === obraNome);
+        if (!obra || !obra.schemaFormulario) return;
+
+        obra.schemaFormulario.forEach(campo => {
+            if (campo.condicao && campo.condicao.perguntaId) {
+                const wrapper = document.getElementById(`wrapper_rdo_${campo.id}`);
+                if (!wrapper) return;
+                
+                const alvoCampo = obra.schemaFormulario.find(x => x.id === campo.condicao.perguntaId);
+                let valorAtualAlvo = "";
+                
+                if (alvoCampo.tipo === 'radio' || alvoCampo.tipo === 'rating') {
+                    const sel = document.querySelector(`input[name="resp_${alvoCampo.id}"]:checked`);
+                    valorAtualAlvo = sel ? sel.value : "";
+                } else if (alvoCampo.tipo === 'select') {
+                    const el = document.getElementById(`resp_${alvoCampo.id}`);
+                    valorAtualAlvo = el ? el.value : "";
+                } else {
+                    const el = document.getElementById(`resp_${alvoCampo.id}`);
+                    valorAtualAlvo = el ? el.value : "";
+                }
+
+                if (valorAtualAlvo.trim().toLowerCase() === campo.condicao.valor.trim().toLowerCase()) {
+                    wrapper.style.display = 'block';
+                } else {
+                    wrapper.style.display = 'none';
+                    const inputs = wrapper.querySelectorAll('input, select, textarea');
+                    inputs.forEach(i => { if(i.type==='checkbox'||i.type==='radio') i.checked=false; else i.value=''; });
+                }
+            }
+        });
+    }
+
     function atualizarProgressoFormulario() {
-        const campos = document.querySelectorAll('.form-campo-rdo');
+        const visiveis = document.querySelectorAll('#formBuilderContainer .form-group:not([style*="display: none"]) .form-campo-rdo');
         const termoCheck = document.getElementById('chkTermosRDO')?.checked ? 1 : 0;
         let preenchidos = 0;
-        const total = campos.length + 1;
+        const total = visiveis.length + 1;
 
-        campos.forEach(c => {
+        visiveis.forEach(c => {
             if (c.type === 'radio' || c.type === 'checkbox') { if (c.checked) preenchidos++; }
             else if (c.value.trim() !== '') { preenchidos++; }
         });
@@ -621,6 +752,9 @@
 
         if (obra && obra.schemaFormulario) {
             obra.schemaFormulario.forEach(campo => {
+                const wrapper = document.getElementById(`wrapper_rdo_${campo.id}`);
+                if (wrapper && wrapper.style.display === 'none') return; // Ignora se condicional estiver oculta
+
                 if (campo.tipo === 'etapa_producao') {
                     const valPd = Number(document.getElementById(`resp_${campo.id}_pd`)?.value || 0);
                     respostasObj[campo.titulo] = { pd: valPd, meta: campo.meta || 500 };
