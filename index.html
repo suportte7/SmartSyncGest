@@ -70,7 +70,7 @@
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2400; }
         .sidebar-overlay.open { display: block; }
 
-        .tab-content { display: none; padding: 20px 15px; max-width: 680px; margin: 0 auto; box-sizing: border-box; }
+        .tab-content { display: none; padding: 20px 15px; max-width: 720px; margin: 0 auto; box-sizing: border-box; }
         .tab-content.active { display: block; }
         .container { background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border-color); }
         
@@ -106,7 +106,10 @@
         .preview-foto-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
         .preview-foto { width: 75px; height: 75px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-color); }
 
-        /* BLOCO DE TERMO DE RESPONSABILIDADE E ACEITE ELETRÔNICO */
+        .logo-preview-box { display: flex; align-items: center; gap: 12px; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: rgba(0,0,0,0.02); margin-top: 6px; }
+        .logo-preview-img { max-height: 45px; max-width: 140px; object-fit: contain; border-radius: 4px; background: #fff; padding: 3px; border: 1px solid #ddd; }
+
+        /* TERMO DE RESPONSABILIDADE E ASSINATURA ELETRÔNICA */
         .termo-box {
             border: 1px solid var(--primary);
             border-left: 5px solid var(--primary);
@@ -116,9 +119,9 @@
             background: rgba(0, 86, 179, 0.04);
         }
         .termo-texto {
-            font-size: 12.5px;
-            color: var(--text-color);
+            font-size: 13px;
             line-height: 1.5;
+            color: var(--text-color);
             margin-bottom: 12px;
         }
         .termo-check-label {
@@ -129,15 +132,40 @@
             font-weight: 700;
             color: var(--primary);
             cursor: pointer;
-            margin: 0;
+            background: var(--card-bg);
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
         }
         .termo-check-label input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            min-width: 20px;
-            margin-top: 1px;
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            flex-shrink: 0;
             cursor: pointer;
         }
+
+        /* BARRAS DE PROGRESSO FÍSICO (PAINEL E HISTÓRICO) */
+        .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .kpi-card { background: rgba(0,0,0,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; text-align: center; }
+        .kpi-valor { font-size: 20px; font-weight: bold; color: var(--primary); }
+        .kpi-label { font-size: 11px; color: var(--subtext); margin-top: 3px; font-weight: 600; text-transform: uppercase; }
+
+        .medicao-box { background: rgba(0,0,0,0.02); border: 1px dashed var(--primary); border-radius: 8px; padding: 14px; margin-bottom: 20px; }
+        .etapa-prog-card { border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 10px; background: var(--card-bg); }
+        .prog-track { width: 100%; height: 10px; background: rgba(0,0,0,0.1); border-radius: 6px; overflow: hidden; margin-top: 6px; }
+        .prog-fill { height: 100%; background: var(--primary); transition: width 0.4s ease; }
+
+        .rdo-cloud-card { border: 1px solid var(--border-color); border-left: 4px solid var(--primary); border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .btn-pdf-pill { background: var(--primary); color: #fff; padding: 8px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold; white-space: nowrap; }
+
+        /* CARDS DE USUÁRIOS E TEMAS */
+        .user-card { border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .status-pill-ativo { background: #d4edda; color: #155724; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+        .status-pill-inativo { background: #f8d7da; color: #721c24; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+
+        .temas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
+        .btn-tema-item { padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; color: #fff; margin: 0; text-transform: uppercase; }
 
         .offline-banner { display: none; background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 10px 14px; border-radius: 8px; font-size: 12px; margin-bottom: 15px; font-weight: 600; }
         .fila-card { border: 1px solid var(--border-color); border-left: 4px solid #ffc107; padding: 12px; border-radius: 8px; margin-bottom: 10px; background: rgba(0,0,0,0.02); }
@@ -160,13 +188,14 @@
     <div class="sidebar-menu">
         <div class="sidebar-item active" onclick="navegarSidebar('login')"><span>👤 Identificação / Perfil</span></div>
         <div class="sidebar-item" id="side-item-diario" onclick="navegarSidebar('diario')" style="display:none;"><span>📝 Diário de Campo</span></div>
+        <div class="sidebar-item" id="side-item-historico" onclick="navegarSidebar('historico')" style="display:none;"><span>📊 Painel & RDOs Emitidos</span></div>
         <div class="sidebar-item" id="side-item-offline" onclick="navegarSidebar('offline')" style="display:none;">
             <span>⏳ Fila Offline / Sincronizar</span>
             <span id="sidebarBadgeFila" style="background:#ffc107; color:#000; padding:2px 7px; border-radius:10px; font-size:11px; display:none;">0</span>
         </div>
         <div class="sidebar-item admin-only" onclick="navegarSidebar('builder')" style="display:none;"><span>🎨 Construtor GoogleForms</span></div>
-        <div class="sidebar-item admin-only" onclick="navegarSidebar('configuracoes')" style="display:none;"><span>⚙️ Configurações Gerais</span></div>
         <div class="sidebar-item admin-only" onclick="navegarSidebar('permissoes')" style="display:none;"><span>🔐 Permissões e Perfis</span></div>
+        <div class="sidebar-item admin-only" onclick="navegarSidebar('configuracoes')" style="display:none;"><span>⚙️ Configurações Gerais</span></div>
     </div>
 </div>
 
@@ -197,11 +226,11 @@
     </div>
 </div>
 
-<!-- TELA 2: CONSTRUTOR DE FORMULÁRIOS COM EDIÇÃO E OBRIGATORIEDADE (ADMIN) -->
+<!-- TELA 2: CONSTRUTOR DE FORMULÁRIOS COM LOGOTIPO, EDIÇÃO E OBRIGATORIEDADE (ADMIN) -->
 <div id="aba-builder" class="tab-content">
     <div class="container">
         <h2>🎨 Construtor de Formulário Personalizável</h2>
-        <p style="font-size:12px; color:var(--subtext);">Configure o molde de perguntas, defina campos obrigatórios e edite com 1 clique.</p>
+        <p style="font-size:12px; color:var(--subtext);">Configure o molde de perguntas, logotipo da construtora, defina campos obrigatórios e edite com 1 clique.</p>
         
         <div class="form-group">
             <label>Obra a Ser Configurada</label>
@@ -219,6 +248,16 @@
             <div class="form-group" style="width: 120px;">
                 <label>Meta Global UHs</label>
                 <input type="number" id="builder_total_uhs" value="500">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>🖼️ Logotipo da Construtora (Cabeçalho do PDF)</label>
+            <input type="file" id="builder_input_logo" accept="image/*" onchange="processarLogoConstrutora(event)">
+            <div class="logo-preview-box" id="box_preview_logo" style="display:none;">
+                <img id="img_preview_logo" class="logo-preview-img" src="" alt="Logotipo">
+                <div style="flex:1; font-size:12px; color:var(--subtext);">Logotipo pronto para o cabeçalho oficial do RDO.</div>
+                <button type="button" class="btn-danger" style="width:auto; padding:6px 10px; font-size:11px; margin:0;" onclick="removerLogoConstrutora()">Remover</button>
             </div>
         </div>
 
@@ -283,7 +322,7 @@
         <h3 style="font-size:15px; color:var(--primary);">Perguntas do Formulário Desta Obra:</h3>
         <div id="container_builder_cards"></div>
 
-        <button class="btn-success" style="font-size:16px; padding:15px;" onclick="salvarFormularioNoBanco()">💾 Salvar Formulário da Obra</button>
+        <button class="btn-success" style="font-size:16px; padding:15px;" onclick="salvarFormularioNoBanco()">💾 Salvar Formulário e Identidade da Obra</button>
     </div>
 </div>
 
@@ -312,15 +351,15 @@
             <div id="container_formulario_dinamico"></div>
 
             <!-- BLOCO DE TERMO DE RESPONSABILIDADE E ASSINATURA ELETRÔNICA -->
-            <div id="blocoAssinaturasDigitais" style="display:none; margin-top: 25px;">
-                <div class="secao-header">🛡️ Termo de Responsabilidade e Assinatura Eletrônica</div>
-                <div class="termo-box" id="boxTermoResponsabilidade">
+            <div id="blocoTermoResponsabilidade" style="display:none; margin-top: 25px;">
+                <div class="secao-header">📋 Termo de Responsabilidade Técnica</div>
+                <div class="termo-box" id="wrapperTermoCheck">
                     <div class="termo-texto">
-                        Declaro, na qualidade de <strong>Engenheiro Responsável pela Obra</strong> (<span id="termo_nome_responsavel">---</span>), que todas as informações, medições físicas, efetivo e condições climáticas registradas neste Diário de Engenharia são verdadeiras e refletem fielmente a realidade do canteiro na data informada.
+                        Declaro, na qualidade de <strong>Engenheiro / Responsável Técnico</strong> pelo preenchimento deste Relatório Diário de Obra (RDO), que todas as informações de efetivo, condições climáticas, serviços executados e registros fotográficos aqui lançados são verdadeiros e refletem fielmente as atividades ocorridas no canteiro nesta data.
                     </div>
                     <label class="termo-check-label">
-                        <input type="checkbox" id="chk_aceite_termo">
-                        <span>Concordo e assino eletronicamente este Diário de Obra <span class="req-star">*</span></span>
+                        <input type="checkbox" id="chk_aceite_responsabilidade">
+                        <span id="label_texto_assinante">Li, concordo e assino eletronicamente este Diário de Obra. <span class="req-star">*</span></span>
                     </label>
                 </div>
             </div>
@@ -334,7 +373,67 @@
     </div>
 </div>
 
-<!-- TELA 4: FILA OFFLINE E SINCRONIZAÇÃO (PWA) -->
+<!-- TELA 4: PAINEL DE AVANÇO FÍSICO, MEDIÇÃO & HISTÓRICO DE RDOs -->
+<div id="aba-historico" class="tab-content">
+    <div class="container">
+        <h2>📊 Painel de Avanço & Medição</h2>
+        
+        <div class="form-row" style="margin-bottom:15px;">
+            <div class="form-group flex-1" style="margin-bottom:0;">
+                <label>Filtrar por Obra</label>
+                <select id="hist_select_obra" onchange="renderizarPainelHistorico()"></select>
+            </div>
+            <div style="display:flex; align-items:flex-end;">
+                <button type="button" class="btn-info" style="margin:0; padding:10px 14px;" onclick="atualizarDadosPainelNuvem()">🔄 Atualizar</button>
+            </div>
+        </div>
+
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-valor" id="kpiTotalRdos">0</div>
+                <div class="kpi-label">RDOs Emitidos</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-valor" id="kpiAvancoMedio">0%</div>
+                <div class="kpi-label">Avanço Médio</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-valor" id="kpiMetaGlobal">0</div>
+                <div class="kpi-label">Meta Global UHs</div>
+            </div>
+        </div>
+
+        <!-- BOLETIM DE MEDIÇÃO E EXPORTAÇÃO CONSOLIDADA -->
+        <div class="medicao-box">
+            <h4 style="margin-top:0; margin-bottom:10px; color:var(--primary);">📑 Boletim Consolidado por Período (Medição)</h4>
+            <div class="form-row">
+                <div class="form-group flex-1" style="margin-bottom:8px;">
+                    <label>Data Início</label>
+                    <input type="date" id="med_data_inicio">
+                </div>
+                <div class="form-group flex-1" style="margin-bottom:8px;">
+                    <label>Data Fim</label>
+                    <input type="date" id="med_data_fim">
+                </div>
+            </div>
+            <div class="form-row">
+                <button type="button" class="btn-primary flex-1" style="margin-top:4px;" onclick="gerarPdfConsolidadoPeriodo()">📄 Gerar PDF Consolidado</button>
+                <button type="button" class="btn-success flex-1" style="margin-top:4px;" onclick="exportarCsvConsolidadoPeriodo()">📊 Exportar Excel (CSV)</button>
+            </div>
+        </div>
+
+        <h3 style="font-size:15px; color:var(--primary); margin-bottom:10px;">Progresso Físico Acumulado por Etapa:</h3>
+        <div id="containerProgressoEtapas"></div>
+
+        <h3 style="font-size:15px; color:var(--primary); margin-top:25px; margin-bottom:10px;">Relatórios Diários Publicados (PDFs):</h3>
+        <div class="form-group">
+            <input type="text" id="hist_busca_texto" placeholder="🔍 Buscar por data, engenheiro ou serviço..." onkeyup="renderizarPainelHistorico()">
+        </div>
+        <div id="containerListaRdosNuvem"></div>
+    </div>
+</div>
+
+<!-- TELA 5: FILA OFFLINE E SINCRONIZAÇÃO (PWA) -->
 <div id="aba-offline" class="tab-content">
     <div class="container">
         <h2>⏳ Fila de Sincronização Offline</h2>
@@ -355,25 +454,71 @@
     </div>
 </div>
 
-<!-- TELA 5: CONFIGURAÇÕES GERAIS -->
-<div id="aba-configuracoes" class="tab-content">
-    <div class="container">
-        <h2>⚙️ Configurações do Sistema</h2>
-        <p style="font-size:13px; color:var(--subtext);">Painel administrativo para parâmetros globais da plataforma SmartSyncGest.</p>
-        <div style="padding: 15px; background: rgba(0,0,0,0.03); border-radius: 8px; font-size: 13px;">
-            <p><strong>Armazenamento Offline (PWA):</strong> Ativo via IndexedDB + Service Worker.</p>
-            <button class="btn-secondary" onclick="forcarAtualizacaoCache()">🔄 Atualizar Cache de Obras do Servidor</button>
-        </div>
-    </div>
-</div>
-
-<!-- TELA 6: PERMISSÕES E PERFIS -->
+<!-- TELA 6: PERMISSÕES E PERFIS (ADMIN) -->
 <div id="aba-permissoes" class="tab-content">
     <div class="container">
         <h2>🔐 Permissões e Perfis de Acesso</h2>
-        <p style="font-size:13px; color:var(--subtext);">Gerenciamento de funções (Administrador, Engenheiro, Fiscal e Coordenador).</p>
-        <div style="padding: 15px; background: rgba(0,0,0,0.03); border-radius: 8px; font-size: 13px;">
-            <p><strong>Status de Acesso:</strong> Níveis configurados com restrição aos construtores dinâmicos para contas operacionais.</p>
+        <p style="font-size:12px; color:var(--subtext);">Cadastre engenheiros, fiscais e administradores e defina a obra vinculada a cada profissional.</p>
+
+        <div style="background:rgba(0,0,0,0.02); padding:15px; border-radius:8px; border:1px dashed var(--primary); margin-bottom:20px;">
+            <h4 style="margin-top:0; color:var(--primary);">+ Cadastrar ou Atualizar Usuário</h4>
+            <div class="form-row">
+                <div class="form-group flex-1">
+                    <label>Nome Completo</label>
+                    <input type="text" id="usr_novo_nome" placeholder="Ex: Eng. Carlos Silva">
+                </div>
+                <div class="form-group flex-1">
+                    <label>E-mail de Acesso</label>
+                    <input type="email" id="usr_novo_email" placeholder="carlos@construtora.com">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group flex-1">
+                    <label>Perfil de Acesso</label>
+                    <select id="usr_novo_perfil">
+                        <option value="Engenheiro">Engenheiro (Diário de Campo + Painel)</option>
+                        <option value="Fiscal">Fiscal (Diário de Campo + Painel)</option>
+                        <option value="Coordenador">Coordenador (Diário de Campo + Painel)</option>
+                        <option value="Administrador">Administrador (Acesso Total + Construtor)</option>
+                    </select>
+                </div>
+                <div class="form-group flex-1">
+                    <label>Obra Vinculada</label>
+                    <select id="usr_nova_obra"></select>
+                </div>
+            </div>
+            <button type="button" class="btn-primary" onclick="salvarUsuarioSistema()">💾 Salvar Usuário</button>
+        </div>
+
+        <h3 style="font-size:15px; color:var(--primary);">Equipe Cadastrada no Sistema:</h3>
+        <div id="listaUsuariosContainer"></div>
+    </div>
+</div>
+
+<!-- TELA 7: CONFIGURAÇÕES GERAIS (ADMIN) -->
+<div id="aba-configuracoes" class="tab-content">
+    <div class="container">
+        <h2>⚙️ Configurações Gerais do Sistema</h2>
+        
+        <div style="padding: 15px; background: rgba(0,0,0,0.03); border-radius: 8px; font-size: 13px; margin-bottom: 20px;">
+            <p style="margin-top:0;"><strong>Status do Backend:</strong> <span id="cfgApiStatus">Conectado</span></p>
+            <p><strong>Obras em Cache Local:</strong> <span id="cfgQtdObras">0</span></p>
+            <p style="margin-bottom:0;"><strong>RDOs Sincronizados na Base:</strong> <span id="cfgQtdRdos">0</span></p>
+            <button class="btn-secondary" style="margin-top:15px;" onclick="forcarAtualizacaoCache()">🔄 Sincronizar Base Completa com a Planilha</button>
+        </div>
+
+        <h3 style="font-size:15px; color:var(--primary);">Personalização de Tema Visual:</h3>
+        <div class="temas-grid">
+            <button type="button" class="btn-tema-item" style="background:#0056b3;" onclick="aplicarTemaVisual('azul')">Azul Corporativo</button>
+            <button type="button" class="btn-tema-item" style="background:#1b5e20;" onclick="aplicarTemaVisual('verde')">Verde Obra</button>
+            <button type="button" class="btn-tema-item" style="background:#e65100;" onclick="aplicarTemaVisual('laranja')">Laranja Engenharia</button>
+            <button type="button" class="btn-tema-item" style="background:#3700b3;" onclick="aplicarTemaVisual('dark')">Modo Escuro (Dark)</button>
+            <button type="button" class="btn-tema-item" style="background:#f57f17;" onclick="aplicarTemaVisual('amarelo')">Amarelo Segurança</button>
+            <button type="button" class="btn-tema-item" style="background:#4a148c;" onclick="aplicarTemaVisual('roxo')">Roxo Executivo</button>
+            <button type="button" class="btn-tema-item" style="background:#b71c1c;" onclick="aplicarTemaVisual('vermelho')">Vermelho Alerta</button>
+            <button type="button" class="btn-tema-item" style="background:#37474f;" onclick="aplicarTemaVisual('elegante')">Grafite Elegante</button>
+            <button type="button" class="btn-tema-item" style="background:#004d40;" onclick="aplicarTemaVisual('teal')">Verde Petróleo</button>
+            <button type="button" class="btn-tema-item" style="background:#4e342e;" onclick="aplicarTemaVisual('terra')">Marrom Terraplanagem</button>
         </div>
     </div>
 </div>
@@ -395,9 +540,10 @@
     const CACHE_BASE_KEY = 'smartsync_base_cache_v1';
     const HIST_LOCAL_KEY = 'smartsync_hist_pdfs_v1';
 
-    let baseGlobal = { obras: [], usuarios: [] };
+    let baseGlobal = { obras: [], usuarios: [], diarios: [] };
     let usuarioAtivo = null;
     let schemaFormularioAtual = [];
+    let logoObraAtualBase64 = "";
     let fotosAnexadasModulos = {};
     let itemEditandoIndex = null;
     let sincronizandoEmAndamento = false;
@@ -645,7 +791,13 @@
     // INICIALIZAÇÃO DO APLICATIVO
     // =========================================================================
     window.addEventListener('DOMContentLoaded', async () => {
-        document.getElementById('diario_data').valueAsDate = new Date();
+        const hoje = new Date();
+        document.getElementById('diario_data').valueAsDate = hoje;
+        
+        const primeiroDiaMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+        document.getElementById('med_data_inicio').valueAsDate = primeiroDiaMes;
+        document.getElementById('med_data_fim').valueAsDate = hoje;
+
         const temaSalvo = localStorage.getItem('smartsync_tema') || 'azul';
         aplicarTemaVisual(temaSalvo);
         
@@ -688,6 +840,9 @@
         document.querySelectorAll('.sidebar-item').forEach(c => c.classList.remove('active'));
         document.getElementById('aba-' + abaId).classList.add('active');
         if (abaId === 'offline') atualizarInterfaceFilaOffline();
+        if (abaId === 'historico') renderizarPainelHistorico();
+        if (abaId === 'permissoes') renderizarListaUsuarios();
+        if (abaId === 'configuracoes') atualizarPainelConfiguracoes();
     }
 
     async function apiRequest(acao, metodo = "GET", payload = null) {
@@ -704,10 +859,11 @@
     }
 
     async function forcarAtualizacaoCache() {
-        if (!navigator.onLine) return alert("Conecte-se à internet para atualizar o cache de obras.");
-        abrirModal("Atualizando Cache...", "Baixando obras e formulários mais recentes.");
+        if (!navigator.onLine) return abrirModalAviso("Sem Internet", "Conecte-se à internet para atualizar o cache de obras.");
+        abrirModal("Atualizando Cache...", "Baixando obras, usuários e histórico de RDOs.");
         await carregarDadosSistema();
-        atualizarModalFinal("Cache Atualizado!", "As obras e formulários estão salvos no dispositivo para uso offline.");
+        atualizarPainelConfiguracoes();
+        atualizarModalFinal("Cache Atualizado!", "Todos os dados da nuvem foram sincronizados com sucesso.");
     }
 
     async function carregarDadosSistema() {
@@ -717,6 +873,7 @@
             const res = await apiRequest("listar_dados", "GET");
             if (res && res.sucesso && res.dados && res.dados.usuarios && res.dados.usuarios.length > 0) {
                 baseGlobal = res.dados;
+                if (!baseGlobal.diarios) baseGlobal.diarios = [];
                 localStorage.setItem(CACHE_BASE_KEY, JSON.stringify(baseGlobal));
                 carregouDaNuvem = true;
             }
@@ -727,6 +884,7 @@
             if (cacheLocal) {
                 try {
                     baseGlobal = JSON.parse(cacheLocal);
+                    if (!baseGlobal.diarios) baseGlobal.diarios = [];
                 } catch(e) {}
             }
         }
@@ -734,7 +892,7 @@
         if (!baseGlobal || !baseGlobal.usuarios || baseGlobal.usuarios.length === 0) {
             baseGlobal = {
                 obras: [
-                    { nome: "Obra Modelo Genérica", empresa: "Construtora Padrão", totalUHs: 500, schemaFormulario: [
+                    { nome: "Obra Modelo Genérica", empresa: "Construtora Padrão", totalUHs: 500, logoBase64: "", schemaFormulario: [
                         { id: "c1", secao: "1. Condições de Campo", tipo: "radio", titulo: "Clima Manhã", opcoes: ["Sol", "Nublado", "Chuva Leve", "Chuva Forte"], obrigatoria: true },
                         { id: "c2", secao: "1. Condições de Campo", tipo: "radio", titulo: "Clima Tarde", opcoes: ["Sol", "Nublado", "Chuva Leve", "Chuva Forte"], obrigatoria: true },
                         { id: "c3", secao: "1. Condições de Campo", tipo: "radio", titulo: "Condição de Trabalho", opcoes: ["Trabalhos Normais", "Parcialmente Paralisado", "Paralisado por Chuva"], obrigatoria: true },
@@ -744,37 +902,57 @@
                     ]}
                 ],
                 usuarios: [
-                    { email: "waldomiroferreira@gmail.com", nome: "Waldomiro Ferreira", perfil: "Administrador", obra: "Todas" },
-                    { email: "engenheiro@smartsync.com", nome: "Engenheiro Residente", perfil: "Engenheiro", obra: "Obra Modelo Genérica" }
-                ]
+                    { email: "waldomiroferreira@gmail.com", nome: "Waldomiro Ferreira", perfil: "Administrador", obra: "Todas", status: "Ativo" },
+                    { email: "engenheiro@smartsync.com", nome: "Engenheiro Residente", perfil: "Engenheiro", obra: "Obra Modelo Genérica", status: "Ativo" }
+                ],
+                diarios: []
             };
         }
 
         let htmlUsr = '';
-        baseGlobal.usuarios.forEach(u => htmlUsr += `<option value="${u.email}">${u.nome} (${u.perfil})</option>`);
+        baseGlobal.usuarios.forEach(u => {
+            const tagInativo = (u.status === 'Inativo') ? ' [INATIVO]' : '';
+            htmlUsr += `<option value="${u.email}">${u.nome} (${u.perfil})${tagInativo}</option>`;
+        });
         document.getElementById('select_usuario').innerHTML = htmlUsr;
 
         let htmlObras = '';
         baseGlobal.obras.forEach(o => htmlObras += `<option value="${o.nome}">${o.nome}</option>`);
         document.getElementById('builder_select_obra').innerHTML = htmlObras;
-        document.getElementById('diario_select_obra').innerHTML = htmlObras;
+        document.getElementById('usr_nova_obra').innerHTML = `<option value="Todas">Todas as Obras (Acesso Global)</option>` + htmlObras;
 
         carregarFormularioParaEdicao();
+        renderizarListaUsuarios();
+        atualizarPainelConfiguracoes();
 
         const salvoEmail = localStorage.getItem('smartsync_user_email');
         if (salvoEmail) {
-            document.getElementById('select_usuario').value = salvoEmail;
-            efetuarLogin();
+            const usrEncontrado = baseGlobal.usuarios.find(u => u.email === salvoEmail);
+            if (usrEncontrado && usrEncontrado.status !== 'Inativo') {
+                document.getElementById('select_usuario').value = salvoEmail;
+                efetuarLogin(true);
+            }
         }
     }
 
-    function efetuarLogin() {
+    function efetuarLogin(silencioso = false) {
         const email = document.getElementById('select_usuario').value;
-        usuarioAtivo = baseGlobal.usuarios.find(u => u.email === email) || baseGlobal.usuarios[0];
+        const candidato = baseGlobal.usuarios.find(u => u.email === email) || baseGlobal.usuarios[0];
+
+        if (candidato && candidato.status === 'Inativo') {
+            localStorage.removeItem('smartsync_user_email');
+            if (!silencioso) {
+                abrirModalAviso("Acesso Bloqueado", "Este usuário está marcado como INATIVO. Solicite ativação ao Administrador.");
+            }
+            return;
+        }
+
+        usuarioAtivo = candidato;
         localStorage.setItem('smartsync_user_email', usuarioAtivo.email);
 
         document.getElementById('usuario-logado').innerText = `${usuarioAtivo.nome} [${usuarioAtivo.perfil}]`;
         document.getElementById('side-item-diario').style.display = 'flex';
+        document.getElementById('side-item-historico').style.display = 'flex';
         document.getElementById('side-item-offline').style.display = 'flex';
 
         if(usuarioAtivo.perfil === 'Administrador') {
@@ -783,13 +961,352 @@
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
         }
 
+        const obrasPermitidas = (usuarioAtivo.perfil === 'Administrador' || !usuarioAtivo.obra || usuarioAtivo.obra === 'Todas')
+            ? baseGlobal.obras
+            : baseGlobal.obras.filter(o => o.nome === usuarioAtivo.obra);
+
+        const listaFinalObras = obrasPermitidas.length > 0 ? obrasPermitidas : baseGlobal.obras;
+        let htmlObrasPermitidas = '';
+        listaFinalObras.forEach(o => htmlObrasPermitidas += `<option value="${o.nome}">${o.nome}</option>`);
+        
+        document.getElementById('diario_select_obra').innerHTML = htmlObrasPermitidas;
+        document.getElementById('hist_select_obra').innerHTML = htmlObrasPermitidas;
+
         renderizarFormularioEngenheiro();
+        renderizarPainelHistorico();
         trocarAba('diario', null);
     }
 
     // =========================================================================
-    // CONSTRUTOR DE FORMULÁRIOS (BUILDER)
+    // PAINEL DE AVANÇO FÍSICO, MEDIÇÃO & HISTÓRICO DE RDOs
     // =========================================================================
+    async function atualizarDadosPainelNuvem() {
+        if (!navigator.onLine) {
+            abrirModalAviso("Modo Offline", "Conecte-se à internet para buscar os relatórios mais recentes da planilha.");
+            return;
+        }
+        abrirModal("Atualizando Painel...", "Buscando avanço físico e RDOs publicados.");
+        await carregarDadosSistema();
+        renderizarPainelHistorico();
+        atualizarModalFinal("Painel Atualizado!", "Indicadores e histórico de PDFs atualizados.");
+    }
+
+    function renderizarPainelHistorico() {
+        const selectObra = document.getElementById('hist_select_obra');
+        if (!selectObra || !selectObra.value) return;
+        const nomeObra = selectObra.value;
+        const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
+
+        const diariosDaObra = (baseGlobal.diarios || []).filter(d => d.obra === nomeObra);
+        document.getElementById('kpiTotalRdos').innerText = diariosDaObra.length;
+        document.getElementById('kpiMetaGlobal').innerText = obraObj ? (obraObj.totalUHs || 0) : 0;
+
+        const containerEtapas = document.getElementById('containerProgressoEtapas');
+        let somaPercentuais = 0;
+        let qtdEtapas = 0;
+
+        if (obraObj && obraObj.schemaFormulario) {
+            const etapas = obraObj.schemaFormulario.filter(c => c.tipo === 'etapa_producao');
+            if (etapas.length === 0) {
+                containerEtapas.innerHTML = "<p style='font-size:13px; color:var(--subtext);'>Nenhuma etapa de produção configurada para esta obra.</p>";
+            } else {
+                let htmlEtapas = '';
+                etapas.forEach(et => {
+                    const meta = Number(et.meta || 0);
+                    const ac = Number(et.ac || 0);
+                    const sd = et.sd !== undefined ? Number(et.sd) : Math.max(0, meta - ac);
+                    const pctNum = meta > 0 ? Math.min(100, (ac / meta) * 100) : 0;
+                    somaPercentuais += pctNum;
+                    qtdEtapas++;
+
+                    htmlEtapas += `
+                        <div class="etapa-prog-card">
+                            <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:bold;">
+                                <span>${et.titulo}</span>
+                                <span style="color:var(--primary);">${pctNum.toFixed(1)}%</span>
+                            </div>
+                            <div style="font-size:11.5px; color:var(--subtext); margin-top:3px;">
+                                Meta: <strong>${meta}</strong> | Acumulado: <strong>${ac}</strong> | Saldo: <strong>${sd}</strong>
+                            </div>
+                            <div class="prog-track">
+                                <div class="prog-fill" style="width:${pctNum.toFixed(1)}%;"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+                containerEtapas.innerHTML = htmlEtapas;
+            }
+        }
+
+        const mediaAvanco = qtdEtapas > 0 ? (somaPercentuais / qtdEtapas).toFixed(1) + "%" : "0%";
+        document.getElementById('kpiAvancoMedio').innerText = mediaAvanco;
+
+        const termoBusca = (document.getElementById('hist_busca_texto').value || "").trim().toLowerCase();
+        const containerRdos = document.getElementById('containerListaRdosNuvem');
+
+        const filtrados = diariosDaObra.filter(item => {
+            if (!termoBusca) return true;
+            return (item.data && item.data.toLowerCase().includes(termoBusca)) ||
+                   (item.responsavel && item.responsavel.toLowerCase().includes(termoBusca)) ||
+                   (item.resumo && item.resumo.toLowerCase().includes(termoBusca)) ||
+                   (item.id && item.id.toLowerCase().includes(termoBusca));
+        });
+
+        if (filtrados.length === 0) {
+            containerRdos.innerHTML = "<p style='font-size:13px; color:var(--subtext);'>Nenhum Diário de Obra encontrado para esta obra.</p>";
+            return;
+        }
+
+        let htmlRdos = '';
+        filtrados.forEach(rdo => {
+            const dataBr = rdo.data.includes("-") ? rdo.data.split("-").reverse().join("/") : rdo.data;
+            const botaoPdf = (rdo.link_pdf && rdo.link_pdf.startsWith("http"))
+                ? `<a href="${rdo.link_pdf}" target="_blank" class="btn-pdf-pill">📄 Abrir PDF</a>`
+                : `<span style="font-size:11px; color:var(--subtext);">Sem PDF</span>`;
+
+            htmlRdos += `
+                <div class="rdo-cloud-card">
+                    <div>
+                        <div style="font-weight:bold; font-size:13.5px; color:var(--primary);">${rdo.id} • Data: ${dataBr}</div>
+                        <div style="font-size:12px; margin-top:2px;"><strong>Responsável:</strong> ${rdo.responsavel}</div>
+                        <div style="font-size:11.5px; color:var(--subtext); margin-top:3px;">${rdo.resumo}</div>
+                    </div>
+                    ${botaoPdf}
+                </div>
+            `;
+        });
+        containerRdos.innerHTML = htmlRdos;
+    }
+
+    async function gerarPdfConsolidadoPeriodo() {
+        const nomeObra = document.getElementById('hist_select_obra').value;
+        const dataIni = document.getElementById('med_data_inicio').value;
+        const dataFim = document.getElementById('med_data_fim').value;
+
+        if (!navigator.onLine) {
+            abrirModalAviso("Sem Conexão", "Conecte-se à internet para gerar o Boletim Consolidado em PDF no Google Drive.");
+            return;
+        }
+
+        abrirModal("Gerando Boletim Consolidado...", "Consolidando produção do período e gerando PDF oficial.");
+        const res = await apiRequest("gerar_consolidado_periodo", "POST", {
+            acao: "gerar_consolidado_periodo",
+            obra: nomeObra,
+            data_inicio: dataIni,
+            data_fim: dataFim,
+            solicitante: usuarioAtivo ? usuarioAtivo.nome : "Gestão"
+        });
+
+        if (res && res.sucesso) {
+            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold; display:inline-block; padding:8px 12px; background:rgba(0,0,0,0.05); border-radius:6px; text-decoration:none;">📄 Abrir Boletim Consolidado PDF</a>`;
+            atualizarModalFinal("Boletim Gerado!", res.mensagem);
+        } else {
+            atualizarModalFinal("Erro", (res && res.erro) ? res.erro : "Não foi possível gerar o PDF consolidado.");
+        }
+    }
+
+    function exportarCsvConsolidadoPeriodo() {
+        const nomeObra = document.getElementById('hist_select_obra').value;
+        const dataIni = document.getElementById('med_data_inicio').value || "0000-00-00";
+        const dataFim = document.getElementById('med_data_fim').value || "9999-12-31";
+        const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
+        if (!obraObj || !obraObj.schemaFormulario) return;
+
+        const diariosFiltrados = (baseGlobal.diarios || []).filter(d => d.obra === nomeObra && d.data >= dataIni && d.data <= dataFim);
+        let prodPeriodo = {};
+        diariosFiltrados.forEach(d => {
+            if (d.producao) {
+                for (let et in d.producao) {
+                    prodPeriodo[et] = (prodPeriodo[et] || 0) + Number(d.producao[et] || 0);
+                }
+            }
+        });
+
+        let linhasCsv = [
+            ["Obra", nomeObra],
+            ["Empresa", obraObj.empresa || ""],
+            ["Período", `${dataIni} a ${dataFim}`],
+            ["RDOs Considerados no Período", diariosFiltrados.length],
+            [],
+            ["Etapa / Serviço Contratual", "Meta", "Executado no Período", "Acumulado Geral", "Saldo", "% Avanço Geral"]
+        ];
+
+        obraObj.schemaFormulario.forEach(c => {
+            if (c.tipo === 'etapa_producao') {
+                const meta = Number(c.meta || 0);
+                const execPer = Number(prodPeriodo[c.titulo] || 0);
+                const acGeral = Number(c.ac || 0);
+                const saldo = Math.max(0, meta - acGeral);
+                const pct = meta > 0 ? ((acGeral / meta) * 100).toFixed(1).replace('.', ',') + "%" : "0,0%";
+                linhasCsv.push([`"${c.titulo}"`, meta, execPer, acGeral, saldo, `"${pct}"`]);
+            }
+        });
+
+        const csvString = "\uFEFF" + linhasCsv.map(row => row.join(";")).join("\n");
+        const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `Medicao_${nomeObra.replace(/\s+/g, "_")}_${dataIni}_a_${dataFim}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    // =========================================================================
+    // GESTÃO DE PERMISSÕES E USUÁRIOS (ADMIN)
+    // =========================================================================
+    function renderizarListaUsuarios() {
+        const container = document.getElementById('listaUsuariosContainer');
+        if (!container) return;
+
+        if (!baseGlobal.usuarios || baseGlobal.usuarios.length === 0) {
+            container.innerHTML = "<p style='font-size:13px; color:var(--subtext);'>Nenhum usuário cadastrado.</p>";
+            return;
+        }
+
+        let html = '';
+        baseGlobal.usuarios.forEach(u => {
+            const ativo = u.status !== 'Inativo';
+            const pillClass = ativo ? 'status-pill-ativo' : 'status-pill-inativo';
+            const txtBotao = ativo ? 'Desativar' : 'Ativar';
+            const novoStatus = ativo ? 'Inativo' : 'Ativo';
+
+            html += `
+                <div class="user-card">
+                    <div>
+                        <div style="font-weight:bold; font-size:14px;">${u.nome} <span class="${pillClass}">${u.status || 'Ativo'}</span></div>
+                        <div style="font-size:12px; color:var(--subtext);">${u.email}</div>
+                        <div style="font-size:11.5px; margin-top:3px;"><strong>Perfil:</strong> ${u.perfil} | <strong>Obra:</strong> ${u.obra || 'Todas'}</div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:5px;">
+                        <button type="button" class="btn-secondary" style="padding:5px 10px; font-size:11px; margin:0;" onclick="preencherEdicaoUsuario('${u.email}')">✏️ Editar</button>
+                        <button type="button" class="${ativo ? 'btn-danger' : 'btn-success'}" style="padding:5px 10px; font-size:11px; margin:0;" onclick="alternarStatusUsuario('${u.email}', '${novoStatus}')">${txtBotao}</button>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function preencherEdicaoUsuario(email) {
+        const u = baseGlobal.usuarios.find(item => item.email === email);
+        if (!u) return;
+        document.getElementById('usr_novo_nome').value = u.nome;
+        document.getElementById('usr_novo_email').value = u.email;
+        document.getElementById('usr_novo_perfil').value = u.perfil;
+        document.getElementById('usr_nova_obra').value = u.obra || "Todas";
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function salvarUsuarioSistema() {
+        const nome = document.getElementById('usr_novo_nome').value.trim();
+        const email = document.getElementById('usr_novo_email').value.trim().toLowerCase();
+        const perfil = document.getElementById('usr_novo_perfil').value;
+        const obra = document.getElementById('usr_nova_obra').value;
+
+        if (!nome || !email) {
+            abrirModalAviso("Campos Obrigatórios", "Preencha o nome completo e o e-mail do usuário.");
+            return;
+        }
+        if (!navigator.onLine) {
+            abrirModalAviso("Sem Conexão", "O cadastro de usuários exige conexão com a internet.");
+            return;
+        }
+
+        abrirModal("Salvando Usuário...", "Gravando permissões na planilha.");
+        const res = await apiRequest("salvar_usuario", "POST", {
+            acao: "salvar_usuario",
+            nome: nome,
+            email: email,
+            perfil: perfil,
+            obra: obra,
+            status: "Ativo"
+        });
+
+        if (res && res.sucesso) {
+            document.getElementById('usr_novo_nome').value = "";
+            document.getElementById('usr_novo_email').value = "";
+            await carregarDadosSistema();
+            atualizarModalFinal("Usuário Salvo!", res.mensagem || "Permissões configuradas com sucesso.");
+        } else {
+            atualizarModalFinal("Erro", (res && res.erro) ? res.erro : "Não foi possível salvar o usuário.");
+        }
+    }
+
+    async function alternarStatusUsuario(email, novoStatus) {
+        if (!navigator.onLine) {
+            abrirModalAviso("Sem Conexão", "Conecte-se à internet para alterar o status do usuário.");
+            return;
+        }
+        abrirModal("Atualizando Status...", `Alterando acesso de ${email} para ${novoStatus}.`);
+        const res = await apiRequest("alterar_status_usuario", "POST", {
+            acao: "alterar_status_usuario",
+            email: email,
+            novo_status: novoStatus
+        });
+
+        if (res && res.sucesso) {
+            await carregarDadosSistema();
+            atualizarModalFinal("Status Atualizado!", res.mensagem);
+        } else {
+            atualizarModalFinal("Erro", (res && res.erro) ? res.erro : "Falha ao atualizar status.");
+        }
+    }
+
+    function atualizarPainelConfiguracoes() {
+        const elApi = document.getElementById('cfgApiStatus');
+        const elObras = document.getElementById('cfgQtdObras');
+        const elRdos = document.getElementById('cfgQtdRdos');
+        if (elApi) elApi.innerText = navigator.onLine ? "🟢 Conectado à Planilha Google" : "🔴 Modo Offline Local";
+        if (elObras) elObras.innerText = baseGlobal.obras ? baseGlobal.obras.length : 0;
+        if (elRdos) elRdos.innerText = baseGlobal.diarios ? baseGlobal.diarios.length : 0;
+    }
+
+    // =========================================================================
+    // CONSTRUTOR DE FORMULÁRIOS & LOGOTIPO DA CONSTRUTORA (BUILDER)
+    // =========================================================================
+    function processarLogoConstrutora(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const MAX_H = 80;
+                const scale = MAX_H / img.height;
+                canvas.height = MAX_H;
+                canvas.width = Math.round(img.width * scale);
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                logoObraAtualBase64 = canvas.toDataURL('image/png');
+                atualizarPreviewLogoBuilder();
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function removerLogoConstrutora() {
+        logoObraAtualBase64 = "";
+        document.getElementById('builder_input_logo').value = "";
+        atualizarPreviewLogoBuilder();
+    }
+
+    function atualizarPreviewLogoBuilder() {
+        const box = document.getElementById('box_preview_logo');
+        const img = document.getElementById('img_preview_logo');
+        if (logoObraAtualBase64) {
+            img.src = logoObraAtualBase64;
+            box.style.display = 'flex';
+        } else {
+            img.src = "";
+            box.style.display = 'none';
+        }
+    }
+
     function alternarCamposAdicionaisBuilder() {
         const tipo = document.getElementById('builder_novo_tipo').value;
         document.getElementById('builder_box_meta').style.display = (tipo === 'etapa_producao') ? 'block' : 'none';
@@ -803,9 +1320,13 @@
             document.getElementById('builder_empresa').value = obraObj.empresa || "Construtora Padrão";
             document.getElementById('builder_total_uhs').value = obraObj.totalUHs || 500;
             schemaFormularioAtual = obraObj.schemaFormulario ? JSON.parse(JSON.stringify(obraObj.schemaFormulario)) : [];
+            logoObraAtualBase64 = obraObj.logoBase64 || "";
         } else {
             schemaFormularioAtual = [];
+            logoObraAtualBase64 = "";
         }
+        document.getElementById('builder_input_logo').value = "";
+        atualizarPreviewLogoBuilder();
         cancelarEdicaoBuilder();
         renderizarCardsBuilder();
     }
@@ -813,7 +1334,7 @@
     function criarNovaObraPrompt() {
         const nome = prompt("Digite o nome da nova obra:");
         if (!nome) return;
-        baseGlobal.obras.push({ nome: nome, empresa: "Sua Construtora", totalUHs: 500, schemaFormulario: [] });
+        baseGlobal.obras.push({ nome: nome, empresa: "Sua Construtora", totalUHs: 500, logoBase64: "", schemaFormulario: [] });
         
         let htmlObras = '';
         baseGlobal.obras.forEach(o => htmlObras += `<option value="${o.nome}">${o.nome}</option>`);
@@ -940,7 +1461,8 @@
             nome: nomeObra, 
             empresa: empresa, 
             totalUHs: totalUHs, 
-            schemaFormulario: schemaFormularioAtual 
+            schemaFormulario: schemaFormularioAtual,
+            logoBase64: logoObraAtualBase64
         };
 
         const idxObra = baseGlobal.obras.findIndex(o => o.nome === nomeObra);
@@ -948,12 +1470,13 @@
             baseGlobal.obras[idxObra].empresa = empresa;
             baseGlobal.obras[idxObra].totalUHs = totalUHs;
             baseGlobal.obras[idxObra].schemaFormulario = JSON.parse(JSON.stringify(schemaFormularioAtual));
+            baseGlobal.obras[idxObra].logoBase64 = logoObraAtualBase64;
         } else {
-            baseGlobal.obras.push({ nome: nomeObra, empresa: empresa, totalUHs: totalUHs, schemaFormulario: JSON.parse(JSON.stringify(schemaFormularioAtual)) });
+            baseGlobal.obras.push({ nome: nomeObra, empresa: empresa, totalUHs: totalUHs, schemaFormulario: JSON.parse(JSON.stringify(schemaFormularioAtual)), logoBase64: logoObraAtualBase64 });
         }
         localStorage.setItem(CACHE_BASE_KEY, JSON.stringify(baseGlobal));
 
-        abrirModal("Salvando Formulário...", "Gravando estrutura no banco de dados.");
+        abrirModal("Salvando Formulário...", "Gravando estrutura e identidade visual na planilha.");
         const res = await apiRequest("salvar_schema_obra", "POST", payload);
 
         if (res && res.sucesso) {
@@ -980,18 +1503,19 @@
         fotosAnexadasModulos = {};
         paginaAtualIndex = 0;
 
-        // Reseta o aceite do termo e atualiza o nome do engenheiro responsável
-        const chkTermo = document.getElementById('chk_aceite_termo');
+        const chkTermo = document.getElementById('chk_aceite_responsabilidade');
         if (chkTermo) chkTermo.checked = false;
-        const boxTermo = document.getElementById('boxTermoResponsabilidade');
-        if (boxTermo) boxTermo.classList.remove('campo-erro-borda');
-        const spanNomeResp = document.getElementById('termo_nome_responsavel');
-        if (spanNomeResp) spanNomeResp.innerText = usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável";
+        const wrapTermo = document.getElementById('wrapperTermoCheck');
+        if (wrapTermo) wrapTermo.classList.remove('campo-erro-borda');
+        const lblAssinante = document.getElementById('label_texto_assinante');
+        if (lblAssinante && usuarioAtivo) {
+            lblAssinante.innerHTML = `Li, concordo e assino eletronicamente como <strong>${usuarioAtivo.nome}</strong>. <span class="req-star">*</span>`;
+        }
 
         if (!obraObj || !obraObj.schemaFormulario || obraObj.schemaFormulario.length === 0) {
             container.innerHTML = "<p>O gestor ainda não configurou perguntas para esta obra.</p>";
             document.getElementById('stepProgressBar').style.display = 'none';
-            document.getElementById('blocoAssinaturasDigitais').style.display = 'none';
+            document.getElementById('blocoTermoResponsabilidade').style.display = 'none';
             return;
         }
 
@@ -1192,20 +1716,16 @@
 
         document.getElementById('btnPagAnterior').style.display = paginaAtualIndex > 0 ? 'block' : 'none';
         
-        const blocoAss = document.getElementById('blocoAssinaturasDigitais');
+        const blocoTermo = document.getElementById('blocoTermoResponsabilidade');
 
         if (paginaAtualIndex === totalPaginasForm - 1) {
             document.getElementById('btnPagProxima').style.display = 'none';
             document.getElementById('btnPagSubmit').style.display = 'block';
-            if (blocoAss) {
-                blocoAss.style.display = 'block';
-                const spanNomeResp = document.getElementById('termo_nome_responsavel');
-                if (spanNomeResp) spanNomeResp.innerText = usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável";
-            }
+            if (blocoTermo) blocoTermo.style.display = 'block';
         } else {
             document.getElementById('btnPagProxima').style.display = 'block';
             document.getElementById('btnPagSubmit').style.display = 'none';
-            if (blocoAss) blocoAss.style.display = 'none';
+            if (blocoTermo) blocoTermo.style.display = 'none';
         }
     }
 
@@ -1266,7 +1786,6 @@
             return;
         }
 
-        // Valida todas as páginas antes de enviar
         for (let p = 0; p < totalPaginasForm; p++) {
             if (!validarPaginaAtual(p)) {
                 if (p !== paginaAtualIndex) {
@@ -1279,24 +1798,19 @@
             }
         }
 
-        // Valida o aceite do Termo de Responsabilidade
-        const chkTermo = document.getElementById('chk_aceite_termo');
-        const boxTermo = document.getElementById('boxTermoResponsabilidade');
-        if (boxTermo) boxTermo.classList.remove('campo-erro-borda');
-
+        const chkTermo = document.getElementById('chk_aceite_responsabilidade');
+        const wrapTermo = document.getElementById('wrapperTermoCheck');
         if (!chkTermo || !chkTermo.checked) {
-            if (boxTermo) {
-                boxTermo.classList.add('campo-erro-borda');
-                boxTermo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (wrapTermo) {
+                wrapTermo.classList.add('campo-erro-borda');
+                wrapTermo.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
-            abrirModalAviso(
-                "Aceite Obrigatório",
-                "Marque a caixa de confirmação do Termo de Responsabilidade para assinar eletronicamente e publicar o Diário de Obra."
-            );
+            abrirModalAviso("Assinatura Eletrônica Obrigatória", "Marque a caixa de concordância no Termo de Responsabilidade para validar e publicar o Diário de Obra.");
             return;
         }
+        if (wrapTermo) wrapTermo.classList.remove('campo-erro-borda');
 
-        abrirModal("Processando Diário...", "Consolidando dados, fotos e aceite eletrônico do responsável.");
+        abrirModal("Processando Diário...", "Consolidando dados, fotos e validando assinatura eletrônica.");
 
         let respostas = {};
         let todasFotos = [];
@@ -1334,20 +1848,21 @@
 
         const obraSelecionada = document.getElementById('diario_select_obra').value;
         const clientSyncId = "SYNC-" + Date.now() + "-" + Math.random().toString(36).substring(2, 7);
+        const nomeResponsavel = usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável";
 
         const payload = {
             acao: "salvar_diario",
             client_sync_id: clientSyncId,
             obra: obraSelecionada,
             data_diario: dataDiario,
-            responsavel: usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável",
+            responsavel: nomeResponsavel,
             respostas: respostas, 
             fotos: todasFotos,
-            termo_aceite: {
+            termo_responsabilidade: {
                 aceito: true,
-                nome_responsavel: usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável",
-                email_responsavel: usuarioAtivo ? usuarioAtivo.email : "",
-                data_hora_aceite: new Date().toLocaleString('pt-BR')
+                nome: nomeResponsavel,
+                email: usuarioAtivo ? usuarioAtivo.email : "",
+                data_aceite: new Date().toLocaleString('pt-BR')
             }
         };
 
@@ -1370,7 +1885,7 @@
             renderizarFormularioEngenheiro();
             atualizarModalFinal(
                 "Salvo no Dispositivo (Offline)!",
-                "Sem internet no momento. O diário, as fotos e o aceite eletrônico foram guardados na Fila Offline e serão enviados automaticamente quando o sinal voltar."
+                "Sem internet no momento. O diário, as fotos e o aceite eletrônico foram guardados com segurança na Fila Offline e serão enviados automaticamente assim que o sinal voltar."
             );
         }
     }
