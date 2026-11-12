@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Construtor de Formulários Completo</title>
+    <title>SmartSyncGest - Definitivo Completo</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -44,9 +44,14 @@
         
         .builder-card { border: 1px solid var(--border-color); border-left: 4px solid var(--primary); border-radius: 8px; padding: 15px; margin-bottom: 15px; background: #fafafa; text-align: left; }
         .user-card, .rdo-cloud-card { border: 1px solid var(--border-color); border-left: 4px solid var(--primary); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
-        .signature-pad { border: 1px solid #ccc; border-radius: 8px; width: 100%; height: 150px; background: #fff; touch-action: none; margin-bottom: 10px;}
-        .tutorial-box { background: #e8eef5; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--primary); }
         
+        /* Barra de Progresso */
+        .progress-bar-container { background: #e0e0e0; border-radius: 10px; height: 10px; width: 100%; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: #28a745; height: 100%; width: 0%; transition: width 0.3s ease; }
+
+        /* Termos e Aceite Jurídico */
+        .juridical-box { background: #fdfefe; border: 1px solid #bce8f1; border-left: 4px solid #31708f; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: left; font-size: 12.5px; color: #31708f; }
+
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 3000; align-items: center; justify-content: center; }
         .modal-box { background: var(--card-bg); padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 380px; border: 1px solid var(--border-color); }
         .spinner { width: 36px; height: 36px; border: 4px solid rgba(0,0,0,0.1); border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
@@ -62,8 +67,8 @@
     <div class="sidebar-menu">
         <div class="sidebar-item active" id="menu-login" onclick="navegarSidebar('login')" style="display:flex;">👤 Autenticação</div>
         <div class="sidebar-item" id="menu-diario" onclick="navegarSidebar('diario')">📝 Diário Dinâmico (Campo)</div>
-        <div class="sidebar-item" id="menu-builder" onclick="navegarSidebar('builder')">🛠️ Construtor de Formulários (Builder)</div>
-        <div class="sidebar-item" id="menu-historico" onclick="navegarSidebar('historico')">📊 Painel Consolidado</div>
+        <div class="sidebar-item" id="menu-builder" onclick="navegarSidebar('builder')">🛠️ Construtor de Formulários</div>
+        <div class="sidebar-item" id="menu-historico" onclick="navegarSidebar('historico')">📊 Painel Consolidado & CSV</div>
         <div class="sidebar-item" id="menu-usuarios" onclick="navegarSidebar('usuarios')">👥 Gestão de Usuários (Admin)</div>
         <div class="sidebar-item" id="menu-scanner" onclick="abrirScannerInterno()">🔍 Scanner de Obra</div>
         <div class="sidebar-item" id="menu-configuracoes" onclick="navegarSidebar('configuracoes')">⚙️ Configurações & Mock</div>
@@ -78,7 +83,7 @@
     <div id="usuario-logado" class="user-badge" onclick="abrirSidebar()">Fazer Login</div>
 </div>
 
-<!-- TELA 1: LOGIN -->
+<!-- TELA 1: LOGIN COM PERSISTÊNCIA -->
 <div id="aba-login" class="tab-content active">
     <div class="container" style="text-align: center; max-width:400px; margin: 0 auto;">
         <h2>Acesso Corporativo</h2>
@@ -89,37 +94,48 @@
     </div>
 </div>
 
-<!-- TELA 2: DIÁRIO DINÂMICO (CAMPO) -->
+<!-- TELA 2: DIÁRIO DINÂMICO (PAGINADO COM % E ACEITE JURÍDICO) -->
 <div id="aba-diario" class="tab-content">
     <div class="container">
         <h2>📝 Formulário de Campo (RDO)</h2>
-        <div class="form-group"><label>Obra Vinculada</label><select id="rdo_obra" onchange="renderizarFormularioDinamico()"></select></div>
+        <div class="form-group"><label>Obra Vinculada</label><select id="rdo_obra" onchange="mudarObraDiario()"></select></div>
         <div class="form-group"><label>Data</label><input type="date" id="rdo_data"></div>
         
+        <!-- Indicador de Progresso -->
+        <label style="font-size:12px; margin-bottom:4px;">Progresso do Preenchimento: <span id="lblPercentual">0%</span></label>
+        <div class="progress-bar-container"><div id="progressBarFill" class="progress-bar-fill"></div></div>
+
+        <!-- Seções do Formulário -->
         <div id="formBuilderContainer" style="margin-top:15px; text-align:left;"></div>
 
-        <h3>📸 Evidências & Assinatura</h3>
+        <h3>📸 Evidências Fotográficas</h3>
         <input type="file" id="rdo_camera" accept="image/*" capture="environment" multiple onchange="processarFotos(event)" style="margin-bottom:10px;">
         <div id="previewFotos" style="display:flex; gap:10px; overflow-x:auto; margin-bottom:15px;"></div>
-        
-        <canvas id="canvasAss" class="signature-pad"></canvas>
-        <button class="btn-warning" onclick="limparAssinatura()" style="width:auto; padding:8px; font-size:12px;">Limpar Assinatura</button>
 
-        <button class="btn-success" onclick="salvarRDOOperacional()" style="margin-top:20px;">Sincronizar Diário e Gerar PDF</button>
+        <!-- Aceite Jurídico / Responsabilidade (Substituiu o Canvas) -->
+        <div class="juridical-box">
+            <label style="font-weight:bold; color:#245269; margin-bottom:8px; display:block;">⚖️ Declaração de Responsabilidade Civil e Técnica</label>
+            <label style="font-weight:normal; font-size:12.5px; display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
+                <input type="checkbox" id="chkTermosRDO" style="width:18px; height:18px; margin-top:2px;" onchange="atualizarProgressoFormulario()">
+                <span>Declaro para os devidos fins que as informações prestadas neste Diário de Obra (RDO) refletem fielmente a realidade do canteiro, assumindo total responsabilidade técnica e civil sobre os registros e medições.</span>
+            </label>
+        </div>
+
+        <button class="btn-success" onclick="salvarRDOOperacional()" style="margin-top:20px;">Publicar RDO e Gerar PDF</button>
     </div>
 </div>
 
-<!-- TELA 3: CONSTRUTOR DE FORMULÁRIOS (GOOGLE FORM CLONE COMPLETO) -->
+<!-- TELA 3: CONSTRUTOR DE FORMULÁRIOS AVANÇADO (COM REORDENAÇÃO) -->
 <div id="aba-builder" class="tab-content">
     <div class="container">
-        <h2>🛠️ Construtor Estilo Google Forms</h2>
-        <p style="font-size:13px; color:var(--subtext);">Crie perguntas ilimitadas com múltiplos formatos para esta obra.</p>
+        <h2>🛠️ Construtor de Formulários (Builder)</h2>
+        <p style="font-size:13px; color:var(--subtext);">Crie, edite, reorganize e ordene perguntas customizadas para cada obra.</p>
         
         <div class="form-group"><label>Selecione a Obra</label><select id="builder_select_obra" onchange="carregarSchemaNaTela()"></select></div>
         
         <div style="background:#f9f9f9; padding:15px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:20px; text-align:left;">
             <h3 style="margin-top:0; font-size:14px; color:var(--primary);">Adicionar Nova Pergunta</h3>
-            <div class="form-group"><label>Seção / Categoria</label><input type="text" id="novo_campo_secao" placeholder="Ex: 1. Condições de Campo"></div>
+            <div class="form-group"><label>Seção / Página</label><input type="text" id="novo_campo_secao" placeholder="Ex: 1. Condições de Campo"></div>
             <div class="form-group"><label>Título da Pergunta</label><input type="text" id="novo_campo_titulo" placeholder="Ex: Clima, Efetivo, etc."></div>
             <div class="form-group"><label>Tipo de Pergunta</label>
                 <select id="novo_campo_tipo">
@@ -139,18 +155,19 @@
             <button class="btn-primary" onclick="adicionarCampoNoSchema()">Adicionar Pergunta ao Formulário</button>
         </div>
 
-        <h3 style="text-align:left; font-size:14px;">Perguntas Configuradas</h3>
+        <h3 style="text-align:left; font-size:14px;">Perguntas Configuradas (Reordenáveis)</h3>
         <div id="listaSchemaBuilder" style="margin-top:10px;"></div>
         <button class="btn-success" onclick="salvarSchemaNaNuvem()" style="margin-top:15px;">Salvar Alterações na Nuvem (Google Sheets)</button>
     </div>
 </div>
 
-<!-- TELA 4: PAINEL CONSOLIDADO -->
+<!-- TELA 4: PAINEL CONSOLIDADO & EXPORTAÇÃO CSV -->
 <div id="aba-historico" class="tab-content">
     <div class="container">
-        <h2>📊 Painel de Histórico</h2>
-        <div class="form-group"><label>Obra</label><select id="hist_select_obra" onchange="renderizarHistorico()"></select></div>
-        <div id="listaHistorico" style="margin-top:20px;"></div>
+        <h2>📊 Painel Consolidado & Exportação CSV</h2>
+        <div class="form-group"><label>Filtro por Obra</label><select id="hist_select_obra" onchange="renderizarHistorico()"></select></div>
+        <button class="btn-warning" onclick="exportarDadosCSV()" style="margin-bottom:15px;">📥 Exportar Relatório em CSV</button>
+        <div id="listaHistorico" style="margin-top:10px;"></div>
     </div>
 </div>
 
@@ -188,8 +205,8 @@
     <div class="container">
         <h2>📚 Manual do Sistema</h2>
         <div class="tutorial-box">
-            <h3>Guia do Construtor</h3>
-            <p style="font-size:13px;">O Builder permite criar qualquer tipo de campo (Texto, Parágrafo, Número, Radio, Checkbox, Dropdown, Data e Etapa Produtiva) com validação de obrigatoriedade e seções customizadas.</p>
+            <h3>Guia Definitivo</h3>
+            <p style="font-size:13px;">Sua sessão permanece ativa com segurança no dispositivo. O formulário agora possui indicador de progresso em tempo real e aceite jurídico em vez de desenho.</p>
         </div>
     </div>
 </div>
@@ -229,21 +246,31 @@
     let baseGlobal = { obras: [], usuarios: [], diarios: [] };
     let schemaEdicaoAtual = [];
     let fotosBase64Array = [];
-    
-    // Canvas Assinatura
-    const canvas = document.getElementById('canvasAss');
-    const ctx = canvas.getContext('2d');
-    let isDrawing = false;
-    function redimensionarCanvas() { if(canvas.parentElement) { canvas.width = canvas.parentElement.clientWidth - 30; canvas.height = 150; } }
-    window.addEventListener('resize', redimensionarCanvas);
-    canvas.addEventListener('mousedown', e => { isDrawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); });
-    canvas.addEventListener('mousemove', e => { if (isDrawing) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } });
-    canvas.addEventListener('mouseup', () => isDrawing = false);
-    canvas.addEventListener('touchstart', e => { isDrawing = true; const t = e.touches[0]; const rect = canvas.getBoundingClientRect(); ctx.beginPath(); ctx.moveTo(t.clientX - rect.left, t.clientY - rect.top); e.preventDefault(); }, {passive: false});
-    canvas.addEventListener('touchmove', e => { if (isDrawing) { const t = e.touches[0]; const rect = canvas.getBoundingClientRect(); ctx.lineTo(t.clientX - rect.left, t.clientY - rect.top); ctx.stroke(); } e.preventDefault(); }, {passive: false});
-    canvas.addEventListener('touchend', () => isDrawing = false);
-    function limparAssinatura() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
-    function isCanvasBlank(c) { const b = document.createElement('canvas'); b.width = c.width; b.height = c.height; return c.toDataURL() === b.toDataURL(); }
+
+    // Verificação de Sessão Persistente ao Iniciar
+    window.addEventListener('DOMContentLoaded', () => {
+        const sessaoSalva = localStorage.getItem('smart_sync_usuario');
+        if (sessaoSalva) {
+            try {
+                usuarioAtivo = JSON.parse(sessaoSalva);
+                carregarBaseDadosInicial();
+            } catch(e) { localStorage.removeItem('smart_sync_usuario'); }
+        }
+    });
+
+    async function carregarBaseDadosInicial() {
+        mostrarLoadingUI("Carregando...", "Sincronizando com a nuvem.");
+        try {
+            const res = await fetch(API_URL).then(r => r.json());
+            if (res.sucesso) {
+                baseGlobal = res.dados;
+                document.getElementById('sysOverlay').style.display = 'none';
+                configurarMenuPorPerfil();
+                popularselectsGerais();
+                trocarAba('diario');
+            } else { mostrarAlertaUI("Erro", res.erro); }
+        } catch(e) { document.getElementById('sysOverlay').style.display = 'none'; }
+    }
 
     function processarFotos(event) {
         const files = event.target.files; const preview = document.getElementById('previewFotos');
@@ -276,8 +303,9 @@
             const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "login", email, senha }) }).then(r => r.json());
             if (res && res.sucesso) {
                 usuarioAtivo = res.usuario; baseGlobal = res.base;
+                localStorage.setItem('smart_sync_usuario', JSON.stringify(usuarioAtivo)); // Persistência da sessão
                 document.getElementById('sysOverlay').style.display = 'none';
-                configurarMenuPorPerfil(); popularselectsGerais(); trocarAba('diario'); redimensionarCanvas();
+                configurarMenuPorPerfil(); popularselectsGerais(); trocarAba('diario');
             } else { mostrarAlertaUI("Falha no Login", res.erro); }
         } catch (e) { mostrarAlertaUI("Erro", "Falha de conexão com a API."); }
     }
@@ -317,7 +345,7 @@
         renderizarHistorico();
     }
 
-    // --- CONSTRUTOR DE FORMULÁRIOS COMPLETO (BUILDER) ---
+    // --- CONSTRUTOR DE FORMULÁRIOS AVANÇADO COM REORDENAÇÃO ---
     function carregarSchemaNaTela() {
         const obraNome = document.getElementById('builder_select_obra').value;
         const obra = baseGlobal.obras.find(o => o.nome === obraNome);
@@ -333,11 +361,24 @@
             html += `<div class="builder-card">
                         <div style="font-size:11px; font-weight:bold; color:var(--primary); text-transform:uppercase;">${c.secao || 'Geral'}</div>
                         <div style="font-size:15px; font-weight:bold; margin:4px 0;">${c.titulo} ${c.obrigatoria?'*':''}</div>
-                        <div style="font-size:12px; color:var(--subtext);">Tipo: <b>${c.tipo}</b> ${c.opcoes && c.opcoes.length>0 ? '| Opções: '+c.opcoes.join(', ') : ''}</div>
-                        <button class="btn-danger" style="width:auto; padding:6px 12px; font-size:12px; margin-top:10px;" onclick="removerCampoSchema(${idx})">Remover Pergunta</button>
+                        <div style="font-size:12px; color:var(--subtext);">Tipo: <b>${c.tipo}</b></div>
+                        <div style="margin-top:10px; display:flex; gap:8px;">
+                            ${idx > 0 ? `<button class="btn-primary" style="width:auto; padding:5px 10px; font-size:11px; margin-top:0;" onclick="moverPergunta(${idx}, -1)">⬆️ Subir</button>` : ''}
+                            ${idx < schemaEdicaoAtual.length - 1 ? `<button class="btn-primary" style="width:auto; padding:5px 10px; font-size:11px; margin-top:0;" onclick="moverPergunta(${idx}, 1)">⬇️ Descer</button>` : ''}
+                            <button class="btn-danger" style="width:auto; padding:5px 10px; font-size:11px; margin-top:0;" onclick="removerCampoSchema(${idx})">Remover</button>
+                        </div>
                      </div>`;
         });
         container.innerHTML = html;
+    }
+
+    function moverPergunta(idx, direcao) {
+        const novoIdx = idx + direcao;
+        if (novoIdx < 0 || novoIdx >= schemaEdicaoAtual.length) return;
+        const temp = schemaEdicaoAtual[idx];
+        schemaEdicaoAtual[idx] = schemaEdicaoAtual[novoIdx];
+        schemaEdicaoAtual[novoIdx] = temp;
+        renderizarListaSchemaBuilder();
     }
 
     function adicionarCampoNoSchema() {
@@ -355,16 +396,7 @@
             opcoesArr = opcoesStr.split(',').map(s => s.trim());
         }
 
-        schemaEdicaoAtual.push({
-            id: "c_" + Date.now(),
-            tipo: tipo,
-            secao: secao,
-            titulo: titulo,
-            meta: meta,
-            opcoes: opcoesArr,
-            obrigatoria: obrigatoria
-        });
-
+        schemaEdicaoAtual.push({ id: "c_" + Date.now(), tipo, secao, titulo, meta, opcoes: opcoesArr, obrigatoria });
         document.getElementById('novo_campo_titulo').value = "";
         document.getElementById('novo_campo_opcoes').value = "";
         renderizarListaSchemaBuilder();
@@ -378,24 +410,17 @@
     async function salvarSchemaNaNuvem() {
         const obraNome = document.getElementById('builder_select_obra').value;
         const obra = baseGlobal.obras.find(o => o.nome === obraNome);
-        const payload = {
-            acao: "salvar_schema_obra",
-            nome: obraNome,
-            empresa: obra ? obra.empresa : "Construtora Padrão",
-            totalUHs: obra ? obra.totalUHs : 500,
-            schemaFormulario: schemaEdicaoAtual
-        };
+        const payload = { acao: "salvar_schema_obra", nome: obraNome, empresa: obra ? obra.empresa : "Construtora Padrão", totalUHs: obra ? obra.totalUHs : 500, schemaFormulario: schemaEdicaoAtual };
 
-        mostrarLoadingUI("Salvando...", "Gravando estrutura completa no Google Sheets.");
+        mostrarLoadingUI("Salvando...", "Gravando estrutura no Google Sheets.");
         const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
-        if (res.sucesso) {
-            baseGlobal = res.base;
-            mostrarAlertaUI("Sucesso!", res.mensagem);
-            popularselectsGerais();
-        } else { mostrarAlertaUI("Erro", res.erro); }
+        if (res.sucesso) { baseGlobal = res.base; mostrarAlertaUI("Sucesso!", res.mensagem); popularselectsGerais(); }
+        else { mostrarAlertaUI("Erro", res.erro); }
     }
 
-    // --- RENDERIZADOR DO FORMULÁRIO DE CAMPO (DINÂMICO COMPLETO) ---
+    // --- RENDERIZADOR DINÂMICO COM BARRA DE PROGRESSO (%) ---
+    function mudarObraDiario() { renderizarFormularioDinamico(); }
+
     function renderizarFormularioDinamico() {
         const obraNome = document.getElementById('rdo_obra').value;
         const obra = baseGlobal.obras.find(o => o.nome === obraNome);
@@ -408,41 +433,57 @@
 
         let html = '';
         obra.schemaFormulario.forEach(campo => {
-            html += `<div class="form-group">
+            html += `<div class="form-group" oninput="atualizarProgressoFormulario()" onchange="atualizarProgressoFormulario()">
                         <label>${campo.titulo} ${campo.obrigatoria?'<span style="color:red;">*</span>':''}</label>`;
             
-            if (campo.tipo === 'text') {
-                html += `<input type="text" id="resp_${campo.id}" placeholder="Digite sua resposta">`;
-            } else if (campo.tipo === 'textarea') {
-                html += `<textarea id="resp_${campo.id}" rows="3" placeholder="Digite sua resposta longa"></textarea>`;
-            } else if (campo.tipo === 'number') {
-                html += `<input type="number" id="resp_${campo.id}" placeholder="Digite um valor numérico">`;
-            } else if (campo.tipo === 'date') {
-                html += `<input type="date" id="resp_${campo.id}">`;
-            } else if (campo.tipo === 'radio') {
-                (campo.opcoes||[]).forEach((op, i) => {
-                    html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="radio" name="resp_${campo.id}" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`;
-                });
+            if (campo.tipo === 'text') html += `<input type="text" id="resp_${campo.id}" class="form-campo-rdo" placeholder="Resposta curta">`;
+            else if (campo.tipo === 'textarea') html += `<textarea id="resp_${campo.id}" class="form-campo-rdo" rows="3" placeholder="Parágrafo"></textarea>`;
+            else if (campo.tipo === 'number') html += `<input type="number" id="resp_${campo.id}" class="form-campo-rdo" placeholder="Número">`;
+            else if (campo.tipo === 'date') html += `<input type="date" id="resp_${campo.id}" class="form-campo-rdo">`;
+            else if (campo.tipo === 'radio') {
+                (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="radio" name="resp_${campo.id}" class="form-campo-rdo" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
             } else if (campo.tipo === 'checkbox') {
-                (campo.opcoes||[]).forEach((op, i) => {
-                    html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="checkbox" name="resp_${campo.id}" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`;
-                });
+                (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="checkbox" name="resp_${campo.id}" class="form-campo-rdo" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
             } else if (campo.tipo === 'select') {
-                html += `<select id="resp_${campo.id}"><option value="">Selecione...</option>`;
+                html += `<select id="resp_${campo.id}" class="form-campo-rdo"><option value="">Selecione...</option>`;
                 (campo.opcoes||[]).forEach(op => html += `<option value="${op}">${op}</option>`);
                 html += `</select>`;
             } else if (campo.tipo === 'etapa_producao') {
                 html += `<div style="display:flex; gap:10px; align-items:center;">
-                            <input type="number" id="resp_${campo.id}_pd" placeholder="Qtd Produzida Hoje" style="flex:1;">
+                            <input type="number" id="resp_${campo.id}_pd" class="form-campo-rdo" placeholder="Qtd Produzida Hoje" style="flex:1;">
                             <span style="font-size:12px; color:var(--subtext);">Meta: ${campo.meta || 500} | Exec: ${campo.ac || 0}</span>
                          </div>`;
             }
             html += `</div>`;
         });
         container.innerHTML = html;
+        atualizarProgressoFormulario();
+    }
+
+    function atualizarProgressoFormulario() {
+        const campos = document.querySelectorAll('.form-campo-rdo');
+        const termoCheck = document.getElementById('chkTermosRDO')?.checked ? 1 : 0;
+        let preenchidos = 0;
+        const total = campos.length + 1; // +1 para o termo
+
+        campos.forEach(c => {
+            if (c.type === 'radio' || c.type === 'checkbox') {
+                if (c.checked) preenchidos++;
+            } else if (c.value.trim() !== '') {
+                preenchidos++;
+            }
+        });
+        if (termoCheck) preenchidos++;
+
+        const pct = Math.min(100, Math.round((preenchidos / total) * 100));
+        document.getElementById('lblPercentual').innerText = pct + '%';
+        document.getElementById('progressBarFill').style.width = pct + '%';
     }
 
     async function salvarRDOOperacional() {
+        const termoAceito = document.getElementById('chkTermosRDO').checked;
+        if (!termoAceito) return alert("Você deve aceitar a Declaração de Responsabilidade Civil e Técnica para prosseguir.");
+
         const obraNome = document.getElementById('rdo_obra').value;
         const obra = baseGlobal.obras.find(o => o.nome === obraNome);
         let respostasObj = {};
@@ -470,39 +511,49 @@
             acao: "salvar_diario", responsavel: usuarioAtivo.nome, obra: obraNome,
             data_diario: document.getElementById('rdo_data').value,
             respostas: respostasObj,
-            fotos: fotosBase64Array, assinatura: isCanvasBlank(canvas) ? null : canvas.toDataURL('image/png'),
-            client_sync_id: "SYNC-" + Date.now()
+            fotos: fotosBase64Array, client_sync_id: "SYNC-" + Date.now()
         };
 
-        mostrarLoadingUI("Processando PDF...", "Gerando documento oficial no Google Drive.");
+        mostrarLoadingUI("Processando PDF...", "Registrando aceite e gerando documento.");
         try {
             const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
             if(res.sucesso) {
                 mostrarAlertaUI("Sucesso!", res.mensagem);
-                fotosBase64Array = []; document.getElementById('previewFotos').innerHTML = ""; limparAssinatura();
+                fotosBase64Array = []; document.getElementById('previewFotos').innerHTML = "";
+                document.getElementById('chkTermosRDO').checked = false;
                 const ref = await fetch(API_URL).then(r => r.json()); baseGlobal = ref.dados; popularselectsGerais();
             } else { mostrarAlertaUI("Erro", res.erro); }
         } catch(e) { mostrarAlertaUI("Erro Crítico", "Falha na sincronização."); }
     }
 
+    // --- EXPORTAÇÃO CSV ---
+    function exportarDadosCSV() {
+        const obra = document.getElementById('hist_select_obra').value;
+        const filtrados = baseGlobal.diarios.filter(d => d.obra === obra);
+        if (filtrados.length === 0) return alert("Nenhum dado para exportar.");
+
+        let csvContent = "data:text/csv;charset=utf-8,ID;Responsavel;Obra;Data;Timestamp\n";
+        filtrados.forEach(r => {
+            csvContent += `"${r.id}";"${r.responsavel}";"${r.obra}";"${r.data}";"${r.timestamp}"\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `relatorio_${obra.replace(/\s+/g, '_')}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
     async function salvarNovoUsuarioAdmin() {
-        const payload = {
-            acao: "salvar_usuario",
-            email: document.getElementById('cad_email').value.trim(),
-            nome: document.getElementById('cad_nome').value.trim(),
-            perfil: document.getElementById('cad_perfil').value,
-            obra: document.getElementById('cad_obra').value,
-            senha: document.getElementById('cad_senha').value.trim() || "123456"
-        };
+        const payload = { acao: "salvar_usuario", email: document.getElementById('cad_email').value.trim(), nome: document.getElementById('cad_nome').value.trim(), perfil: document.getElementById('cad_perfil').value, obra: document.getElementById('cad_obra').value, senha: document.getElementById('cad_senha').value.trim() || "123456" };
         if(!payload.email || !payload.nome) return alert("Preencha e-mail e nome.");
 
         mostrarLoadingUI("Salvando...", "Gravando usuário.");
         const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
-        if(res.sucesso) {
-            baseGlobal = res.base; popularselectsGerais();
-            mostrarAlertaUI("Sucesso!", res.mensagem);
-            document.getElementById('cad_email').value = ""; document.getElementById('cad_nome').value = "";
-        } else { mostrarAlertaUI("Erro", res.erro); }
+        if(res.sucesso) { baseGlobal = res.base; popularselectsGerais(); mostrarAlertaUI("Sucesso!", res.mensagem); document.getElementById('cad_email').value = ""; document.getElementById('cad_nome').value = ""; }
+        else { mostrarAlertaUI("Erro", res.erro); }
     }
 
     function renderizarListaUsuariosAdmin() {
@@ -510,13 +561,7 @@
         if(!baseGlobal.usuarios) return;
         let html = '';
         baseGlobal.usuarios.forEach(u => {
-            html += `<div class="user-card">
-                        <div style="text-align:left;">
-                            <strong>${u.nome}</strong> (${u.email})<br>
-                            <span style="font-size:11.5px; color:var(--subtext);">Perfil: <b>${u.perfil}</b> | Obra: ${u.obra}</span>
-                        </div>
-                        <span style="font-size:12px; font-weight:bold; color:#28a745;">${u.status}</span>
-                     </div>`;
+            html += `<div class="user-card"><div style="text-align:left;"><strong>${u.nome}</strong> (${u.email})<br><span style="font-size:11.5px; color:var(--subtext);">Perfil: <b>${u.perfil}</b> | Obra: ${u.obra}</span></div><span style="font-size:12px; font-weight:bold; color:#28a745;">${u.status}</span></div>`;
         });
         container.innerHTML = html;
     }
@@ -528,11 +573,7 @@
         if (filtrados.length === 0) { container.innerHTML = "<p style='font-size:13px; color:#777;'>Nenhum histórico encontrado.</p>"; return; }
         let html = '';
         filtrados.forEach(r => {
-            html += `<div class="rdo-cloud-card">
-                        <div style="font-weight:bold; font-size:13.5px; color:var(--primary);">${r.id} • Data: ${r.data}</div>
-                        <div style="font-size:12px; margin-top:4px;"><strong>Resp:</strong> ${r.responsavel}</div>
-                        ${r.link_pdf ? `<a href="${r.link_pdf}" target="_blank" style="font-size:11.5px; display:inline-block; margin-top:5px; color:#dc3545; font-weight:bold; text-decoration:none;">📄 Abrir PDF Oficial</a>` : ''}
-                     </div>`;
+            html += `<div class="rdo-cloud-card"><div style="font-weight:bold; font-size:13.5px; color:var(--primary);">${r.id} • Data: ${r.data}</div><div style="font-size:12px; margin-top:4px;"><strong>Resp:</strong> ${r.responsavel}</div>${r.link_pdf ? `<a href="${r.link_pdf}" target="_blank" style="font-size:11.5px; display:inline-block; margin-top:5px; color:#dc3545; font-weight:bold; text-decoration:none;">📄 Abrir PDF Oficial</a>` : ''}</div>`;
         });
         container.innerHTML = html;
     }
@@ -566,14 +607,17 @@
 
     function abrirSidebar() { document.getElementById('sidebarMenu').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('open'); }
     function fecharSidebar() { document.getElementById('sidebarMenu').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('open'); }
-    function navegarSidebar(id) { trocarAba(id); fecharSidebar(); if(id==='diario') redimensionarCanvas(); }
+    function navegarSidebar(id) { trocarAba(id); fecharSidebar(); }
     function trocarAba(id) {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.getElementById('aba-' + id).classList.add('active');
         document.querySelectorAll('.sidebar-item').forEach(c => c.classList.remove('active'));
         const m = document.getElementById('menu-' + id); if(m) m.classList.add('active');
     }
-    function fazerLogout() { usuarioAtivo = null; document.querySelectorAll('.sidebar-item').forEach(m => m.style.display = 'none'); document.getElementById('menu-login').style.display = 'flex'; trocarAba('login'); fecharSidebar(); }
+    function fazerLogout() { 
+        localStorage.removeItem('smart_sync_usuario');
+        usuarioAtivo = null; document.querySelectorAll('.sidebar-item').forEach(m => m.style.display = 'none'); document.getElementById('menu-login').style.display = 'flex'; trocarAba('login'); fecharSidebar(); 
+    }
     function mostrarLoadingUI(t, m) { document.getElementById('sysOverlay').style.display = 'flex'; document.getElementById('modalSpinner').style.display = 'block'; document.getElementById('modalBtn').style.display = 'none'; document.getElementById('modalTitle').innerText = t; document.getElementById('modalMsg').innerText = m; }
     function mostrarAlertaUI(t, m) { document.getElementById('sysOverlay').style.display = 'flex'; document.getElementById('modalSpinner').style.display = 'none'; document.getElementById('modalTitle').innerText = t; document.getElementById('modalMsg').innerText = m; document.getElementById('modalBtn').style.display = 'inline-block'; }
     async function recuperarSenhaUsuario() {
