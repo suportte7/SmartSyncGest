@@ -1,40 +1,50 @@
-const CACHE_NAME = 'smartsyncgest-v1.0.0';
+const CACHE_NAME = 'smartsyncgest-pwa-v1';
 const ASSETS_TO_CACHE = [
-    './',
-    './index.html',
-    './config.js',
-    './manifest.json'
+  './',
+  './index.html',
+  './config.js',
+  './manifest.json'
 ];
 
-// Instala o Service Worker e armazena os arquivos no cache
-self.addEventListener('install', event => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => {
-            return cache.addAll(ASSETS_TO_CACHE);
-        })
-    );
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS_TO_CACHE);
+    })
+  );
+  self.skipWaiting();
 });
 
-// Ativa e limpa caches antigos
-self.addEventListener('activate', event => {
-    event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames.filter(name => name !== CACHE_NAME)
-                          .map(name => caches.delete(name))
-            );
-        })
-    );
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+      );
+    })
+  );
+  self.clients.claim();
 });
 
-// Intercepta as requisições (Ignora a API do Google para não travar os envios)
-self.addEventListener('fetch', event => {
-    if (event.request.url.includes('script.google.com')) {
-        return; // Deixa as requisições de banco de dados passarem direto
-    }
-    event.respondWith(
-        caches.match(event.request).then(response => {
-            return response || fetch(event.request);
-        })
-    );
+self.addEventListener('fetch', (event) => {
+  // Não intercepta chamadas da API do Google Apps Script (tratadas pelo IndexedDB)
+  if (event.request.url.includes('script.google.com') || event.request.method !== 'GET') {
+    return;
+  }
+
+  event.respondWith(
+    fetch(event.request)
+      .then((networkResponse) => {
+        const cloned = networkResponse.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, cloned);
+        });
+        return networkResponse;
+      })
+      .catch(() => {
+        return caches.match(event.request).then((cachedResponse) => {
+          return cachedResponse || caches.match('./index.html');
+        });
+      })
+  );
 });
