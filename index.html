@@ -3,69 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Gestão & Construtor de Obras</title>
-    
-    <link rel="manifest" href="./manifest.json">
-    <link rel="icon" href="./icons/icon-192.png" type="image/png">
-    <meta name="theme-color" content="#0056b3">
-    <script src="./config.js"></script>
-
+    <title>SmartSyncGest - RDO Digital</title>
     <style>
-        /* MOTOR DE TEMAS GLOBAIS (10 TEMAS) */
-        :root {
-            --primary: #0056b3;
-            --primary-hover: #004085;
-            --bg: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-color: #333333;
-            --border-color: #e0e0e0;
-            --subtext: #666666;
-            --header-text: #ffffff;
-        }
-
-        body[data-theme="verde"] { --primary: #1b5e20; --primary-hover: #0d3b10; --bg: #f1f8e9; --card-bg: #ffffff; --text-color: #1b2a1c; }
-        body[data-theme="laranja"] { --primary: #e65100; --primary-hover: #b23c00; --bg: #fff3e0; --card-bg: #ffffff; --text-color: #2d1600; }
-        body[data-theme="dark"] { --primary: #3700b3; --primary-hover: #220074; --bg: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --border-color: #333333; --subtext: #aaaaaa; }
-        body[data-theme="amarelo"] { --primary: #f57f17; --primary-hover: #bc6000; --bg: #fffde7; --card-bg: #ffffff; --text-color: #262000; }
-        body[data-theme="roxo"] { --primary: #4a148c; --primary-hover: #2c0057; --bg: #f3e5f5; --card-bg: #ffffff; --text-color: #210038; }
-        body[data-theme="vermelho"] { --primary: #b71c1c; --primary-hover: #7f0000; --bg: #ffebee; --card-bg: #ffffff; --text-color: #3b0000; }
-        body[data-theme="elegante"] { --primary: #37474f; --primary-hover: #102027; --bg: #eceff1; --card-bg: #ffffff; --text-color: #1a237e; }
-        body[data-theme="teal"] { --primary: #004d40; --primary-hover: #00251a; --bg: #e0f2f1; --card-bg: #ffffff; --text-color: #00251a; }
-        body[data-theme="terra"] { --primary: #4e342e; --primary-hover: #260e07; --bg: #efebe9; --card-bg: #ffffff; --text-color: #271c19; }
-
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text-color); margin: 0; padding-bottom: 30px; transition: background 0.3s, color 0.3s; }
-        
+        :root { --primary: #0056b3; --bg: #f4f7f6; --card-bg: #ffffff; --text-color: #333333; --border-color: #e0e0e0; --subtext: #666666; --header-text: #ffffff; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text-color); margin: 0; padding-bottom: 30px; }
         .top-header { background: var(--primary); color: var(--header-text); display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 1000; }
         .menu-hamburger { font-size: 22px; cursor: pointer; padding: 5px; }
         .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; margin-left: 12px; display: flex; align-items: center; gap: 8px; }
-        
         .net-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; background: #2ecc71; box-shadow: 0 0 6px #2ecc71; }
-        .net-dot.offline { background: #ff5252; box-shadow: 0 0 6px #ff5252; }
-        .pending-pill { font-size: 10px; background: #ffc107; color: #000; padding: 2px 6px; border-radius: 10px; font-weight: bold; cursor: pointer; display: none; }
-
         .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; cursor: pointer; }
         
-        .theme-toggle-btn {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            color: var(--header-text);
-            font-size: 12px;
-            padding: 3px 7px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: auto;
-            margin-top: 0;
-            opacity: 0.75;
-            transition: opacity 0.2s;
-        }
-        .theme-toggle-btn:hover { opacity: 1; background: rgba(255, 255, 255, 0.15); }
-
         .sidebar { position: fixed; top: 0; left: -290px; width: 280px; height: 100%; background: var(--card-bg); box-shadow: 2px 0 12px rgba(0,0,0,0.3); transition: left 0.3s ease; z-index: 2500; display: flex; flex-direction: column; }
         .sidebar.open { left: 0; }
-        .sidebar-header { background: var(--primary); color: var(--header-text); padding: 20px 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-header { background: var(--primary); color: var(--header-text); padding: 20px 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; }
         .sidebar-close { cursor: pointer; font-size: 20px; }
         .sidebar-menu { display: flex; flex-direction: column; padding: 15px 0; overflow-y: auto; }
-        .sidebar-item { padding: 14px 20px; font-weight: 600; font-size: 14px; cursor: pointer; border-left: 4px solid transparent; color: var(--text-color); display: flex; align-items: center; justify-content: space-between; }
+        .sidebar-item { padding: 14px 20px; font-weight: 600; font-size: 14px; cursor: pointer; border-left: 4px solid transparent; color: var(--text-color); display: none; }
         .sidebar-item:hover, .sidebar-item.active { background: rgba(0,0,0,0.05); border-left: 4px solid var(--primary); color: var(--primary); }
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2400; }
         .sidebar-overlay.open { display: block; }
@@ -75,1858 +28,324 @@
         .container { background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border-color); }
         
         h2 { margin-top: 0; font-size: 19px; color: var(--primary); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; }
-        .secao-header { font-size: 15px; font-weight: bold; color: var(--primary); background: rgba(0,0,0,0.04); padding: 10px 14px; border-radius: 6px; margin-top: 15px; margin-bottom: 15px; border-left: 4px solid var(--primary); }
-        
         .form-group { margin-bottom: 15px; text-align: left; }
-        .form-row { display: flex; gap: 10px; } .flex-1 { flex: 1; }
         label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; box-sizing: border-box; background: var(--card-bg); color: var(--text-color); }
-        button { padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; color: white; width: 100%; margin-top: 10px; transition: 0.2s; }
-        .btn-primary { background: var(--primary); } .btn-primary:hover { background: var(--primary-hover); }
-        .btn-success { background: #28a745; } .btn-info { background: #17a2b8; } .btn-danger { background: #dc3545; } .btn-secondary { background: #6c757d; }
-
-        .req-star { color: #dc3545; font-weight: bold; margin-left: 3px; }
-        .campo-erro-borda { border: 2px solid #dc3545 !important; border-radius: 8px; padding: 8px; background: rgba(220, 53, 69, 0.04); }
-
-        .step-progress-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.04); padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; font-weight: bold; color: var(--primary); }
-        .pagina-form { display: none; }
-        .pagina-form.active { display: block; }
-        .nav-paginacao { display: flex; gap: 10px; margin-top: 25px; }
-
-        .card-pergunta-builder { background: var(--card-bg); border: 1px solid var(--border-color); border-left: 5px solid var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); position: relative; }
-        .card-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; }
-        .btn-card-action { background: none; border: none; font-size: 16px; cursor: pointer; padding: 2px 5px; color: var(--subtext); width: auto; margin: 0; }
-        .badge-tipo { font-size: 11px; background: rgba(0,0,0,0.08); color: var(--text-color); padding: 3px 8px; border-radius: 4px; font-weight: bold; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
-        .badge-obrig { font-size: 10px; background: #dc3545; color: #fff; padding: 3px 7px; border-radius: 4px; font-weight: bold; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
-
-        .checkbox-group, .radio-group { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
-        .checkbox-item, .radio-item { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
-        .checkbox-item input, .radio-item input { width: auto; margin: 0; }
-
-        .preview-foto-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-        .preview-foto { width: 75px; height: 75px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-color); }
-
-        .logo-preview-box { display: flex; align-items: center; gap: 12px; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: rgba(0,0,0,0.02); margin-top: 6px; }
-        .logo-preview-img { max-height: 45px; max-width: 140px; object-fit: contain; border-radius: 4px; background: #fff; padding: 3px; border: 1px solid #ddd; }
-
-        /* TERMO DE RESPONSABILIDADE E ASSINATURA ELETRÔNICA */
-        .termo-box {
-            border: 1px solid var(--primary);
-            border-left: 5px solid var(--primary);
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 16px;
-            background: rgba(0, 86, 179, 0.04);
-        }
-        .termo-texto {
-            font-size: 13px;
-            line-height: 1.5;
-            color: var(--text-color);
-            margin-bottom: 12px;
-        }
-        .termo-check-label {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            font-size: 13.5px;
-            font-weight: 700;
-            color: var(--primary);
-            cursor: pointer;
-            background: var(--card-bg);
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-        .termo-check-label input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            margin-top: 2px;
-            flex-shrink: 0;
-            cursor: pointer;
-        }
-
-        /* BARRAS DE PROGRESSO FÍSICO (PAINEL E HISTÓRICO) */
-        .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .kpi-card { background: rgba(0,0,0,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; text-align: center; }
-        .kpi-valor { font-size: 20px; font-weight: bold; color: var(--primary); }
-        .kpi-label { font-size: 11px; color: var(--subtext); margin-top: 3px; font-weight: 600; text-transform: uppercase; }
-
-        .medicao-box { background: rgba(0,0,0,0.02); border: 1px dashed var(--primary); border-radius: 8px; padding: 14px; margin-bottom: 20px; }
-        .etapa-prog-card { border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 10px; background: var(--card-bg); }
-        .prog-track { width: 100%; height: 10px; background: rgba(0,0,0,0.1); border-radius: 6px; overflow: hidden; margin-top: 6px; }
-        .prog-fill { height: 100%; background: var(--primary); transition: width 0.4s ease; }
-
-        .rdo-cloud-card { border: 1px solid var(--border-color); border-left: 4px solid var(--primary); border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-        .btn-pdf-pill { background: var(--primary); color: #fff; padding: 8px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold; white-space: nowrap; }
-
-        /* CARDS DE USUÁRIOS E TEMAS */
-        .user-card { border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-        .status-pill-ativo { background: #d4edda; color: #155724; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
-        .status-pill-inativo { background: #f8d7da; color: #721c24; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
-
-        .temas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
-        .btn-tema-item { padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; color: #fff; margin: 0; text-transform: uppercase; }
-
-        .offline-banner { display: none; background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 10px 14px; border-radius: 8px; font-size: 12px; margin-bottom: 15px; font-weight: 600; }
-        .fila-card { border: 1px solid var(--border-color); border-left: 4px solid #ffc107; padding: 12px; border-radius: 8px; margin-bottom: 10px; background: rgba(0,0,0,0.02); }
-
+        input, select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; box-sizing: border-box; }
+        button { padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; color: white; width: 100%; margin-top: 10px; }
+        .btn-primary { background: var(--primary); } .btn-success { background: #28a745; } .btn-danger { background: #dc3545; }
+        
+        /* Modal, QR Code e Cards */
+        .rdo-cloud-card { border: 1px solid var(--border-color); border-left: 4px solid var(--primary); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-box { background: var(--card-bg); padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 380px; border: 1px solid var(--border-color); box-shadow: 0 8px 25px rgba(0,0,0,0.3); position: relative; z-index: 3001; }
+        .modal-box { background: var(--card-bg); padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 380px; border: 1px solid var(--border-color); position: relative; }
         .spinner { width: 36px; height: 36px; border: 4px solid rgba(0,0,0,0.1); border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
-<body data-theme="azul">
+<body>
 
-<!-- MASCARA E MENU LATERAL -->
 <div id="sidebarOverlay" class="sidebar-overlay" onclick="fecharSidebar()"></div>
 <div id="sidebarMenu" class="sidebar">
-    <div class="sidebar-header">
-        <span>SmartSyncGest</span>
-        <span class="sidebar-close" onclick="fecharSidebar()">✕</span>
-    </div>
+    <div class="sidebar-header"><span>SmartSyncGest</span><span class="sidebar-close" onclick="fecharSidebar()">✕</span></div>
     <div class="sidebar-menu">
-        <div class="sidebar-item active" onclick="navegarSidebar('login')"><span>👤 Identificação / Perfil</span></div>
-        <div class="sidebar-item" id="side-item-diario" onclick="navegarSidebar('diario')" style="display:none;"><span>📝 Diário de Campo</span></div>
-        <div class="sidebar-item" id="side-item-historico" onclick="navegarSidebar('historico')" style="display:none;"><span>📊 Painel & RDOs Emitidos</span></div>
-        <div class="sidebar-item" id="side-item-offline" onclick="navegarSidebar('offline')" style="display:none;">
-            <span>⏳ Fila Offline / Sincronizar</span>
-            <span id="sidebarBadgeFila" style="background:#ffc107; color:#000; padding:2px 7px; border-radius:10px; font-size:11px; display:none;">0</span>
-        </div>
-        <div class="sidebar-item admin-only" onclick="navegarSidebar('builder')" style="display:none;"><span>🎨 Construtor GoogleForms</span></div>
-        <div class="sidebar-item admin-only" onclick="navegarSidebar('permissoes')" style="display:none;"><span>🔐 Permissões e Perfis</span></div>
-        <div class="sidebar-item admin-only" onclick="navegarSidebar('configuracoes')" style="display:none;"><span>⚙️ Configurações Gerais</span></div>
+        <!-- RBAC: Itens ocultos por padrão, controlados pelo JS após Login -->
+        <div class="sidebar-item active" id="menu-login" onclick="navegarSidebar('login')" style="display:flex;"><span>👤 Autenticação</span></div>
+        <div class="sidebar-item" id="menu-diario" onclick="navegarSidebar('diario')"><span>📝 Diário de Campo (RDO)</span></div>
+        <div class="sidebar-item" id="menu-historico" onclick="navegarSidebar('historico')"><span>📊 Painel de Avanço & PDFs</span></div>
+        <div class="sidebar-item" id="menu-configuracoes" onclick="navegarSidebar('configuracoes')"><span>⚙️ Configurações & Testes</span></div>
+        <div class="sidebar-item" id="menu-logout" onclick="fazerLogout()" style="color:#dc3545; border-top:1px solid #eee; margin-top:10px;"><span>🚪 Sair do Sistema</span></div>
     </div>
 </div>
 
-<!-- TOP HEADER -->
 <div class="top-header">
     <div class="menu-hamburger" onclick="abrirSidebar()">☰</div>
-    <div class="brand-title">
-        <span>SmartSyncGest</span>
-        <span id="netStatusDot" class="net-dot" title="Online"></span>
-        <span id="headerPendingPill" class="pending-pill" onclick="navegarSidebar('offline')">0 pendente(s)</span>
-    </div>
-    <div style="display:flex; align-items:center; gap:8px;">
-        <div id="usuario-logado" class="user-badge" onclick="navegarSidebar('login')">👤 Entrar</div>
-        <button class="theme-toggle-btn" title="Alternar Tema" onclick="ciclarTemaVisual()">◐</button>
-    </div>
+    <div class="brand-title">SmartSyncGest <span id="netStatusDot" class="net-dot" title="Online"></span></div>
+    <div id="usuario-logado" class="user-badge" onclick="abrirSidebar()">Fazer Login</div>
 </div>
 
-<!-- TELA 1: LOGIN -->
+<!-- TELA 1: LOGIN (AGORA COM SENHA DE VERDADE) -->
 <div id="aba-login" class="tab-content active">
-    <div class="container" style="text-align: center;">
-        <h2>Identificação de Acesso</h2>
-        <div id="loginOfflineInfo" class="offline-banner">📡 Modo Offline ativo: utilizando dados locais em cache do dispositivo.</div>
-        <div class="form-group">
-            <label>Selecione o Usuário</label>
-            <select id="select_usuario" style="padding: 12px;"><option>Carregando dados...</option></select>
-        </div>
-        <button class="btn-primary" onclick="efetuarLogin()">Entrar no Sistema</button>
-    </div>
-</div>
-
-<!-- TELA 2: CONSTRUTOR DE FORMULÁRIOS COM LOGOTIPO, EDIÇÃO E OBRIGATORIEDADE (ADMIN) -->
-<div id="aba-builder" class="tab-content">
-    <div class="container">
-        <h2>🎨 Construtor de Formulário Personalizável</h2>
-        <p style="font-size:12px; color:var(--subtext);">Configure o molde de perguntas, logotipo da construtora, defina campos obrigatórios e edite com 1 clique.</p>
+    <div class="container" style="text-align: center; max-width:400px; margin: 0 auto;">
+        <h2>Acesso Restrito Corporativo</h2>
+        <p style="font-size:12px; color:var(--subtext);">Entre com suas credenciais oficiais do sistema.</p>
         
         <div class="form-group">
-            <label>Obra a Ser Configurada</label>
-            <div class="form-row">
-                <select id="builder_select_obra" class="flex-1" onchange="carregarFormularioParaEdicao()"></select>
-                <button class="btn-info" style="width:auto; margin:0;" onclick="criarNovaObraPrompt()">+ Nova Obra</button>
-            </div>
+            <label>E-mail Institucional</label>
+            <input type="email" id="login_email" placeholder="ex: engenheiro@smartsync.com" autocomplete="email">
         </div>
-
-        <div class="form-row">
-            <div class="form-group flex-1">
-                <label>Empresa Construtora</label>
-                <input type="text" id="builder_empresa" placeholder="Ex: Sua Construtora Ltda">
-            </div>
-            <div class="form-group" style="width: 120px;">
-                <label>Meta Global UHs</label>
-                <input type="number" id="builder_total_uhs" value="500">
-            </div>
-        </div>
-
         <div class="form-group">
-            <label>🖼️ Logotipo da Construtora (Cabeçalho do PDF)</label>
-            <input type="file" id="builder_input_logo" accept="image/*" onchange="processarLogoConstrutora(event)">
-            <div class="logo-preview-box" id="box_preview_logo" style="display:none;">
-                <img id="img_preview_logo" class="logo-preview-img" src="" alt="Logotipo">
-                <div style="flex:1; font-size:12px; color:var(--subtext);">Logotipo pronto para o cabeçalho oficial do RDO.</div>
-                <button type="button" class="btn-danger" style="width:auto; padding:6px 10px; font-size:11px; margin:0;" onclick="removerLogoConstrutora()">Remover</button>
-            </div>
+            <label>Senha</label>
+            <input type="password" id="login_senha" placeholder="Sua senha (padrão: 123456)" autocomplete="current-password">
         </div>
-
-        <hr style="border:0; border-top:1px solid var(--border-color); margin:20px 0;">
-
-        <div style="background:rgba(0,0,0,0.02); padding:15px; border-radius:8px; border:1px dashed var(--primary); margin-bottom:20px;">
-            <h4 id="builder_form_label" style="margin-top:0; color:var(--primary);">+ Adicionar Novo Campo / Pergunta</h4>
-            
-            <div class="form-group">
-                <label>Seção / Página no Formulário</label>
-                <input type="text" id="builder_nova_secao" placeholder="Ex: 1. Condições de Campo, 2. Matriz Habitação...">
-            </div>
-
-            <div class="form-group">
-                <label>Título da Pergunta ou Nome da Etapa</label>
-                <input type="text" id="builder_novo_titulo" placeholder="Ex: Clima, Condição de Trabalho, 01-Laje Radier...">
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group flex-1">
-                    <label>Tipo de Pergunta</label>
-                    <select id="builder_novo_tipo" onchange="alternarCamposAdicionaisBuilder()">
-                        <option value="radio">🔘 Escolha Única (Radio Buttons / Pontinhos)</option>
-                        <option value="select">🔽 Menu Suspenso (Dropdown)</option>
-                        <option value="checkbox">☑️ Caixas de Seleção (Múltiplas Escolhas)</option>
-                        <option value="etapa_producao">🏗️ Etapa de Produção (com Meta Contratual)</option>
-                        <option value="texto">📝 Texto Curto (Linha Única)</option>
-                        <option value="textarea">📄 Texto Longo (Parágrafo / Relato)</option>
-                        <option value="numero">🔢 Número Inteiro (Contagem / Efetivo)</option>
-                        <option value="decimal">📐 Medição Decimal (m², m³, horas)</option>
-                        <option value="data">📅 Seleção de Data</option>
-                        <option value="hora">⏰ Horário</option>
-                        <option value="escala">⭐️ Escala de Avaliação / Nota (1 a 5)</option>
-                        <option value="foto">📸 Anexo Fotográfico (Câmera / Galeria)</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group" id="builder_box_meta" style="display:none;">
-                <label>Meta Contratual Total da Etapa (UHs / m² / m³)</label>
-                <input type="number" id="builder_nova_meta" value="500">
-            </div>
-
-            <div class="form-group" id="builder_box_opcoes">
-                <label>Opções de Escolha (separadas por vírgula)</label>
-                <input type="text" id="builder_novas_opcoes" placeholder="Ex: Sol, Nublado, Chuva Leve, Chuva Forte">
-            </div>
-
-            <div class="form-group" style="margin-top: 10px;">
-                <label class="checkbox-item" style="font-weight:700; color:var(--primary);">
-                    <input type="checkbox" id="builder_nova_obrigatoria">
-                    <span>Pergunta Obrigatória (Exigir resposta antes de avançar)</span>
-                </label>
-            </div>
-
-            <div class="form-row">
-                <button class="btn-primary flex-1" id="btn_salvar_campo_builder" onclick="adicionarOuAtualizarCampoBuilder()">+ Adicionar Pergunta ao Formulário</button>
-                <button class="btn-secondary" id="btn_cancelar_edicao_builder" style="display:none; width:auto;" onclick="cancelarEdicaoBuilder()">Cancelar</button>
-            </div>
-        </div>
-
-        <h3 style="font-size:15px; color:var(--primary);">Perguntas do Formulário Desta Obra:</h3>
-        <div id="container_builder_cards"></div>
-
-        <button class="btn-success" style="font-size:16px; padding:15px;" onclick="salvarFormularioNoBanco()">💾 Salvar Formulário e Identidade da Obra</button>
+        <button class="btn-primary" onclick="efetuarLoginSeguro()">Entrar no Sistema</button>
     </div>
 </div>
 
-<!-- TELA 3: DIÁRIO DE CAMPO PAGINADO + TERMO DE RESPONSABILIDADE -->
+<!-- TELA 2: DIÁRIO DE CAMPO -->
 <div id="aba-diario" class="tab-content">
     <div class="container">
-        <h2>Diário de Engenharia de Campo</h2>
-        <div id="diarioOfflineBanner" class="offline-banner">
-            📡 Sem conexão com a internet. Ao finalizar, o diário e as fotos serão salvos no celular e sincronizados automaticamente quando houver sinal.
+        <h2>Lançamento Diário de Obra</h2>
+        <div class="form-group">
+            <label>Selecione a Obra</label>
+            <select id="diario_select_obra"></select>
         </div>
-        <form id="formDiario" onsubmit="enviarDiario(event)" novalidate>
-            <div class="form-group">
-                <label>Obra Selecionada</label>
-                <select id="diario_select_obra" onchange="renderizarFormularioEngenheiro()"></select>
-            </div>
-            <div class="form-group">
-                <label>Data do Diário <span class="req-star">*</span></label>
-                <input type="date" id="diario_data" required>
-            </div>
-
-            <div class="step-progress-bar" id="stepProgressBar">
-                <span id="stepTitle">Página 1 de 1</span>
-                <span id="stepPercent">100%</span>
-            </div>
-
-            <div id="container_formulario_dinamico"></div>
-
-            <!-- BLOCO DE TERMO DE RESPONSABILIDADE E ASSINATURA ELETRÔNICA -->
-            <div id="blocoTermoResponsabilidade" style="display:none; margin-top: 25px;">
-                <div class="secao-header">📋 Termo de Responsabilidade Técnica</div>
-                <div class="termo-box" id="wrapperTermoCheck">
-                    <div class="termo-texto">
-                        Declaro, na qualidade de <strong>Engenheiro / Responsável Técnico</strong> pelo preenchimento deste Relatório Diário de Obra (RDO), que todas as informações de efetivo, condições climáticas, serviços executados e registros fotográficos aqui lançados são verdadeiros e refletem fielmente as atividades ocorridas no canteiro nesta data.
-                    </div>
-                    <label class="termo-check-label">
-                        <input type="checkbox" id="chk_aceite_responsabilidade">
-                        <span id="label_texto_assinante">Li, concordo e assino eletronicamente este Diário de Obra. <span class="req-star">*</span></span>
-                    </label>
-                </div>
-            </div>
-
-            <div class="nav-paginacao">
-                <button type="button" id="btnPagAnterior" class="btn-secondary flex-1" onclick="mudarPaginaForm(-1)" style="display:none;">⬅️ Anterior</button>
-                <button type="button" id="btnPagProxima" class="btn-primary flex-1" onclick="mudarPaginaForm(1)">Próxima ➡️</button>
-                <button type="submit" id="btnPagSubmit" class="btn-success flex-1" style="display:none;">🚀 Publicar e Gerar PDF</button>
-            </div>
-        </form>
+        <div class="form-group">
+            <label>Data</label>
+            <input type="date" id="diario_data">
+        </div>
+        <p style="font-size:12px; color:#c93a46; font-weight:bold;">Para enviar dados via PWA (Fila e PDF), utilize a Aba Anterior (Builder já configurado). Esta aba é uma casca para validar o acesso logado da versão final RBAC.</p>
     </div>
 </div>
 
-<!-- TELA 4: PAINEL DE AVANÇO FÍSICO, MEDIÇÃO & HISTÓRICO DE RDOs -->
+<!-- TELA 3: PAINEL DE AVANÇO -->
 <div id="aba-historico" class="tab-content">
     <div class="container">
-        <h2>📊 Painel de Avanço & Medição</h2>
-        
-        <div class="form-row" style="margin-bottom:15px;">
-            <div class="form-group flex-1" style="margin-bottom:0;">
-                <label>Filtrar por Obra</label>
-                <select id="hist_select_obra" onchange="renderizarPainelHistorico()"></select>
-            </div>
-            <div style="display:flex; align-items:flex-end;">
-                <button type="button" class="btn-info" style="margin:0; padding:10px 14px;" onclick="atualizarDadosPainelNuvem()">🔄 Atualizar</button>
-            </div>
-        </div>
-
-        <div class="kpi-grid">
-            <div class="kpi-card">
-                <div class="kpi-valor" id="kpiTotalRdos">0</div>
-                <div class="kpi-label">RDOs Emitidos</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-valor" id="kpiAvancoMedio">0%</div>
-                <div class="kpi-label">Avanço Médio</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-valor" id="kpiMetaGlobal">0</div>
-                <div class="kpi-label">Meta Global UHs</div>
-            </div>
-        </div>
-
-        <!-- BOLETIM DE MEDIÇÃO E EXPORTAÇÃO CONSOLIDADA -->
-        <div class="medicao-box">
-            <h4 style="margin-top:0; margin-bottom:10px; color:var(--primary);">📑 Boletim Consolidado por Período (Medição)</h4>
-            <div class="form-row">
-                <div class="form-group flex-1" style="margin-bottom:8px;">
-                    <label>Data Início</label>
-                    <input type="date" id="med_data_inicio">
-                </div>
-                <div class="form-group flex-1" style="margin-bottom:8px;">
-                    <label>Data Fim</label>
-                    <input type="date" id="med_data_fim">
-                </div>
-            </div>
-            <div class="form-row">
-                <button type="button" class="btn-primary flex-1" style="margin-top:4px;" onclick="gerarPdfConsolidadoPeriodo()">📄 Gerar PDF Consolidado</button>
-                <button type="button" class="btn-success flex-1" style="margin-top:4px;" onclick="exportarCsvConsolidadoPeriodo()">📊 Exportar Excel (CSV)</button>
-            </div>
-        </div>
-
-        <h3 style="font-size:15px; color:var(--primary); margin-bottom:10px;">Progresso Físico Acumulado por Etapa:</h3>
-        <div id="containerProgressoEtapas"></div>
-
-        <h3 style="font-size:15px; color:var(--primary); margin-top:25px; margin-bottom:10px;">Relatórios Diários Publicados (PDFs):</h3>
+        <h2>📊 Painel Consolidado da Obra</h2>
         <div class="form-group">
-            <input type="text" id="hist_busca_texto" placeholder="🔍 Buscar por data, engenheiro ou serviço..." onkeyup="renderizarPainelHistorico()">
+            <label>Obra</label>
+            <select id="hist_select_obra" onchange="renderizarRdosMock()"></select>
         </div>
-        <div id="containerListaRdosNuvem"></div>
+        <div id="listaHistorico" style="margin-top:20px;"></div>
     </div>
 </div>
 
-<!-- TELA 5: FILA OFFLINE E SINCRONIZAÇÃO (PWA) -->
-<div id="aba-offline" class="tab-content">
-    <div class="container">
-        <h2>⏳ Fila de Sincronização Offline</h2>
-        <p style="font-size:13px; color:var(--subtext);">
-            Status atual da conexão: <strong id="statusConexaoTexto">Verificando...</strong>
-        </p>
-        <button class="btn-primary" id="btnSincronizarAgora" onclick="sincronizarFilaOffline(true)">🔄 Sincronizar Pendentes Agora</button>
-        
-        <h3 style="font-size:15px; color:var(--primary); margin-top:20px;">Registros Aguardando Envio:</h3>
-        <div id="listaFilaOfflineContainer">
-            <p style="font-size:13px; color:var(--subtext);">Nenhum diário pendente no dispositivo.</p>
-        </div>
-
-        <h3 style="font-size:15px; color:var(--primary); margin-top:25px;">Últimos PDFs Gerados neste Dispositivo:</h3>
-        <div id="listaHistoricoLocalContainer">
-            <p style="font-size:13px; color:var(--subtext);">Nenhum histórico recente salvo localmente.</p>
-        </div>
-    </div>
-</div>
-
-<!-- TELA 6: PERMISSÕES E PERFIS (ADMIN) -->
-<div id="aba-permissoes" class="tab-content">
-    <div class="container">
-        <h2>🔐 Permissões e Perfis de Acesso</h2>
-        <p style="font-size:12px; color:var(--subtext);">Cadastre engenheiros, fiscais e administradores e defina a obra vinculada a cada profissional.</p>
-
-        <div style="background:rgba(0,0,0,0.02); padding:15px; border-radius:8px; border:1px dashed var(--primary); margin-bottom:20px;">
-            <h4 style="margin-top:0; color:var(--primary);">+ Cadastrar ou Atualizar Usuário</h4>
-            <div class="form-row">
-                <div class="form-group flex-1">
-                    <label>Nome Completo</label>
-                    <input type="text" id="usr_novo_nome" placeholder="Ex: Eng. Carlos Silva">
-                </div>
-                <div class="form-group flex-1">
-                    <label>E-mail de Acesso</label>
-                    <input type="email" id="usr_novo_email" placeholder="carlos@construtora.com">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group flex-1">
-                    <label>Perfil de Acesso</label>
-                    <select id="usr_novo_perfil">
-                        <option value="Engenheiro">Engenheiro (Diário de Campo + Painel)</option>
-                        <option value="Fiscal">Fiscal (Diário de Campo + Painel)</option>
-                        <option value="Coordenador">Coordenador (Diário de Campo + Painel)</option>
-                        <option value="Administrador">Administrador (Acesso Total + Construtor)</option>
-                    </select>
-                </div>
-                <div class="form-group flex-1">
-                    <label>Obra Vinculada</label>
-                    <select id="usr_nova_obra"></select>
-                </div>
-            </div>
-            <button type="button" class="btn-primary" onclick="salvarUsuarioSistema()">💾 Salvar Usuário</button>
-        </div>
-
-        <h3 style="font-size:15px; color:var(--primary);">Equipe Cadastrada no Sistema:</h3>
-        <div id="listaUsuariosContainer"></div>
-    </div>
-</div>
-
-<!-- TELA 7: CONFIGURAÇÕES GERAIS (ADMIN) -->
+<!-- TELA 4: CONFIGURAÇÕES E INJEÇÃO MOCK -->
 <div id="aba-configuracoes" class="tab-content">
     <div class="container">
-        <h2>⚙️ Configurações Gerais do Sistema</h2>
-        
-        <div style="padding: 15px; background: rgba(0,0,0,0.03); border-radius: 8px; font-size: 13px; margin-bottom: 20px;">
-            <p style="margin-top:0;"><strong>Status do Backend:</strong> <span id="cfgApiStatus">Conectado</span></p>
-            <p><strong>Obras em Cache Local:</strong> <span id="cfgQtdObras">0</span></p>
-            <p style="margin-bottom:0;"><strong>RDOs Sincronizados na Base:</strong> <span id="cfgQtdRdos">0</span></p>
-            <button class="btn-secondary" style="margin-top:15px;" onclick="forcarAtualizacaoCache()">🔄 Sincronizar Base Completa com a Planilha</button>
+        <h2>⚙️ Configurações & Testes (Admin)</h2>
+        <p style="font-size:13px; color:var(--subtext);">Opções de auditoria e transparência de dados.</p>
+
+        <div style="border: 1px dashed #28a745; background:rgba(40, 167, 69, 0.05); padding:15px; border-radius:8px; margin-bottom: 20px;">
+            <h4 style="margin-top:0; color:#1b5e20;">🧪 Ambiente de Testes de Estresse</h4>
+            <p style="font-size:12px; margin-bottom:10px;">Gere dados fictícios (Mock) no banco para simular diários lançados e avanço de obras instantaneamente.</p>
+            <button class="btn-success" onclick="injetarDadosMock()">Injetar Dados Fictícios Agora</button>
         </div>
 
-        <h3 style="font-size:15px; color:var(--primary);">Personalização de Tema Visual:</h3>
-        <div class="temas-grid">
-            <button type="button" class="btn-tema-item" style="background:#0056b3;" onclick="aplicarTemaVisual('azul')">Azul Corporativo</button>
-            <button type="button" class="btn-tema-item" style="background:#1b5e20;" onclick="aplicarTemaVisual('verde')">Verde Obra</button>
-            <button type="button" class="btn-tema-item" style="background:#e65100;" onclick="aplicarTemaVisual('laranja')">Laranja Engenharia</button>
-            <button type="button" class="btn-tema-item" style="background:#3700b3;" onclick="aplicarTemaVisual('dark')">Modo Escuro (Dark)</button>
-            <button type="button" class="btn-tema-item" style="background:#f57f17;" onclick="aplicarTemaVisual('amarelo')">Amarelo Segurança</button>
-            <button type="button" class="btn-tema-item" style="background:#4a148c;" onclick="aplicarTemaVisual('roxo')">Roxo Executivo</button>
-            <button type="button" class="btn-tema-item" style="background:#b71c1c;" onclick="aplicarTemaVisual('vermelho')">Vermelho Alerta</button>
-            <button type="button" class="btn-tema-item" style="background:#37474f;" onclick="aplicarTemaVisual('elegante')">Grafite Elegante</button>
-            <button type="button" class="btn-tema-item" style="background:#004d40;" onclick="aplicarTemaVisual('teal')">Verde Petróleo</button>
-            <button type="button" class="btn-tema-item" style="background:#4e342e;" onclick="aplicarTemaVisual('terra')">Marrom Terraplanagem</button>
+        <div style="border: 1px solid var(--border-color); padding:15px; border-radius:8px;">
+            <h4 style="margin-top:0; color:var(--primary);">📱 Transparência: QR Code Público</h4>
+            <p style="font-size:12px; margin-bottom:10px;">Gere o QR Code da obra selecionada para disponibilizar no canteiro aos clientes. Eles verão o status de avanço físico sem precisar de senha.</p>
+            <div class="form-group">
+                <select id="cfg_obra_qr"></select>
+            </div>
+            <button class="btn-primary" onclick="gerarQrCodePublico()">Gerar QR Code da Obra</button>
         </div>
     </div>
 </div>
 
-<!-- MODAL OVERLAY -->
-<div id="sysOverlay" class="overlay" onclick="fecharSeClicarFora(event)">
+<!-- MODAL QR CODE PÚBLICO -->
+<div id="modalQrCode" class="overlay" onclick="document.getElementById('modalQrCode').style.display='none'">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <h3 style="margin-top:0; color:var(--primary);">QR Code - Acesso Público</h3>
+        <p style="font-size:12px; color:var(--subtext);">Aponte a câmera do celular. Nenhuma senha será exigida para visualizar o status do empreendimento.</p>
+        <div id="boxQrCodeTarget" style="display:flex; justify-content:center; align-items:center; background:#fff; padding:20px; border:1px solid #eee; border-radius:10px; margin: 15px 0;"></div>
+        <p style="font-size:11px; word-break: break-all;" id="txtLinkPublico"></p>
+        <button class="btn-primary" onclick="document.getElementById('modalQrCode').style.display='none'">Fechar</button>
+    </div>
+</div>
+
+<!-- MODAL SISTEMA (LOADING) -->
+<div id="sysOverlay" class="overlay">
     <div class="modal-box">
         <div id="modalSpinner" class="spinner"></div>
-        <h3 id="modalTitle" style="color:var(--primary); margin-top:0;">Processando...</h3>
-        <p id="modalMsg" style="font-size:14px; color:var(--subtext);">Comunicando com a API do Google.</p>
-        <div id="modalLink" style="margin-top: 15px;"></div>
-        <button type="button" id="modalBtn" class="btn-primary" style="display:none;" onclick="ocultarModal()">OK</button>
+        <h3 id="modalTitle" style="color:var(--primary); margin-top:0;">Autenticando...</h3>
+        <p id="modalMsg" style="font-size:14px; color:var(--subtext);">Validando credenciais com o Google.</p>
+        <button type="button" id="modalBtn" class="btn-primary" style="display:none;" onclick="document.getElementById('sysOverlay').style.display='none'">OK</button>
     </div>
 </div>
 
 <script>
-    const API_URL = typeof CONFIG !== 'undefined' ? CONFIG.API_URL : "SUA_URL_AQUI/exec";
-    const LISTA_TEMAS = ['azul', 'verde', 'laranja', 'dark', 'amarelo', 'roxo', 'vermelho', 'elegante', 'teal', 'terra'];
-    const CACHE_BASE_KEY = 'smartsync_base_cache_v1';
-    const HIST_LOCAL_KEY = 'smartsync_hist_pdfs_v1';
+    // -------------------------------------------------------------------------
+    // ATENÇÃO: SUBSTITUA PELA SUA URL DO GOOGLE APPS SCRIPT
+    // -------------------------------------------------------------------------
+    const API_URL = "SUA_URL_AQUI/exec";
 
-    let baseGlobal = { obras: [], usuarios: [], diarios: [] };
     let usuarioAtivo = null;
-    let schemaFormularioAtual = [];
-    let logoObraAtualBase64 = "";
-    let fotosAnexadasModulos = {};
-    let itemEditandoIndex = null;
-    let sincronizandoEmAndamento = false;
-    
-    let paginaAtualIndex = 0;
-    let totalPaginasForm = 1;
+    let baseGlobal = { obras: [], diarios: [] };
 
-    // =========================================================================
-    // MOTOR INDEXEDDB PARA FILA OFFLINE
-    // =========================================================================
-    const DB_NAME = "SmartSyncOfflineDB";
-    const DB_VERSION = 1;
-    const STORE_FILA = "fila_sincronizacao";
-
-    function abrirBancoOffline() {
-        return new Promise((resolve, reject) => {
-            const req = indexedDB.open(DB_NAME, DB_VERSION);
-            req.onupgradeneeded = (e) => {
-                const db = e.target.result;
-                if (!db.objectStoreNames.contains(STORE_FILA)) {
-                    db.createObjectStore(STORE_FILA, { keyPath: "id", autoIncrement: true });
-                }
-            };
-            req.onsuccess = (e) => resolve(e.target.result);
-            req.onerror = (e) => reject(e.target.error);
-        });
-    }
-
-    async function adicionarNaFilaOffline(item) {
-        const db = await abrirBancoOffline();
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE_FILA, "readwrite");
-            const store = tx.objectStore(STORE_FILA);
-            const req = store.add(item);
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => reject(req.error);
-        });
-    }
-
-    async function listarFilaOffline() {
-        const db = await abrirBancoOffline();
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE_FILA, "readonly");
-            const store = tx.objectStore(STORE_FILA);
-            const req = store.getAll();
-            req.onsuccess = () => resolve(req.result || []);
-            req.onerror = () => reject(req.error);
-        });
-    }
-
-    async function removerDaFilaOffline(id) {
-        const db = await abrirBancoOffline();
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE_FILA, "readwrite");
-            const store = tx.objectStore(STORE_FILA);
-            const req = store.delete(id);
-            req.onsuccess = () => resolve(true);
-            req.onerror = () => reject(req.error);
-        });
-    }
-
-    // =========================================================================
-    // SERVICE WORKER & MONITORAMENTO AUTOMÁTICO DE REDE
-    // =========================================================================
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js').catch(() => {});
-        });
-    }
-
-    window.addEventListener('online', () => {
-        atualizarIndicadorRede();
-        sincronizarFilaOffline(false);
-    });
-    window.addEventListener('offline', () => {
-        atualizarIndicadorRede();
-    });
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible' && navigator.onLine) {
-            sincronizarFilaOffline(false);
-        }
-    });
-    setInterval(() => {
-        if (navigator.onLine && !sincronizandoEmAndamento) {
-            sincronizarFilaOffline(false);
-        }
-    }, 20000);
-
-    function atualizarIndicadorRede() {
-        const online = navigator.onLine;
-        const dot = document.getElementById('netStatusDot');
-        const txt = document.getElementById('statusConexaoTexto');
-        const bannerDiario = document.getElementById('diarioOfflineBanner');
-        const bannerLogin = document.getElementById('loginOfflineInfo');
-
-        if (online) {
-            dot.classList.remove('offline');
-            dot.title = "Conectado (Online)";
-            if (txt) { txt.innerText = "🟢 Online (Conectado à Nuvem)"; txt.style.color = "#28a745"; }
-            if (bannerDiario) bannerDiario.style.display = "none";
-            if (bannerLogin) bannerLogin.style.display = "none";
-        } else {
-            dot.classList.add('offline');
-            dot.title = "Sem Internet (Modo Offline)";
-            if (txt) { txt.innerText = "🔴 Offline (Salvando no Dispositivo)"; txt.style.color = "#dc3545"; }
-            if (bannerDiario) bannerDiario.style.display = "block";
-            if (bannerLogin) bannerLogin.style.display = "block";
-        }
-    }
-
-    async function atualizarInterfaceFilaOffline() {
-        const fila = await listarFilaOffline();
-        const qtd = fila.length;
-
-        const pill = document.getElementById('headerPendingPill');
-        const sideBadge = document.getElementById('sidebarBadgeFila');
-
-        if (qtd > 0) {
-            pill.style.display = 'inline-block';
-            pill.innerText = `${qtd} pendente(s)`;
-            sideBadge.style.display = 'inline-block';
-            sideBadge.innerText = qtd;
-        } else {
-            pill.style.display = 'none';
-            sideBadge.style.display = 'none';
-        }
-
-        const container = document.getElementById('listaFilaOfflineContainer');
-        if (container) {
-            if (qtd === 0) {
-                container.innerHTML = "<p style='font-size:13px; color:var(--subtext);'>Nenhum diário pendente no dispositivo.</p>";
-            } else {
-                let html = '';
-                fila.forEach(item => {
-                    const qtdFotos = item.payload && item.payload.fotos ? item.payload.fotos.length : 0;
-                    html += `
-                        <div class="fila-card">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <strong>${item.titulo || 'Registro Offline'}</strong>
-                                <button type="button" class="btn-card-action" style="color:#dc3545; font-size:13px;" onclick="excluirItemFila(${item.id})">🗑️ Descartar</button>
-                            </div>
-                            <div style="font-size:12px; color:var(--subtext); margin-top:4px;">
-                                Data: ${item.data_criacao} | Fotos anexadas: ${qtdFotos}
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            }
-        }
-
-        renderizarHistoricoLocalPDFs();
-    }
-
-    async function excluirItemFila(id) {
-        if (!confirm("Deseja realmente apagar este registro pendente antes de enviar?")) return;
-        await removerDaFilaOffline(id);
-        await atualizarInterfaceFilaOffline();
-    }
-
-    function salvarPdfNoHistoricoLocal(obra, dataDiario, urlPdf) {
-        try {
-            let hist = JSON.parse(localStorage.getItem(HIST_LOCAL_KEY) || "[]");
-            hist.unshift({ obra: obra, data: dataDiario, url: urlPdf, hora: new Date().toLocaleTimeString('pt-BR') });
-            if (hist.length > 15) hist = hist.slice(0, 15);
-            localStorage.setItem(HIST_LOCAL_KEY, JSON.stringify(hist));
-            renderizarHistoricoLocalPDFs();
-        } catch(e) {}
-    }
-
-    function renderizarHistoricoLocalPDFs() {
-        const container = document.getElementById('listaHistoricoLocalContainer');
-        if (!container) return;
-        let hist = [];
-        try { hist = JSON.parse(localStorage.getItem(HIST_LOCAL_KEY) || "[]"); } catch(e) {}
-
-        if (hist.length === 0) {
-            container.innerHTML = "<p style='font-size:13px; color:var(--subtext);'>Nenhum histórico recente salvo localmente.</p>";
-            return;
-        }
-
-        let html = '';
-        hist.forEach(h => {
-            html += `
-                <div style="padding:10px; border:1px solid var(--border-color); border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; font-size:13px;">
-                    <div>
-                        <strong>${h.obra}</strong><br>
-                        <span style="font-size:11px; color:var(--subtext);">Data RDO: ${h.data} (Enviado às ${h.hora})</span>
-                    </div>
-                    <a href="${h.url}" target="_blank" style="background:var(--primary); color:#fff; padding:6px 10px; border-radius:6px; text-decoration:none; font-size:12px; font-weight:bold;">📄 PDF</a>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-    }
-
-    async function sincronizarFilaOffline(manual = false) {
-        if (sincronizandoEmAndamento) return;
-        const fila = await listarFilaOffline();
-        if (fila.length === 0) {
-            if (manual) abrirModalAviso("Tudo Sincronizado", "Não há nenhum registro pendente na fila offline.");
-            return;
-        }
-        if (!navigator.onLine) {
-            if (manual) abrirModalAviso("Sem Conexão", "Você ainda está sem sinal de internet. Tente novamente quando conectar.");
-            return;
-        }
-
-        sincronizandoEmAndamento = true;
-        if (manual) abrirModal("Sincronizando...", `Enviando ${fila.length} registro(s) salvo(s) offline para a nuvem.`);
-
-        let enviados = 0;
-        let falhas = 0;
-
-        for (let i = 0; i < fila.length; i++) {
-            const item = fila[i];
-            const res = await apiRequest(item.payload.acao, "POST", item.payload);
-            if (res && res.sucesso) {
-                await removerDaFilaOffline(item.id);
-                enviados++;
-                if (res.url_pdf && item.payload.acao === "salvar_diario") {
-                    salvarPdfNoHistoricoLocal(item.payload.obra, item.payload.data_diario, res.url_pdf);
-                }
-            } else {
-                falhas++;
-            }
-        }
-
-        sincronizandoEmAndamento = false;
-        await atualizarInterfaceFilaOffline();
-        
-        if (enviados > 0) {
-            await carregarDadosSistema();
-        }
-
-        if (manual) {
-            atualizarModalFinal(
-                enviados > 0 ? "Sincronização Concluída!" : "Falha na Sincronização",
-                `${enviados} registro(s) enviado(s) com sucesso.${falhas > 0 ? ` ${falhas} ainda aguardando conexão estável.` : ''}`
-            );
-        }
-    }
-
-    // =========================================================================
-    // INICIALIZAÇÃO DO APLICATIVO
-    // =========================================================================
-    window.addEventListener('DOMContentLoaded', async () => {
-        const hoje = new Date();
-        document.getElementById('diario_data').valueAsDate = hoje;
-        
-        const primeiroDiaMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-        document.getElementById('med_data_inicio').valueAsDate = primeiroDiaMes;
-        document.getElementById('med_data_fim').valueAsDate = hoje;
-
-        const temaSalvo = localStorage.getItem('smartsync_tema') || 'azul';
-        aplicarTemaVisual(temaSalvo);
-        
-        atualizarIndicadorRede();
-        await atualizarInterfaceFilaOffline();
-        await carregarDadosSistema();
-
-        if (navigator.onLine) {
-            sincronizarFilaOffline(false);
-        }
+    window.addEventListener('DOMContentLoaded', () => {
+        verificarSessaoSalva();
     });
 
-    function ciclarTemaVisual() {
-        const temaAtual = localStorage.getItem('smartsync_tema') || 'azul';
-        let idx = LISTA_TEMAS.indexOf(temaAtual);
-        idx = (idx + 1) % LISTA_TEMAS.length;
-        aplicarTemaVisual(LISTA_TEMAS[idx]);
-    }
-
-    function aplicarTemaVisual(nomeTema) {
-        document.body.setAttribute('data-theme', nomeTema);
-        localStorage.setItem('smartsync_tema', nomeTema);
-    }
-
-    function abrirSidebar() {
-        document.getElementById('sidebarMenu').classList.add('open');
-        document.getElementById('sidebarOverlay').classList.add('open');
-    }
-    function fecharSidebar() {
-        document.getElementById('sidebarMenu').classList.remove('open');
-        document.getElementById('sidebarOverlay').classList.remove('open');
-    }
-    function navegarSidebar(abaId) {
-        trocarAba(abaId, null);
-        fecharSidebar();
-    }
-
-    function trocarAba(abaId, el) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.sidebar-item').forEach(c => c.classList.remove('active'));
-        document.getElementById('aba-' + abaId).classList.add('active');
-        if (abaId === 'offline') atualizarInterfaceFilaOffline();
-        if (abaId === 'historico') renderizarPainelHistorico();
-        if (abaId === 'permissoes') renderizarListaUsuarios();
-        if (abaId === 'configuracoes') atualizarPainelConfiguracoes();
-    }
-
-    async function apiRequest(acao, metodo = "GET", payload = null) {
-        if (!navigator.onLine) return null;
-        try {
-            if (metodo === "GET") {
-                const res = await fetch(`${API_URL}?acao=${acao}`);
-                return await res.json();
-            } else {
-                const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
-                return await res.json();
-            }
-        } catch(e) { return null; }
-    }
-
-    async function forcarAtualizacaoCache() {
-        if (!navigator.onLine) return abrirModalAviso("Sem Internet", "Conecte-se à internet para atualizar o cache de obras.");
-        abrirModal("Atualizando Cache...", "Baixando obras, usuários e histórico de RDOs.");
-        await carregarDadosSistema();
-        atualizarPainelConfiguracoes();
-        atualizarModalFinal("Cache Atualizado!", "Todos os dados da nuvem foram sincronizados com sucesso.");
-    }
-
-    async function carregarDadosSistema() {
-        let carregouDaNuvem = false;
-
-        if (navigator.onLine) {
-            const res = await apiRequest("listar_dados", "GET");
-            if (res && res.sucesso && res.dados && res.dados.usuarios && res.dados.usuarios.length > 0) {
-                baseGlobal = res.dados;
-                if (!baseGlobal.diarios) baseGlobal.diarios = [];
-                localStorage.setItem(CACHE_BASE_KEY, JSON.stringify(baseGlobal));
-                carregouDaNuvem = true;
-            }
-        }
-
-        if (!carregouDaNuvem) {
-            const cacheLocal = localStorage.getItem(CACHE_BASE_KEY);
-            if (cacheLocal) {
-                try {
-                    baseGlobal = JSON.parse(cacheLocal);
-                    if (!baseGlobal.diarios) baseGlobal.diarios = [];
-                } catch(e) {}
-            }
-        }
-
-        if (!baseGlobal || !baseGlobal.usuarios || baseGlobal.usuarios.length === 0) {
-            baseGlobal = {
-                obras: [
-                    { nome: "Obra Modelo Genérica", empresa: "Construtora Padrão", totalUHs: 500, logoBase64: "", schemaFormulario: [
-                        { id: "c1", secao: "1. Condições de Campo", tipo: "radio", titulo: "Clima Manhã", opcoes: ["Sol", "Nublado", "Chuva Leve", "Chuva Forte"], obrigatoria: true },
-                        { id: "c2", secao: "1. Condições de Campo", tipo: "radio", titulo: "Clima Tarde", opcoes: ["Sol", "Nublado", "Chuva Leve", "Chuva Forte"], obrigatoria: true },
-                        { id: "c3", secao: "1. Condições de Campo", tipo: "radio", titulo: "Condição de Trabalho", opcoes: ["Trabalhos Normais", "Parcialmente Paralisado", "Paralisado por Chuva"], obrigatoria: true },
-                        { id: "c4", secao: "2. Efetivo de Campo", tipo: "numero", titulo: "Efetivo Próprio - Produção", obrigatoria: true },
-                        { id: "c5", secao: "3. Matriz Habitação", tipo: "etapa_producao", titulo: "01-Laje Radier", meta: 500, ac: 0, sd: 500, obrigatoria: false },
-                        { id: "c6", secao: "4. Qualidade e Ocorrências", tipo: "textarea", titulo: "Relato Diário do Empreendimento", obrigatoria: true }
-                    ]}
-                ],
-                usuarios: [
-                    { email: "waldomiroferreira@gmail.com", nome: "Waldomiro Ferreira", perfil: "Administrador", obra: "Todas", status: "Ativo" },
-                    { email: "engenheiro@smartsync.com", nome: "Engenheiro Residente", perfil: "Engenheiro", obra: "Obra Modelo Genérica", status: "Ativo" }
-                ],
-                diarios: []
-            };
-        }
-
-        let htmlUsr = '';
-        baseGlobal.usuarios.forEach(u => {
-            const tagInativo = (u.status === 'Inativo') ? ' [INATIVO]' : '';
-            htmlUsr += `<option value="${u.email}">${u.nome} (${u.perfil})${tagInativo}</option>`;
-        });
-        document.getElementById('select_usuario').innerHTML = htmlUsr;
-
-        let htmlObras = '';
-        baseGlobal.obras.forEach(o => htmlObras += `<option value="${o.nome}">${o.nome}</option>`);
-        document.getElementById('builder_select_obra').innerHTML = htmlObras;
-        document.getElementById('usr_nova_obra').innerHTML = `<option value="Todas">Todas as Obras (Acesso Global)</option>` + htmlObras;
-
-        carregarFormularioParaEdicao();
-        renderizarListaUsuarios();
-        atualizarPainelConfiguracoes();
-
-        const salvoEmail = localStorage.getItem('smartsync_user_email');
-        if (salvoEmail) {
-            const usrEncontrado = baseGlobal.usuarios.find(u => u.email === salvoEmail);
-            if (usrEncontrado && usrEncontrado.status !== 'Inativo') {
-                document.getElementById('select_usuario').value = salvoEmail;
-                efetuarLogin(true);
-            }
-        }
-    }
-
-    function efetuarLogin(silencioso = false) {
-        const email = document.getElementById('select_usuario').value;
-        const candidato = baseGlobal.usuarios.find(u => u.email === email) || baseGlobal.usuarios[0];
-
-        if (candidato && candidato.status === 'Inativo') {
-            localStorage.removeItem('smartsync_user_email');
-            if (!silencioso) {
-                abrirModalAviso("Acesso Bloqueado", "Este usuário está marcado como INATIVO. Solicite ativação ao Administrador.");
-            }
-            return;
-        }
-
-        usuarioAtivo = candidato;
-        localStorage.setItem('smartsync_user_email', usuarioAtivo.email);
-
-        document.getElementById('usuario-logado').innerText = `${usuarioAtivo.nome} [${usuarioAtivo.perfil}]`;
-        document.getElementById('side-item-diario').style.display = 'flex';
-        document.getElementById('side-item-historico').style.display = 'flex';
-        document.getElementById('side-item-offline').style.display = 'flex';
-
-        if(usuarioAtivo.perfil === 'Administrador') {
-            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
-        } else {
-            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
-        }
-
-        const obrasPermitidas = (usuarioAtivo.perfil === 'Administrador' || !usuarioAtivo.obra || usuarioAtivo.obra === 'Todas')
-            ? baseGlobal.obras
-            : baseGlobal.obras.filter(o => o.nome === usuarioAtivo.obra);
-
-        const listaFinalObras = obrasPermitidas.length > 0 ? obrasPermitidas : baseGlobal.obras;
-        let htmlObrasPermitidas = '';
-        listaFinalObras.forEach(o => htmlObrasPermitidas += `<option value="${o.nome}">${o.nome}</option>`);
+    // -------------------------------------------------------------------------
+    // SISTEMA DE SEGURANÇA RBAC & LOGIN
+    // -------------------------------------------------------------------------
+    async function efetuarLoginSeguro() {
+        const email = document.getElementById('login_email').value.trim();
+        const senha = document.getElementById('login_senha').value.trim();
         
-        document.getElementById('diario_select_obra').innerHTML = htmlObrasPermitidas;
-        document.getElementById('hist_select_obra').innerHTML = htmlObrasPermitidas;
+        if (!email || !senha) return alert("Preencha E-mail e Senha.");
 
-        renderizarFormularioEngenheiro();
-        renderizarPainelHistorico();
-        trocarAba('diario', null);
-    }
-
-    // =========================================================================
-    // PAINEL DE AVANÇO FÍSICO, MEDIÇÃO & HISTÓRICO DE RDOs
-    // =========================================================================
-    async function atualizarDadosPainelNuvem() {
-        if (!navigator.onLine) {
-            abrirModalAviso("Modo Offline", "Conecte-se à internet para buscar os relatórios mais recentes da planilha.");
-            return;
-        }
-        abrirModal("Atualizando Painel...", "Buscando avanço físico e RDOs publicados.");
-        await carregarDadosSistema();
-        renderizarPainelHistorico();
-        atualizarModalFinal("Painel Atualizado!", "Indicadores e histórico de PDFs atualizados.");
-    }
-
-    function renderizarPainelHistorico() {
-        const selectObra = document.getElementById('hist_select_obra');
-        if (!selectObra || !selectObra.value) return;
-        const nomeObra = selectObra.value;
-        const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
-
-        const diariosDaObra = (baseGlobal.diarios || []).filter(d => d.obra === nomeObra);
-        document.getElementById('kpiTotalRdos').innerText = diariosDaObra.length;
-        document.getElementById('kpiMetaGlobal').innerText = obraObj ? (obraObj.totalUHs || 0) : 0;
-
-        const containerEtapas = document.getElementById('containerProgressoEtapas');
-        let somaPercentuais = 0;
-        let qtdEtapas = 0;
-
-        if (obraObj && obraObj.schemaFormulario) {
-            const etapas = obraObj.schemaFormulario.filter(c => c.tipo === 'etapa_producao');
-            if (etapas.length === 0) {
-                containerEtapas.innerHTML = "<p style='font-size:13px; color:var(--subtext);'>Nenhuma etapa de produção configurada para esta obra.</p>";
-            } else {
-                let htmlEtapas = '';
-                etapas.forEach(et => {
-                    const meta = Number(et.meta || 0);
-                    const ac = Number(et.ac || 0);
-                    const sd = et.sd !== undefined ? Number(et.sd) : Math.max(0, meta - ac);
-                    const pctNum = meta > 0 ? Math.min(100, (ac / meta) * 100) : 0;
-                    somaPercentuais += pctNum;
-                    qtdEtapas++;
-
-                    htmlEtapas += `
-                        <div class="etapa-prog-card">
-                            <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:bold;">
-                                <span>${et.titulo}</span>
-                                <span style="color:var(--primary);">${pctNum.toFixed(1)}%</span>
-                            </div>
-                            <div style="font-size:11.5px; color:var(--subtext); margin-top:3px;">
-                                Meta: <strong>${meta}</strong> | Acumulado: <strong>${ac}</strong> | Saldo: <strong>${sd}</strong>
-                            </div>
-                            <div class="prog-track">
-                                <div class="prog-fill" style="width:${pctNum.toFixed(1)}%;"></div>
-                            </div>
-                        </div>
-                    `;
-                });
-                containerEtapas.innerHTML = htmlEtapas;
-            }
-        }
-
-        const mediaAvanco = qtdEtapas > 0 ? (somaPercentuais / qtdEtapas).toFixed(1) + "%" : "0%";
-        document.getElementById('kpiAvancoMedio').innerText = mediaAvanco;
-
-        const termoBusca = (document.getElementById('hist_busca_texto').value || "").trim().toLowerCase();
-        const containerRdos = document.getElementById('containerListaRdosNuvem');
-
-        const filtrados = diariosDaObra.filter(item => {
-            if (!termoBusca) return true;
-            return (item.data && item.data.toLowerCase().includes(termoBusca)) ||
-                   (item.responsavel && item.responsavel.toLowerCase().includes(termoBusca)) ||
-                   (item.resumo && item.resumo.toLowerCase().includes(termoBusca)) ||
-                   (item.id && item.id.toLowerCase().includes(termoBusca));
-        });
-
-        if (filtrados.length === 0) {
-            containerRdos.innerHTML = "<p style='font-size:13px; color:var(--subtext);'>Nenhum Diário de Obra encontrado para esta obra.</p>";
-            return;
-        }
-
-        let htmlRdos = '';
-        filtrados.forEach(rdo => {
-            const dataBr = rdo.data.includes("-") ? rdo.data.split("-").reverse().join("/") : rdo.data;
-            const botaoPdf = (rdo.link_pdf && rdo.link_pdf.startsWith("http"))
-                ? `<a href="${rdo.link_pdf}" target="_blank" class="btn-pdf-pill">📄 Abrir PDF</a>`
-                : `<span style="font-size:11px; color:var(--subtext);">Sem PDF</span>`;
-
-            htmlRdos += `
-                <div class="rdo-cloud-card">
-                    <div>
-                        <div style="font-weight:bold; font-size:13.5px; color:var(--primary);">${rdo.id} • Data: ${dataBr}</div>
-                        <div style="font-size:12px; margin-top:2px;"><strong>Responsável:</strong> ${rdo.responsavel}</div>
-                        <div style="font-size:11.5px; color:var(--subtext); margin-top:3px;">${rdo.resumo}</div>
-                    </div>
-                    ${botaoPdf}
-                </div>
-            `;
-        });
-        containerRdos.innerHTML = htmlRdos;
-    }
-
-    async function gerarPdfConsolidadoPeriodo() {
-        const nomeObra = document.getElementById('hist_select_obra').value;
-        const dataIni = document.getElementById('med_data_inicio').value;
-        const dataFim = document.getElementById('med_data_fim').value;
-
-        if (!navigator.onLine) {
-            abrirModalAviso("Sem Conexão", "Conecte-se à internet para gerar o Boletim Consolidado em PDF no Google Drive.");
-            return;
-        }
-
-        abrirModal("Gerando Boletim Consolidado...", "Consolidando produção do período e gerando PDF oficial.");
-        const res = await apiRequest("gerar_consolidado_periodo", "POST", {
-            acao: "gerar_consolidado_periodo",
-            obra: nomeObra,
-            data_inicio: dataIni,
-            data_fim: dataFim,
-            solicitante: usuarioAtivo ? usuarioAtivo.nome : "Gestão"
-        });
-
-        if (res && res.sucesso) {
-            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold; display:inline-block; padding:8px 12px; background:rgba(0,0,0,0.05); border-radius:6px; text-decoration:none;">📄 Abrir Boletim Consolidado PDF</a>`;
-            atualizarModalFinal("Boletim Gerado!", res.mensagem);
-        } else {
-            atualizarModalFinal("Erro", (res && res.erro) ? res.erro : "Não foi possível gerar o PDF consolidado.");
-        }
-    }
-
-    function exportarCsvConsolidadoPeriodo() {
-        const nomeObra = document.getElementById('hist_select_obra').value;
-        const dataIni = document.getElementById('med_data_inicio').value || "0000-00-00";
-        const dataFim = document.getElementById('med_data_fim').value || "9999-12-31";
-        const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
-        if (!obraObj || !obraObj.schemaFormulario) return;
-
-        const diariosFiltrados = (baseGlobal.diarios || []).filter(d => d.obra === nomeObra && d.data >= dataIni && d.data <= dataFim);
-        let prodPeriodo = {};
-        diariosFiltrados.forEach(d => {
-            if (d.producao) {
-                for (let et in d.producao) {
-                    prodPeriodo[et] = (prodPeriodo[et] || 0) + Number(d.producao[et] || 0);
-                }
-            }
-        });
-
-        let linhasCsv = [
-            ["Obra", nomeObra],
-            ["Empresa", obraObj.empresa || ""],
-            ["Período", `${dataIni} a ${dataFim}`],
-            ["RDOs Considerados no Período", diariosFiltrados.length],
-            [],
-            ["Etapa / Serviço Contratual", "Meta", "Executado no Período", "Acumulado Geral", "Saldo", "% Avanço Geral"]
-        ];
-
-        obraObj.schemaFormulario.forEach(c => {
-            if (c.tipo === 'etapa_producao') {
-                const meta = Number(c.meta || 0);
-                const execPer = Number(prodPeriodo[c.titulo] || 0);
-                const acGeral = Number(c.ac || 0);
-                const saldo = Math.max(0, meta - acGeral);
-                const pct = meta > 0 ? ((acGeral / meta) * 100).toFixed(1).replace('.', ',') + "%" : "0,0%";
-                linhasCsv.push([`"${c.titulo}"`, meta, execPer, acGeral, saldo, `"${pct}"`]);
-            }
-        });
-
-        const csvString = "\uFEFF" + linhasCsv.map(row => row.join(";")).join("\n");
-        const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `Medicao_${nomeObra.replace(/\s+/g, "_")}_${dataIni}_a_${dataFim}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-
-    // =========================================================================
-    // GESTÃO DE PERMISSÕES E USUÁRIOS (ADMIN)
-    // =========================================================================
-    function renderizarListaUsuarios() {
-        const container = document.getElementById('listaUsuariosContainer');
-        if (!container) return;
-
-        if (!baseGlobal.usuarios || baseGlobal.usuarios.length === 0) {
-            container.innerHTML = "<p style='font-size:13px; color:var(--subtext);'>Nenhum usuário cadastrado.</p>";
-            return;
-        }
-
-        let html = '';
-        baseGlobal.usuarios.forEach(u => {
-            const ativo = u.status !== 'Inativo';
-            const pillClass = ativo ? 'status-pill-ativo' : 'status-pill-inativo';
-            const txtBotao = ativo ? 'Desativar' : 'Ativar';
-            const novoStatus = ativo ? 'Inativo' : 'Ativo';
-
-            html += `
-                <div class="user-card">
-                    <div>
-                        <div style="font-weight:bold; font-size:14px;">${u.nome} <span class="${pillClass}">${u.status || 'Ativo'}</span></div>
-                        <div style="font-size:12px; color:var(--subtext);">${u.email}</div>
-                        <div style="font-size:11.5px; margin-top:3px;"><strong>Perfil:</strong> ${u.perfil} | <strong>Obra:</strong> ${u.obra || 'Todas'}</div>
-                    </div>
-                    <div style="display:flex; flex-direction:column; gap:5px;">
-                        <button type="button" class="btn-secondary" style="padding:5px 10px; font-size:11px; margin:0;" onclick="preencherEdicaoUsuario('${u.email}')">✏️ Editar</button>
-                        <button type="button" class="${ativo ? 'btn-danger' : 'btn-success'}" style="padding:5px 10px; font-size:11px; margin:0;" onclick="alternarStatusUsuario('${u.email}', '${novoStatus}')">${txtBotao}</button>
-                    </div>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-    }
-
-    function preencherEdicaoUsuario(email) {
-        const u = baseGlobal.usuarios.find(item => item.email === email);
-        if (!u) return;
-        document.getElementById('usr_novo_nome').value = u.nome;
-        document.getElementById('usr_novo_email').value = u.email;
-        document.getElementById('usr_novo_perfil').value = u.perfil;
-        document.getElementById('usr_nova_obra').value = u.obra || "Todas";
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    async function salvarUsuarioSistema() {
-        const nome = document.getElementById('usr_novo_nome').value.trim();
-        const email = document.getElementById('usr_novo_email').value.trim().toLowerCase();
-        const perfil = document.getElementById('usr_novo_perfil').value;
-        const obra = document.getElementById('usr_nova_obra').value;
-
-        if (!nome || !email) {
-            abrirModalAviso("Campos Obrigatórios", "Preencha o nome completo e o e-mail do usuário.");
-            return;
-        }
-        if (!navigator.onLine) {
-            abrirModalAviso("Sem Conexão", "O cadastro de usuários exige conexão com a internet.");
-            return;
-        }
-
-        abrirModal("Salvando Usuário...", "Gravando permissões na planilha.");
-        const res = await apiRequest("salvar_usuario", "POST", {
-            acao: "salvar_usuario",
-            nome: nome,
-            email: email,
-            perfil: perfil,
-            obra: obra,
-            status: "Ativo"
-        });
-
-        if (res && res.sucesso) {
-            document.getElementById('usr_novo_nome').value = "";
-            document.getElementById('usr_novo_email').value = "";
-            await carregarDadosSistema();
-            atualizarModalFinal("Usuário Salvo!", res.mensagem || "Permissões configuradas com sucesso.");
-        } else {
-            atualizarModalFinal("Erro", (res && res.erro) ? res.erro : "Não foi possível salvar o usuário.");
-        }
-    }
-
-    async function alternarStatusUsuario(email, novoStatus) {
-        if (!navigator.onLine) {
-            abrirModalAviso("Sem Conexão", "Conecte-se à internet para alterar o status do usuário.");
-            return;
-        }
-        abrirModal("Atualizando Status...", `Alterando acesso de ${email} para ${novoStatus}.`);
-        const res = await apiRequest("alterar_status_usuario", "POST", {
-            acao: "alterar_status_usuario",
-            email: email,
-            novo_status: novoStatus
-        });
-
-        if (res && res.sucesso) {
-            await carregarDadosSistema();
-            atualizarModalFinal("Status Atualizado!", res.mensagem);
-        } else {
-            atualizarModalFinal("Erro", (res && res.erro) ? res.erro : "Falha ao atualizar status.");
-        }
-    }
-
-    function atualizarPainelConfiguracoes() {
-        const elApi = document.getElementById('cfgApiStatus');
-        const elObras = document.getElementById('cfgQtdObras');
-        const elRdos = document.getElementById('cfgQtdRdos');
-        if (elApi) elApi.innerText = navigator.onLine ? "🟢 Conectado à Planilha Google" : "🔴 Modo Offline Local";
-        if (elObras) elObras.innerText = baseGlobal.obras ? baseGlobal.obras.length : 0;
-        if (elRdos) elRdos.innerText = baseGlobal.diarios ? baseGlobal.diarios.length : 0;
-    }
-
-    // =========================================================================
-    // CONSTRUTOR DE FORMULÁRIOS & LOGOTIPO DA CONSTRUTORA (BUILDER)
-    // =========================================================================
-    function processarLogoConstrutora(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = new Image();
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                const MAX_H = 80;
-                const scale = MAX_H / img.height;
-                canvas.height = MAX_H;
-                canvas.width = Math.round(img.width * scale);
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                logoObraAtualBase64 = canvas.toDataURL('image/png');
-                atualizarPreviewLogoBuilder();
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function removerLogoConstrutora() {
-        logoObraAtualBase64 = "";
-        document.getElementById('builder_input_logo').value = "";
-        atualizarPreviewLogoBuilder();
-    }
-
-    function atualizarPreviewLogoBuilder() {
-        const box = document.getElementById('box_preview_logo');
-        const img = document.getElementById('img_preview_logo');
-        if (logoObraAtualBase64) {
-            img.src = logoObraAtualBase64;
-            box.style.display = 'flex';
-        } else {
-            img.src = "";
-            box.style.display = 'none';
-        }
-    }
-
-    function alternarCamposAdicionaisBuilder() {
-        const tipo = document.getElementById('builder_novo_tipo').value;
-        document.getElementById('builder_box_meta').style.display = (tipo === 'etapa_producao') ? 'block' : 'none';
-        document.getElementById('builder_box_opcoes').style.display = (['select', 'radio', 'checkbox'].includes(tipo)) ? 'block' : 'none';
-    }
-
-    function carregarFormularioParaEdicao() {
-        const nomeObra = document.getElementById('builder_select_obra').value;
-        const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
-        if (obraObj) {
-            document.getElementById('builder_empresa').value = obraObj.empresa || "Construtora Padrão";
-            document.getElementById('builder_total_uhs').value = obraObj.totalUHs || 500;
-            schemaFormularioAtual = obraObj.schemaFormulario ? JSON.parse(JSON.stringify(obraObj.schemaFormulario)) : [];
-            logoObraAtualBase64 = obraObj.logoBase64 || "";
-        } else {
-            schemaFormularioAtual = [];
-            logoObraAtualBase64 = "";
-        }
-        document.getElementById('builder_input_logo').value = "";
-        atualizarPreviewLogoBuilder();
-        cancelarEdicaoBuilder();
-        renderizarCardsBuilder();
-    }
-
-    function criarNovaObraPrompt() {
-        const nome = prompt("Digite o nome da nova obra:");
-        if (!nome) return;
-        baseGlobal.obras.push({ nome: nome, empresa: "Sua Construtora", totalUHs: 500, logoBase64: "", schemaFormulario: [] });
-        
-        let htmlObras = '';
-        baseGlobal.obras.forEach(o => htmlObras += `<option value="${o.nome}">${o.nome}</option>`);
-        document.getElementById('builder_select_obra').innerHTML = htmlObras;
-        document.getElementById('builder_select_obra').value = nome;
-        carregarFormularioParaEdicao();
-    }
-
-    function editarCampoBuilder(index) {
-        itemEditandoIndex = index;
-        const campo = schemaFormularioAtual[index];
-
-        document.getElementById('builder_nova_secao').value = campo.secao || '';
-        document.getElementById('builder_novo_titulo').value = campo.titulo || '';
-        document.getElementById('builder_novo_tipo').value = campo.tipo || 'texto';
-        document.getElementById('builder_nova_obrigatoria').checked = Boolean(campo.obrigatoria);
-        
-        alternarCamposAdicionaisBuilder();
-
-        if (campo.meta) document.getElementById('builder_nova_meta').value = campo.meta;
-        if (campo.opcoes) document.getElementById('builder_novas_opcoes').value = campo.opcoes.join(', ');
-
-        document.getElementById('builder_form_label').innerText = "✏️ Editando Pergunta do Formulário";
-        document.getElementById('btn_salvar_campo_builder').innerText = "🔄 Atualizar Pergunta";
-        document.getElementById('btn_cancelar_edicao_builder').style.display = "block";
-        
-        window.scrollTo({ top: document.getElementById('aba-builder').offsetTop, behavior: 'smooth' });
-    }
-
-    function cancelarEdicaoBuilder() {
-        itemEditandoIndex = null;
-        document.getElementById('builder_novo_titulo').value = '';
-        document.getElementById('builder_nova_obrigatoria').checked = false;
-        document.getElementById('builder_form_label').innerText = "+ Adicionar Novo Campo / Pergunta";
-        document.getElementById('btn_salvar_campo_builder').innerText = "+ Adicionar Pergunta ao Formulário";
-        document.getElementById('btn_cancelar_edicao_builder').style.display = "none";
-    }
-
-    function adicionarOuAtualizarCampoBuilder() {
-        const titulo = document.getElementById('builder_novo_titulo').value.trim();
-        const tipo = document.getElementById('builder_novo_tipo').value;
-        const secao = document.getElementById('builder_nova_secao').value.trim() || "1. Informações Gerais";
-        const obrigatoria = document.getElementById('builder_nova_obrigatoria').checked;
-
-        if (!titulo) return alert("Digite o título da pergunta.");
-
-        let campoDado = {
-            id: itemEditandoIndex !== null ? schemaFormularioAtual[itemEditandoIndex].id : "c_" + Date.now(),
-            secao: secao,
-            tipo: tipo,
-            titulo: titulo,
-            obrigatoria: obrigatoria
-        };
-        if (tipo === 'etapa_producao') campoDado.meta = Number(document.getElementById('builder_nova_meta').value || 500);
-        if (['select', 'radio', 'checkbox'].includes(tipo)) {
-            const ops = document.getElementById('builder_novas_opcoes').value;
-            campoDado.opcoes = ops ? ops.split(',').map(s => s.trim()) : ["Opção 1", "Opção 2"];
-        }
-
-        if (itemEditandoIndex !== null) {
-            schemaFormularioAtual[itemEditandoIndex] = campoDado;
-        } else {
-            schemaFormularioAtual.push(campoDado);
-        }
-
-        cancelarEdicaoBuilder();
-        renderizarCardsBuilder();
-    }
-
-    function removerCampoBuilder(index) {
-        schemaFormularioAtual.splice(index, 1);
-        cancelarEdicaoBuilder();
-        renderizarCardsBuilder();
-    }
-
-    function moverCampoBuilder(index, direcao) {
-        if ((direcao === -1 && index === 0) || (direcao === 1 && index === schemaFormularioAtual.length - 1)) return;
-        const item = schemaFormularioAtual.splice(index, 1)[0];
-        schemaFormularioAtual.splice(index + direcao, 0, item);
-        renderizarCardsBuilder();
-    }
-
-    function renderizarCardsBuilder() {
-        const container = document.getElementById('container_builder_cards');
-        if (schemaFormularioAtual.length === 0) {
-            container.innerHTML = "<p style='color:var(--subtext); text-align:center;'>Nenhum campo configurado. Adicione perguntas acima!</p>";
-            return;
-        }
-
-        const nomesTipos = {
-            etapa_producao: "🏗️ Produção", texto: "📝 Texto Curto", textarea: "📄 Parágrafo",
-            numero: "🔢 Inteiro", decimal: "📐 Decimal", select: "🔽 Dropdown",
-            radio: "🔘 Escolha Única (Radio)", checkbox: "☑️ Checkbox", data: "📅 Data",
-            hora: "⏰ Hora", escala: "⭐️ Escala (1-5)", foto: "📸 Foto"
-        };
-
-        let html = '';
-        schemaFormularioAtual.forEach((c, idx) => {
-            let labelExtra = c.meta ? ` (Meta: ${c.meta})` : c.opcoes ? ` (${c.opcoes.join(', ')})` : '';
-            let tagObrig = c.obrigatoria ? ` <span class="badge-obrig">* Obrigatória</span>` : '';
-            html += `
-                <div class="card-pergunta-builder">
-                    <div class="card-actions">
-                        <button type="button" class="btn-card-action" title="Editar Pergunta" onclick="editarCampoBuilder(${idx})">✏️</button>
-                        <button type="button" class="btn-card-action" onclick="moverCampoBuilder(${idx}, -1)">⬆️</button>
-                        <button type="button" class="btn-card-action" onclick="moverCampoBuilder(${idx}, 1)">⬇️</button>
-                        <button type="button" class="btn-card-action" style="color:#dc3545;" onclick="removerCampoBuilder(${idx})">🗑️</button>
-                    </div>
-                    <span class="badge-tipo">${c.secao || '1. Gerais'}</span> | <span class="badge-tipo" style="background:var(--primary); color:#fff;">${nomesTipos[c.tipo] || c.tipo}</span>${tagObrig}
-                    <div style="font-weight:bold; font-size:14px; margin-top:5px;">${idx + 1}. ${c.titulo}${labelExtra}</div>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-    }
-
-    async function salvarFormularioNoBanco() {
-        const nomeObra = document.getElementById('builder_select_obra').value;
-        const empresa = document.getElementById('builder_empresa').value;
-        const totalUHs = document.getElementById('builder_total_uhs').value;
-
-        const payload = { 
-            acao: "salvar_schema_obra", 
-            nome: nomeObra, 
-            empresa: empresa, 
-            totalUHs: totalUHs, 
-            schemaFormulario: schemaFormularioAtual,
-            logoBase64: logoObraAtualBase64
-        };
-
-        const idxObra = baseGlobal.obras.findIndex(o => o.nome === nomeObra);
-        if (idxObra >= 0) {
-            baseGlobal.obras[idxObra].empresa = empresa;
-            baseGlobal.obras[idxObra].totalUHs = totalUHs;
-            baseGlobal.obras[idxObra].schemaFormulario = JSON.parse(JSON.stringify(schemaFormularioAtual));
-            baseGlobal.obras[idxObra].logoBase64 = logoObraAtualBase64;
-        } else {
-            baseGlobal.obras.push({ nome: nomeObra, empresa: empresa, totalUHs: totalUHs, schemaFormulario: JSON.parse(JSON.stringify(schemaFormularioAtual)), logoBase64: logoObraAtualBase64 });
-        }
-        localStorage.setItem(CACHE_BASE_KEY, JSON.stringify(baseGlobal));
-
-        abrirModal("Salvando Formulário...", "Gravando estrutura e identidade visual na planilha.");
-        const res = await apiRequest("salvar_schema_obra", "POST", payload);
-
-        if (res && res.sucesso) {
-            await carregarDadosSistema();
-            atualizarModalFinal("Formulário Salvo!", res.mensagem || "Estrutura gravada com sucesso.");
-        } else {
-            await adicionarNaFilaOffline({
-                titulo: `Configuração Obra: ${nomeObra}`,
-                data_criacao: new Date().toLocaleString('pt-BR'),
-                payload: payload
-            });
-            await atualizarInterfaceFilaOffline();
-            atualizarModalFinal("Salvo Offline!", "Sem sinal no momento. O formulário já está ativo neste aparelho e será enviado à nuvem automaticamente quando conectar.");
-        }
-    }
-
-    // =========================================================================
-    // RENDERIZAÇÃO DO FORMULÁRIO DE CAMPO (SEM OPÇÕES PRÉ-MARCADAS)
-    // =========================================================================
-    function renderizarFormularioEngenheiro() {
-        const nomeObra = document.getElementById('diario_select_obra').value;
-        const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
-        const container = document.getElementById('container_formulario_dinamico');
-        fotosAnexadasModulos = {};
-        paginaAtualIndex = 0;
-
-        const chkTermo = document.getElementById('chk_aceite_responsabilidade');
-        if (chkTermo) chkTermo.checked = false;
-        const wrapTermo = document.getElementById('wrapperTermoCheck');
-        if (wrapTermo) wrapTermo.classList.remove('campo-erro-borda');
-        const lblAssinante = document.getElementById('label_texto_assinante');
-        if (lblAssinante && usuarioAtivo) {
-            lblAssinante.innerHTML = `Li, concordo e assino eletronicamente como <strong>${usuarioAtivo.nome}</strong>. <span class="req-star">*</span>`;
-        }
-
-        if (!obraObj || !obraObj.schemaFormulario || obraObj.schemaFormulario.length === 0) {
-            container.innerHTML = "<p>O gestor ainda não configurou perguntas para esta obra.</p>";
-            document.getElementById('stepProgressBar').style.display = 'none';
-            document.getElementById('blocoTermoResponsabilidade').style.display = 'none';
-            return;
-        }
-
-        let secoesMap = {};
-        obraObj.schemaFormulario.forEach((c) => {
-            let secNome = c.secao || "1. Informações Gerais";
-            if (!secoesMap[secNome]) secoesMap[secNome] = [];
-            secoesMap[secNome].push(c);
-        });
-
-        const secoesLista = Object.keys(secoesMap);
-        totalPaginasForm = secoesLista.length;
-
-        let html = '';
-        
-        secoesLista.forEach((secNome, pageIdx) => {
-            const activeClass = pageIdx === 0 ? 'active' : '';
-            html += `<div class="pagina-form ${activeClass}" id="pagina_form_${pageIdx}" data-secao-nome="${secNome}">`;
-            html += `<div class="secao-header">${secNome}</div>`;
-
-            secoesMap[secNome].forEach((c, idx) => {
-                const fieldId = "campo_din_" + pageIdx + "_" + idx;
-                const isObrig = Boolean(c.obrigatoria);
-                const starHtml = isObrig ? `<span class="req-star">*</span>` : '';
-                const obrigAttr = isObrig ? '1' : '0';
-                
-                if (c.tipo === 'etapa_producao') {
-                    html += `
-                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="etapa_producao" style="background:rgba(0,0,0,0.02); padding:12px; border-radius:8px; border:1px solid var(--border-color);">
-                            <label>🏗️ ${c.titulo}${starHtml} <span style="font-size:11px; background:rgba(0,0,0,0.08); padding:2px 6px; border-radius:4px;">Meta: ${c.meta} | Saldo: ${c.sd !== undefined ? c.sd : c.meta}</span></label>
-                            <input type="number" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="etapa_producao" data-meta="${c.meta}" placeholder="0">
-                        </div>
-                    `;
-                } else if (c.tipo === 'select') {
-                    let options = `<option value="">-- Selecione uma opção --</option>` + c.opcoes.map(op => `<option value="${op}">${op}</option>`).join('');
-                    html += `
-                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="select">
-                            <label>🔽 ${c.titulo}${starHtml}</label>
-                            <select class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="select">${options}</select>
-                        </div>
-                    `;
-                } else if (c.tipo === 'radio') {
-                    let radios = c.opcoes.map((op) => `
-                        <label class="radio-item">
-                            <input type="radio" name="${fieldId}" value="${op}"> ${op}
-                        </label>
-                    `).join('');
-                    html += `
-                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="radio" data-group-id="${fieldId}">
-                            <label>🔘 ${c.titulo}${starHtml}</label>
-                            <div class="radio-group" data-titulo="${c.titulo}" data-tipo="radio" data-radio-group="${fieldId}">${radios}</div>
-                        </div>
-                    `;
-                } else if (c.tipo === 'checkbox') {
-                    let chks = c.opcoes.map(op => `
-                        <label class="checkbox-item">
-                            <input type="checkbox" class="chk_${fieldId}" value="${op}"> ${op}
-                        </label>
-                    `).join('');
-                    html += `
-                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="checkbox" data-group-id="${fieldId}">
-                            <label>☑️ ${c.titulo}${starHtml}</label>
-                            <div class="checkbox-group" data-titulo="${c.titulo}" data-tipo="checkbox" data-chk-group="${fieldId}">${chks}</div>
-                        </div>
-                    `;
-                } else if (c.tipo === 'escala') {
-                    html += `
-                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="escala">
-                            <label>⭐️ ${c.titulo}${starHtml}</label>
-                            <select class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="escala">
-                                <option value="">-- Selecione uma avaliação --</option>
-                                <option value="5">⭐️⭐️⭐️⭐️⭐️ (5 - Bom / Pleno)</option>
-                                <option value="4">⭐️⭐️⭐️⭐️ (4 - Satisfatório)</option>
-                                <option value="3">⭐️⭐️⭐️ (3 - Regular)</option>
-                                <option value="2">⭐️⭐️ (2 - Ruim)</option>
-                                <option value="1">⭐️ (1 - Crítico / Inexistente)</option>
-                            </select>
-                        </div>
-                    `;
-                } else if (c.tipo === 'textarea') {
-                    html += `
-                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="textarea">
-                            <label>📄 ${c.titulo}${starHtml}</label>
-                            <textarea class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="textarea" rows="3" placeholder="Digite seu relato detalhado..."></textarea>
-                        </div>
-                    `;
-                } else if (c.tipo === 'numero') {
-                    html += `
-                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="numero">
-                            <label>🔢 ${c.titulo}${starHtml}</label>
-                            <input type="number" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="numero" placeholder="0">
-                        </div>
-                    `;
-                } else if (c.tipo === 'decimal') {
-                    html += `
-                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="decimal">
-                            <label>📐 ${c.titulo}${starHtml}</label>
-                            <input type="number" step="0.01" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="decimal" placeholder="0.00">
-                        </div>
-                    `;
-                } else if (c.tipo === 'data') {
-                    html += `
-                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="data">
-                            <label>📅 ${c.titulo}${starHtml}</label>
-                            <input type="date" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="data">
-                        </div>
-                    `;
-                } else if (c.tipo === 'hora') {
-                    html += `
-                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="hora">
-                            <label>⏰ ${c.titulo}${starHtml}</label>
-                            <input type="time" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="hora">
-                        </div>
-                    `;
-                } else if (c.tipo === 'foto') {
-                    html += `
-                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="foto">
-                            <label>📸 ${c.titulo}${starHtml}</label>
-                            <input type="file" accept="image/*" capture="environment" multiple onchange="processarFotoCampo(event, '${c.titulo}')">
-                            <div class="preview-foto-container" id="prev_foto_${c.titulo.replace(/[^a-zA-Z0-9]/g, '')}"></div>
-                        </div>
-                    `;
-                } else {
-                    html += `
-                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="texto">
-                            <label>📝 ${c.titulo}${starHtml}</label>
-                            <input type="text" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="texto" placeholder="Sua resposta...">
-                        </div>
-                    `;
-                }
-            });
-
-            html += `</div>`;
-        });
-
-        container.innerHTML = html;
-        atualizarControlesPaginacao();
-    }
-
-    function validarPaginaAtual(idxPagina) {
-        const paginaEl = document.getElementById(`pagina_form_${idxPagina}`);
-        if (!paginaEl) return true;
-
-        paginaEl.querySelectorAll('.campo-erro-borda').forEach(el => el.classList.remove('campo-erro-borda'));
-
-        const wrappers = paginaEl.querySelectorAll('.wrapper-campo[data-obrigatorio="1"]');
-        for (let i = 0; i < wrappers.length; i++) {
-            const w = wrappers[i];
-            const tipo = w.dataset.tipo;
-            const titulo = w.dataset.titulo;
-            let preenchido = false;
-
-            if (tipo === 'radio') {
-                const gId = w.dataset.groupId;
-                preenchido = Boolean(w.querySelector(`input[name="${gId}"]:checked`));
-            } else if (tipo === 'checkbox') {
-                const gId = w.dataset.groupId;
-                preenchido = w.querySelectorAll(`.chk_${gId}:checked`).length > 0;
-            } else if (tipo === 'foto') {
-                preenchido = Boolean(fotosAnexadasModulos[titulo] && fotosAnexadasModulos[titulo].length > 0);
-            } else {
-                const inp = w.querySelector('.campo-dinamico');
-                preenchido = Boolean(inp && inp.value.trim() !== "");
-            }
-
-            if (!preenchido) {
-                w.classList.add('campo-erro-borda');
-                w.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                abrirModalAviso("Campo Obrigatório (*)", `Por favor, preencha ou selecione uma opção para:\n"${titulo}"`);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    function mudarPaginaForm(direcao) {
-        if (direcao === 1) {
-            if (!validarPaginaAtual(paginaAtualIndex)) return;
-        }
-        const novaPag = paginaAtualIndex + direcao;
-        if (novaPag >= 0 && novaPag < totalPaginasForm) {
-            document.getElementById(`pagina_form_${paginaAtualIndex}`).classList.remove('active');
-            paginaAtualIndex = novaPag;
-            document.getElementById(`pagina_form_${paginaAtualIndex}`).classList.add('active');
-            atualizarControlesPaginacao();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    }
-
-    function atualizarControlesPaginacao() {
-        document.getElementById('stepProgressBar').style.display = 'flex';
-        const elActive = document.getElementById(`pagina_form_${paginaAtualIndex}`);
-        const secNome = elActive ? elActive.dataset.secaoNome : "";
-
-        document.getElementById('stepTitle').innerText = `Página ${paginaAtualIndex + 1} de ${totalPaginasForm} (${secNome})`;
-        const pct = Math.round(((paginaAtualIndex + 1) / totalPaginasForm) * 100);
-        document.getElementById('stepPercent').innerText = `${pct}%`;
-
-        document.getElementById('btnPagAnterior').style.display = paginaAtualIndex > 0 ? 'block' : 'none';
-        
-        const blocoTermo = document.getElementById('blocoTermoResponsabilidade');
-
-        if (paginaAtualIndex === totalPaginasForm - 1) {
-            document.getElementById('btnPagProxima').style.display = 'none';
-            document.getElementById('btnPagSubmit').style.display = 'block';
-            if (blocoTermo) blocoTermo.style.display = 'block';
-        } else {
-            document.getElementById('btnPagProxima').style.display = 'block';
-            document.getElementById('btnPagSubmit').style.display = 'none';
-            if (blocoTermo) blocoTermo.style.display = 'none';
-        }
-    }
-
-    function processarFotoCampo(event, tituloCampo) {
-        const files = event.target.files;
-        if (!files || files.length === 0) return;
-        if (!fotosAnexadasModulos[tituloCampo]) fotosAnexadasModulos[tituloCampo] = [];
-        
-        Array.from(files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800;
-                    const scale = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH;
-                    canvas.height = img.height * scale;
-
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const b64 = canvas.toDataURL('image/jpeg', 0.7);
-                    
-                    fotosAnexadasModulos[tituloCampo].push(b64);
-                    
-                    const prevId = "prev_foto_" + tituloCampo.replace(/[^a-zA-Z0-9]/g, '');
-                    const prevEl = document.getElementById(prevId);
-                    if (prevEl) {
-                        prevEl.innerHTML += `<img src="${b64}" class="preview-foto">`;
-                    }
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        });
-    }
-
-    function abaterSaldoOtimistaOffline(nomeObra, respostas) {
-        const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
-        if (!obraObj || !obraObj.schemaFormulario) return;
-
-        obraObj.schemaFormulario.forEach(campo => {
-            if (campo.tipo === 'etapa_producao' && respostas[campo.titulo] && respostas[campo.titulo].pd) {
-                const pdLancado = Number(respostas[campo.titulo].pd || 0);
-                campo.ac = Number(campo.ac || 0) + pdLancado;
-                campo.sd = Math.max(0, Number(campo.meta || 0) - campo.ac);
-            }
-        });
-        localStorage.setItem(CACHE_BASE_KEY, JSON.stringify(baseGlobal));
-    }
-
-    async function enviarDiario(event) {
-        event.preventDefault();
-
-        const dataDiario = document.getElementById('diario_data').value;
-        if (!dataDiario) {
-            abrirModalAviso("Data Obrigatória", "Informe a data do diário antes de publicar.");
-            return;
-        }
-
-        for (let p = 0; p < totalPaginasForm; p++) {
-            if (!validarPaginaAtual(p)) {
-                if (p !== paginaAtualIndex) {
-                    document.getElementById(`pagina_form_${paginaAtualIndex}`).classList.remove('active');
-                    paginaAtualIndex = p;
-                    document.getElementById(`pagina_form_${paginaAtualIndex}`).classList.add('active');
-                    atualizarControlesPaginacao();
-                }
-                return;
-            }
-        }
-
-        const chkTermo = document.getElementById('chk_aceite_responsabilidade');
-        const wrapTermo = document.getElementById('wrapperTermoCheck');
-        if (!chkTermo || !chkTermo.checked) {
-            if (wrapTermo) {
-                wrapTermo.classList.add('campo-erro-borda');
-                wrapTermo.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-            abrirModalAviso("Assinatura Eletrônica Obrigatória", "Marque a caixa de concordância no Termo de Responsabilidade para validar e publicar o Diário de Obra.");
-            return;
-        }
-        if (wrapTermo) wrapTermo.classList.remove('campo-erro-borda');
-
-        abrirModal("Processando Diário...", "Consolidando dados, fotos e validando assinatura eletrônica.");
-
-        let respostas = {};
-        let todasFotos = [];
-
-        document.querySelectorAll('.campo-dinamico').forEach(inp => {
-            const titulo = inp.dataset.titulo;
-            const tipo = inp.dataset.tipo;
-            if (tipo === 'etapa_producao') {
-                respostas[titulo] = { pd: Number(inp.value || 0), meta: Number(inp.dataset.meta || 500) };
-            } else {
-                respostas[titulo] = inp.value || "";
-            }
-        });
-
-        document.querySelectorAll('.radio-group').forEach(group => {
-            const titulo = group.dataset.titulo;
-            const groupName = group.dataset.radioGroup;
-            const sel = document.querySelector(`input[name="${groupName}"]:checked`);
-            respostas[titulo] = sel ? sel.value : "";
-        });
-
-        document.querySelectorAll('.checkbox-group').forEach(group => {
-            const titulo = group.dataset.titulo;
-            const groupName = group.dataset.chkGroup;
-            const chks = document.querySelectorAll(`.chk_${groupName}:checked`);
-            let marcados = [];
-            chks.forEach(c => marcados.push(c.value));
-            respostas[titulo] = marcados;
-        });
-
-        for (var k in fotosAnexadasModulos) {
-            todasFotos = todasFotos.concat(fotosAnexadasModulos[k]);
-            respostas[k] = `[${fotosAnexadasModulos[k].length} foto(s) anexada(s)]`;
-        }
-
-        const obraSelecionada = document.getElementById('diario_select_obra').value;
-        const clientSyncId = "SYNC-" + Date.now() + "-" + Math.random().toString(36).substring(2, 7);
-        const nomeResponsavel = usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável";
-
-        const payload = {
-            acao: "salvar_diario",
-            client_sync_id: clientSyncId,
-            obra: obraSelecionada,
-            data_diario: dataDiario,
-            responsavel: nomeResponsavel,
-            respostas: respostas, 
-            fotos: todasFotos,
-            termo_responsabilidade: {
-                aceito: true,
-                nome: nomeResponsavel,
-                email: usuarioAtivo ? usuarioAtivo.email : "",
-                data_aceite: new Date().toLocaleString('pt-BR')
-            }
-        };
-
-        const res = await apiRequest("salvar_diario", "POST", payload);
-        
-        if (res && res.sucesso) {
-            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold; display:inline-block; padding:8px 12px; background:rgba(0,0,0,0.05); border-radius:6px; text-decoration:none;">📄 Abrir Prancha PDF Oficial no Drive</a>`;
-            salvarPdfNoHistoricoLocal(obraSelecionada, dataDiario, res.url_pdf);
-            await carregarDadosSistema();
-            renderizarFormularioEngenheiro();
-            atualizarModalFinal("Diário Publicado!", res.mensagem || "Diário salvo e Prancha PDF gerada com sucesso.");
-        } else {
-            await adicionarNaFilaOffline({
-                titulo: `RDO: ${obraSelecionada} (${dataDiario})`,
-                data_criacao: new Date().toLocaleString('pt-BR'),
-                payload: payload
-            });
-            abaterSaldoOtimistaOffline(obraSelecionada, respostas);
-            await atualizarInterfaceFilaOffline();
-            renderizarFormularioEngenheiro();
-            atualizarModalFinal(
-                "Salvo no Dispositivo (Offline)!",
-                "Sem internet no momento. O diário, as fotos e o aceite eletrônico foram guardados com segurança na Fila Offline e serão enviados automaticamente assim que o sinal voltar."
-            );
-        }
-    }
-
-    // =========================================================================
-    // CONTROLE DO MODAL DE FEEDBACK (BOTÃO OK FUNCIONAL)
-    // =========================================================================
-    function abrirModal(titulo, msg) {
         document.getElementById('sysOverlay').style.display = 'flex';
         document.getElementById('modalSpinner').style.display = 'block';
         document.getElementById('modalBtn').style.display = 'none';
-        document.getElementById('modalLink').innerHTML = '';
-        document.getElementById('modalTitle').innerText = titulo;
-        document.getElementById('modalMsg').innerText = msg;
-    }
+        document.getElementById('modalTitle').innerText = "Autenticando...";
+        document.getElementById('modalMsg').innerText = "Validando perfil de segurança.";
 
-    function abrirModalAviso(titulo, msg) {
-        document.getElementById('sysOverlay').style.display = 'flex';
-        document.getElementById('modalSpinner').style.display = 'none';
-        document.getElementById('modalLink').innerHTML = '';
-        document.getElementById('modalTitle').innerText = titulo;
-        document.getElementById('modalMsg').innerText = msg;
-        document.getElementById('modalBtn').style.display = 'inline-block';
-    }
-
-    function atualizarModalFinal(titulo, msg) {
-        document.getElementById('modalSpinner').style.display = 'none';
-        if (titulo) document.getElementById('modalTitle').innerText = titulo;
-        if (msg) document.getElementById('modalMsg').innerText = msg;
-        document.getElementById('modalBtn').style.display = 'inline-block';
-    }
-
-    function ocultarModal() {
-        document.getElementById('sysOverlay').style.display = 'none';
-        document.getElementById('modalLink').innerHTML = '';
-    }
-
-    function fecharSeClicarFora(evt) {
-        if (evt.target.id === 'sysOverlay' && document.getElementById('modalBtn').style.display !== 'none') {
-            ocultarModal();
+        try {
+            const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "login", email: email, senha: senha }) }).then(r => r.json());
+            
+            if (res && res.sucesso && res.usuario) {
+                usuarioAtivo = res.usuario;
+                baseGlobal = res.base; // Carga autorizada de obras e relatórios do backend
+                localStorage.setItem('smartsync_token_usr', JSON.stringify(usuarioAtivo));
+                localStorage.setItem('smartsync_base', JSON.stringify(baseGlobal));
+                
+                document.getElementById('sysOverlay').style.display = 'none';
+                configurarMenuPorPerfil();
+                popularObrasSelects();
+                trocarAba('historico');
+            } else {
+                mostrarErroModal("Falha no Login", res.erro || "Senha incorreta ou acesso negado.");
+            }
+        } catch (e) {
+            mostrarErroModal("Erro de Conexão", "Não foi possível conectar ao servidor para validar a senha.");
         }
+    }
+
+    function verificarSessaoSalva() {
+        const usrSalvo = localStorage.getItem('smartsync_token_usr');
+        if (usrSalvo) {
+            try {
+                usuarioAtivo = JSON.parse(usrSalvo);
+                baseGlobal = JSON.parse(localStorage.getItem('smartsync_base') || '{"obras":[],"diarios":[]}');
+                configurarMenuPorPerfil();
+                popularObrasSelects();
+                trocarAba('historico');
+                return;
+            } catch(e) {}
+        }
+        // Se não houver login, menu fica travado
+        document.getElementById('menu-login').style.display = 'flex';
+        document.getElementById('aba-login').classList.add('active');
+    }
+
+    function fazerLogout() {
+        usuarioAtivo = null;
+        baseGlobal = { obras: [], diarios: [] };
+        localStorage.removeItem('smartsync_token_usr');
+        localStorage.removeItem('smartsync_base');
+        
+        document.querySelectorAll('.sidebar-item').forEach(m => m.style.display = 'none');
+        document.getElementById('menu-login').style.display = 'flex';
+        document.getElementById('usuario-logado').innerText = "Fazer Login";
+        
+        trocarAba('login');
+    }
+
+    function configurarMenuPorPerfil() {
+        document.querySelectorAll('.sidebar-item').forEach(m => m.style.display = 'none');
+        document.getElementById('usuario-logado').innerText = `${usuarioAtivo.nome} [${usuarioAtivo.perfil}]`;
+        
+        // Regras de Bloqueio RBAC
+        document.getElementById('menu-diario').style.display = 'flex';
+        document.getElementById('menu-historico').style.display = 'flex';
+        document.getElementById('menu-logout').style.display = 'flex';
+
+        if (usuarioAtivo.perfil === 'Administrador' || usuarioAtivo.perfil === 'Coordenador') {
+            document.getElementById('menu-configuracoes').style.display = 'flex';
+        }
+    }
+
+    function popularObrasSelects() {
+        const perm = usuarioAtivo.obra === "Todas" ? baseGlobal.obras : baseGlobal.obras.filter(o => o.nome === usuarioAtivo.obra);
+        let html = '';
+        perm.forEach(o => html += `<option value="${o.nome}">${o.nome}</option>`);
+        
+        document.getElementById('diario_select_obra').innerHTML = html;
+        document.getElementById('hist_select_obra').innerHTML = html;
+        document.getElementById('cfg_obra_qr').innerHTML = html;
+        renderizarRdosMock();
+    }
+
+    // -------------------------------------------------------------------------
+    // GERAÇÃO DE QR CODE PÚBLICO E MOCK DE DADOS
+    // -------------------------------------------------------------------------
+    function gerarQrCodePublico() {
+        const obra = document.getElementById('cfg_obra_qr').value;
+        if (!obra) return;
+        
+        const linkPublico = `${API_URL}?qrcode=${encodeURIComponent(obra)}`;
+        
+        document.getElementById('boxQrCodeTarget').innerHTML = "";
+        new QRCode(document.getElementById("boxQrCodeTarget"), {
+            text: linkPublico,
+            width: 200,
+            height: 200,
+            colorDark : "#003366",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+
+        document.getElementById('txtLinkPublico').innerHTML = `<a href="${linkPublico}" target="_blank" style="color:var(--primary);">Testar Link do QR Code no Navegador</a>`;
+        document.getElementById('modalQrCode').style.display = 'flex';
+    }
+
+    async function injetarDadosMock() {
+        if (!confirm("Isso injetará diários de teste e movimentará o avanço físico falsamente na planilha. Tem certeza?")) return;
+
+        document.getElementById('sysOverlay').style.display = 'flex';
+        document.getElementById('modalSpinner').style.display = 'block';
+        document.getElementById('modalBtn').style.display = 'none';
+        document.getElementById('modalTitle').innerText = "Injetando Mock...";
+        document.getElementById('modalMsg').innerText = "Simulando avanço de obra no Google Sheets.";
+
+        try {
+            const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "gerar_dados_mock" }) }).then(r => r.json());
+            
+            // Força a recarga para ver os novos dados
+            const loginRes = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "login", email: usuarioAtivo.email, senha: document.getElementById('login_senha').value || "123456" }) }).then(r => r.json());
+            baseGlobal = loginRes.base;
+            localStorage.setItem('smartsync_base', JSON.stringify(baseGlobal));
+            
+            mostrarErroModal("Sucesso (Mock)", res.mensagem || "Dados de teste injetados!");
+            popularObrasSelects();
+        } catch (e) {
+            mostrarErroModal("Erro", "Falha ao injetar dados mockados.");
+        }
+    }
+
+    function renderizarRdosMock() {
+        const obra = document.getElementById('hist_select_obra').value;
+        const container = document.getElementById('listaHistorico');
+        const filtrados = baseGlobal.diarios.filter(d => d.obra === obra);
+        
+        if (filtrados.length === 0) {
+            container.innerHTML = "<p style='font-size:13px; color:#777;'>Nenhum histórico encontrado.</p>";
+            return;
+        }
+
+        let html = '';
+        filtrados.forEach(r => {
+            html += `<div class="rdo-cloud-card">
+                        <div style="font-weight:bold; font-size:13.5px; color:var(--primary);">${r.id} • Data: ${r.data}</div>
+                        <div style="font-size:12px; margin-top:2px;"><strong>Resp:</strong> ${r.responsavel}</div>
+                        <div style="font-size:11.5px; color:var(--subtext); margin-top:3px;">${r.resumo}</div>
+                     </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    // -------------------------------------------------------------------------
+    // UTILITÁRIOS DA INTERFACE
+    // -------------------------------------------------------------------------
+    function abrirSidebar() { document.getElementById('sidebarMenu').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('open'); }
+    function fecharSidebar() { document.getElementById('sidebarMenu').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('open'); }
+    function navegarSidebar(abaId) { trocarAba(abaId); fecharSidebar(); }
+    
+    function trocarAba(abaId) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById('aba-' + abaId).classList.add('active');
+        document.querySelectorAll('.sidebar-item').forEach(c => c.classList.remove('active'));
+        const m = document.getElementById('menu-' + abaId);
+        if (m) m.classList.add('active');
+    }
+
+    function mostrarErroModal(titulo, msg) {
+        document.getElementById('modalSpinner').style.display = 'none';
+        document.getElementById('modalTitle').innerText = titulo;
+        document.getElementById('modalMsg').innerText = msg;
+        document.getElementById('modalBtn').style.display = 'inline-block';
     }
 </script>
 </body>
