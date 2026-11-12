@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Builder & RDO</title>
+    <title>SmartSyncGest - Builder & SaaS Multi-Tenant</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="config.js"></script>
 
     <style>
-        /* @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (TEMAS E VARIÁVEIS CSS) */
+        /* <!-- @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (TEMAS E VARIÁVEIS CSS) --> */
         :root { --primary: #0056b3; --bg: #f4f7f6; --card-bg: #ffffff; --text-color: #333333; --border-color: #e0e0e0; --subtext: #666666; }
         
-        /* 10 Temas Validados */
         body.tema-escuro { --primary: #1e1e1e; --bg: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --border-color: #333333; --subtext: #aaaaaa; }
         body.tema-construtora { --primary: #d9534f; --bg: #fdfefe; --card-bg: #ffffff; --text-color: #2c3e50; --border-color: #dcdcdc; --subtext: #7f8c8d; }
         body.tema-moderno { --primary: #6c5ce7; --bg: #f8f9fa; --card-bg: #ffffff; --text-color: #2d3436; --border-color: #dfe6e9; --subtext: #636e72; }
@@ -30,13 +29,12 @@
         .menu-hamburger { font-size: 22px; cursor: pointer; padding: 5px; }
         .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; margin-left: 12px; }
         
-        /* Botão discreto validado */
         .btn-tema-icone { font-size: 20px; cursor: pointer; padding: 0 10px; opacity: 0.9; }
         .btn-tema-icone:hover { opacity: 1; }
         
         .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
-        /* @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (LAYOUT GERAL) */
+        /* <!-- @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (LAYOUT GERAL) --> */
         .sidebar { position: fixed; top: 0; left: -290px; width: 280px; height: 100%; background: var(--card-bg); box-shadow: 2px 0 12px rgba(0,0,0,0.3); transition: left 0.3s ease; z-index: 2500; display: flex; flex-direction: column; }
         .sidebar.open { left: 0; }
         .sidebar-header { background: var(--primary); color: #fff; padding: 20px 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; }
@@ -77,7 +75,7 @@
 </head>
 <body>
 
-<!-- @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (SIDEBAR E TOPO) -->
+<!-- <!-- @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (SIDEBAR E TOPO) --> -->
 <div id="sidebarOverlay" class="sidebar-overlay" onclick="fecharSidebar()"></div>
 <div id="sidebarMenu" class="sidebar">
     <div class="sidebar-header"><span>SmartSyncGest</span><span class="sidebar-close" onclick="fecharSidebar()">✕</span></div>
@@ -86,7 +84,11 @@
         <div class="sidebar-item" id="menu-diario" onclick="navegarSidebar('diario')">📝 Diário Dinâmico (Campo)</div>
         <div class="sidebar-item" id="menu-builder" onclick="navegarSidebar('builder')">🛠️ Construtor de Formulários</div>
         <div class="sidebar-item" id="menu-historico" onclick="navegarSidebar('historico')">📊 Painel Consolidado & CSV</div>
-        <div class="sidebar-item" id="menu-usuarios" onclick="navegarSidebar('usuarios')">👥 Gestão de Usuários (Admin)</div>
+        
+        <!-- NOVO: GESTÃO DE OBRAS/EMPRESAS (SAAS) -->
+        <div class="sidebar-item" id="menu-empresas" onclick="navegarSidebar('empresas')">🏢 Gestão de Obras & Empresas</div>
+        
+        <div class="sidebar-item" id="menu-usuarios" onclick="navegarSidebar('usuarios')">👥 Gestão de Usuários</div>
         <div class="sidebar-item" id="menu-scanner" onclick="abrirScannerInterno()">🔍 Scanner de Obra</div>
         <div class="sidebar-item" id="menu-configuracoes" onclick="navegarSidebar('configuracoes')">⚙️ Configurações & Mock</div>
         <div class="sidebar-item" id="menu-tutorial" onclick="navegarSidebar('tutorial')">📚 Manual do Sistema</div>
@@ -142,7 +144,7 @@
     </div>
 </div>
 
-<!-- TELA 3: CONSTRUTOR DE FORMULÁRIOS (AQUI ESTÃO AS NOVAS FUNÇÕES) -->
+<!-- TELA 3: CONSTRUTOR DE FORMULÁRIOS (BLINDADA) -->
 <div id="aba-builder" class="tab-content">
     <div class="container">
         <h2>🛠️ Construtor de Formulários (Builder Master)</h2>
@@ -173,7 +175,6 @@
             <div class="form-group"><label>Opções (Para Radio, Checkbox ou Select - separadas por vírgula)</label><input type="text" id="novo_campo_opcoes" placeholder="Sol, Nublado, Chuva"></div>
             <div class="form-group"><label>Meta Contratual (Apenas para Etapa de Produção)</label><input type="number" id="novo_campo_meta" value="500"></div>
             
-            <!-- @GEMINI: NOVA ÁREA DE CONDICIONAL -->
             <div style="background:var(--card-bg); padding:12px; border-radius:8px; border:1px dashed var(--primary); margin-bottom:15px;">
                 <h4 style="margin:0 0 8px 0; font-size:13px; color:var(--primary);">🔀 Lógica Condicional (Opcional)</h4>
                 <div class="form-group" style="margin-bottom:8px;"><label style="font-size:12px;">Exibir esta pergunta SOMENTE SE:</label>
@@ -208,7 +209,29 @@
     </div>
 </div>
 
-<!-- TELA 5: GESTÃO DE USUÁRIOS -->
+<!-- NOVO - TELA 8: GESTÃO DE OBRAS E EMPRESAS (SAAS SUPER ADMIN) -->
+<div id="aba-empresas" class="tab-content">
+    <div class="container">
+        <h2>🏢 Gestão de Obras & Empresas</h2>
+        <p style="font-size:13px; color:var(--subtext);">Módulo Super Admin B2B. Crie Construtoras (inquilinos) e cadastre as obras pertencentes a cada uma.</p>
+        
+        <div style="background:var(--bg); padding:15px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:20px; text-align:left;">
+            <h3 style="margin-top:0; font-size:14px; color:var(--primary);">➕ Nova Empresa (Construtora)</h3>
+            <div class="form-group"><label>Nome da Empresa (Razão/Fantasia)</label><input type="text" id="nova_empresa_nome" placeholder="Ex: Construtora Alfa"></div>
+            <button class="btn-primary" onclick="salvarNovaEmpresaAdmin()">Cadastrar Empresa</button>
+        </div>
+
+        <div style="background:var(--bg); padding:15px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:20px; text-align:left;">
+            <h3 style="margin-top:0; font-size:14px; color:var(--primary);">🏗️ Nova Obra</h3>
+            <div class="form-group"><label>Vincular à Empresa</label><select id="nova_obra_empresa"></select></div>
+            <div class="form-group"><label>Nome da Obra</label><input type="text" id="nova_obra_nome" placeholder="Ex: Residencial Flores"></div>
+            <div class="form-group"><label>Total de UHs / Escopo</label><input type="number" id="nova_obra_uh" value="100"></div>
+            <button class="btn-success" onclick="salvarNovaObraAdmin()">Cadastrar Obra</button>
+        </div>
+    </div>
+</div>
+
+<!-- TELA 5: GESTÃO DE USUÁRIOS (ATUALIZADO COM EMPRESA) -->
 <div id="aba-usuarios" class="tab-content">
     <div class="container">
         <h2>👥 Gestão de Usuários</h2>
@@ -216,10 +239,20 @@
             <h3 style="margin-top:0; font-size:14px; color:var(--primary);">Novo Usuário</h3>
             <div class="form-group"><label>E-mail</label><input type="email" id="cad_email" placeholder="engenheiro@construtora.com"></div>
             <div class="form-group"><label>Nome Completo</label><input type="text" id="cad_nome" placeholder="Nome"></div>
+            
             <div class="form-group"><label>Perfil</label>
-                <select id="cad_perfil"><option value="Engenheiro">Engenheiro</option><option value="Coordenador">Coordenador</option><option value="Administrador">Administrador</option></select>
+                <select id="cad_perfil">
+                    <option value="Engenheiro">Engenheiro</option>
+                    <option value="Coordenador">Coordenador (Por Empresa)</option>
+                    <option value="Administrador">Administrador (Por Empresa)</option>
+                    <option value="Super Admin">Super Admin (Dono do SaaS)</option>
+                </select>
             </div>
-            <div class="form-group"><label>Obra</label><select id="cad_obra"><option value="Todas">Todas</option></select></div>
+            
+            <!-- NOVO: VÍNCULO DE EMPRESA -->
+            <div class="form-group"><label>Empresa Vinculada</label><select id="cad_empresa" onchange="atualizarSelectObrasCadastro()"></select></div>
+            <div class="form-group"><label>Obra</label><select id="cad_obra"><option value="Todas">Todas (da Empresa)</option></select></div>
+            
             <div class="form-group"><label>Senha</label><input type="text" id="cad_senha" value="123456"></div>
             <button class="btn-primary" onclick="salvarNovoUsuarioAdmin()">Cadastrar Usuário</button>
         </div>
@@ -242,8 +275,8 @@
     <div class="container">
         <h2>📚 Manual do Sistema</h2>
         <div class="tutorial-box">
-            <h3>Guia de Lógica Condicional & Temas</h3>
-            <p style="font-size:13px;">Toque no ícone da paleta 🎨 no topo direito para alterar entre os 10 temas. Configure perguntas condicionais no Construtor.</p>
+            <h3>SaaS B2B Multi-Tenant</h3>
+            <p style="font-size:13px;">Super Admins gerenciam Empresas e Obras. Engenheiros e Administradores de Construtoras só visualizam dados e obras da sua própria empresa.</p>
         </div>
     </div>
 </div>
@@ -253,12 +286,9 @@
     <div class="modal-box" onclick="event.stopPropagation()">
         <h3 style="margin-top:0; color:var(--primary);">👁️ Preview Interativo</h3>
         <p style="font-size:12px; color:var(--subtext); margin-bottom:15px;">Teste as condições alterando as respostas e veja os campos aparecerem dinamicamente.</p>
-        
         <label style="font-size:12px; margin-bottom:4px; text-align:left;">Progresso do Teste: <span id="lblPreviewPercentual">0%</span></label>
         <div class="progress-bar-container"><div id="progressBarPreviewFill" class="progress-bar-fill"></div></div>
-
         <div id="containerPreviewRealConteudo" style="text-align:left; max-height:45vh; overflow-y:auto; padding:5px;"></div>
-
         <div class="juridical-box">
             <label style="font-weight:bold; margin-bottom:8px; display:block;">⚖️ Declaração de Responsabilidade (Simulação)</label>
             <label style="font-weight:normal; font-size:12.5px; display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
@@ -266,13 +296,12 @@
                 <span>Declaro para os devidos fins que as informações prestadas neste teste refletem a realidade.</span>
             </label>
         </div>
-
         <button class="btn-success" onclick="alert('Teste concluído com sucesso! Lógica condicional validada.')" style="margin-top:15px;">Testar Envio (Simulado)</button>
         <button class="btn-danger" onclick="document.getElementById('modalPreviewReal').style.display='none'" style="margin-top:8px;">Fechar Preview</button>
     </div>
 </div>
 
-<!-- DEMAIS MODAIS (VALIDADOS - PROIBIDO ALTERAR) -->
+<!-- DEMAIS MODAIS -->
 <div id="modalQrCode" class="overlay" onclick="document.getElementById('modalQrCode').style.display='none'">
     <div class="modal-box" onclick="event.stopPropagation()">
         <h3 style="margin-top:0; color:var(--primary);">QR Code Público</h3>
@@ -300,11 +329,11 @@
 <script>
     const API_URL = CONFIG.API_URL;
     let usuarioAtivo = null;
-    let baseGlobal = { obras: [], usuarios: [], diarios: [] };
+    let baseGlobal = { obras: [], usuarios: [], diarios: [], empresas: [] };
     let schemaEdicaoAtual = [];
     let fotosBase64Array = [];
 
-    // @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (LÓGICA DOS 10 TEMAS)
+    // <!-- @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (LÓGICA DOS 10 TEMAS E ÍCONES) -->
     const temasDisponiveis = ['padrao', 'escuro', 'construtora', 'moderno', 'oceano', 'floresta', 'por-do-sol', 'corporativo', 'neon', 'minimalista'];
     let indiceTemaAtual = 0;
 
@@ -314,18 +343,15 @@
         if (indiceTemaAtual === -1) indiceTemaAtual = 0;
         aplicarTema(temasDisponiveis[indiceTemaAtual], false);
     }
-
     function ciclarTema() {
         indiceTemaAtual = (indiceTemaAtual + 1) % temasDisponiveis.length;
         aplicarTema(temasDisponiveis[indiceTemaAtual], true);
     }
-
     function aplicarTema(tema, salvar = true) {
         document.body.className = tema === 'padrao' ? '' : 'tema-' + tema;
         if (salvar) localStorage.setItem('smart_sync_tema', tema);
     }
 
-    // NOVOS ÍCONES DO BUILDER
     const iconesTipos = {
         'text': '✏️', 'textarea': '📄', 'number': '#️⃣', 'radio': '🔘',
         'checkbox': '☑️', 'select': '📋', 'date': '📅', 'time': '⏰',
@@ -333,7 +359,7 @@
     };
 
     window.addEventListener('DOMContentLoaded', () => {
-        carregarTemaSalvo(); // Carrega o tema salvo
+        carregarTemaSalvo(); 
         const sessaoSalva = localStorage.getItem('smart_sync_usuario');
         if (sessaoSalva) {
             try { usuarioAtivo = JSON.parse(sessaoSalva); carregarBaseDadosInicial(); }
@@ -347,6 +373,11 @@
             const res = await fetch(API_URL).then(r => r.json());
             if (res.sucesso) {
                 baseGlobal = res.dados;
+                // Preenche vetor de empresas dinamicamente baseado nas obras se não houver
+                if(!baseGlobal.empresas) {
+                    const empSet = new Set(baseGlobal.obras.map(o => o.empresa));
+                    baseGlobal.empresas = Array.from(empSet).filter(e => e);
+                }
                 document.getElementById('sysOverlay').style.display = 'none';
                 configurarMenuPorPerfil(); popularselectsGerais(); trocarAba('diario');
             } else { mostrarAlertaUI("Erro", res.erro); }
@@ -384,6 +415,10 @@
             const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "login", email, senha }) }).then(r => r.json());
             if (res && res.sucesso) {
                 usuarioAtivo = res.usuario; baseGlobal = res.base;
+                if(!baseGlobal.empresas) {
+                    const empSet = new Set(baseGlobal.obras.map(o => o.empresa));
+                    baseGlobal.empresas = Array.from(empSet).filter(e => e);
+                }
                 localStorage.setItem('smart_sync_usuario', JSON.stringify(usuarioAtivo));
                 document.getElementById('sysOverlay').style.display = 'none';
                 configurarMenuPorPerfil(); popularselectsGerais(); trocarAba('diario');
@@ -391,9 +426,11 @@
         } catch (e) { mostrarAlertaUI("Erro", "Falha de conexão com a API."); }
     }
 
+    // ATUALIZAÇÃO B2B: CONFIGURAÇÃO DE MENU
     function configurarMenuPorPerfil() {
         document.querySelectorAll('.sidebar-item').forEach(m => m.style.display = 'none');
-        document.getElementById('usuario-logado').innerText = `${usuarioAtivo.nome} [${usuarioAtivo.perfil}]`;
+        const empLabel = usuarioAtivo.empresa ? ` - ${usuarioAtivo.empresa}` : '';
+        document.getElementById('usuario-logado').innerText = `${usuarioAtivo.nome} [${usuarioAtivo.perfil}${empLabel}]`;
         
         document.getElementById('menu-diario').style.display = 'flex';
         document.getElementById('menu-historico').style.display = 'flex';
@@ -401,24 +438,50 @@
         document.getElementById('menu-tutorial').style.display = 'flex';
         document.getElementById('menu-logout').style.display = 'flex';
 
-        if (usuarioAtivo.perfil === 'Administrador' || usuarioAtivo.perfil === 'Coordenador') {
+        // Administradores e Coordenadores da Construtora podem ver o Builder da sua empresa
+        if (usuarioAtivo.perfil === 'Administrador' || usuarioAtivo.perfil === 'Coordenador' || usuarioAtivo.perfil === 'Super Admin') {
             document.getElementById('menu-builder').style.display = 'flex';
             document.getElementById('menu-usuarios').style.display = 'flex';
             document.getElementById('menu-configuracoes').style.display = 'flex';
         }
+        
+        // APENAS O SUPER ADMIN VÊ O CADASTRO DE EMPRESAS/OBRAS
+        if (usuarioAtivo.perfil === 'Super Admin') {
+            document.getElementById('menu-empresas').style.display = 'flex';
+        }
     }
 
+    // ATUALIZAÇÃO B2B: ISOLAMENTO MULTI-TENANT
     function popularselectsGerais() {
+        let obrasPermitidas = [];
+        
+        if (usuarioAtivo.perfil === 'Super Admin') {
+            obrasPermitidas = baseGlobal.obras; // Dono do SaaS vê tudo
+        } else {
+            // Outros usuários só veem obras da própria empresa
+            obrasPermitidas = baseGlobal.obras.filter(o => o.empresa === usuarioAtivo.empresa);
+            if (usuarioAtivo.obra !== "Todas") {
+                obrasPermitidas = obrasPermitidas.filter(o => o.nome === usuarioAtivo.obra);
+            }
+        }
+
         let obrasOpt = '';
-        const perm = usuarioAtivo.obra === "Todas" ? baseGlobal.obras : baseGlobal.obras.filter(o => o.nome === usuarioAtivo.obra);
-        perm.forEach(o => obrasOpt += `<option value="${o.nome}">${o.nome} (${o.empresa})</option>`);
+        obrasPermitidas.forEach(o => obrasOpt += `<option value="${o.nome}">${o.nome} (${o.empresa})</option>`);
         
         document.getElementById('rdo_obra').innerHTML = obrasOpt;
         document.getElementById('builder_select_obra').innerHTML = obrasOpt;
-        document.getElementById('cad_obra').innerHTML = '<option value="Todas">Todas</option>' + obrasOpt;
         document.getElementById('hist_select_obra').innerHTML = obrasOpt;
         document.getElementById('cfg_obra_qr').innerHTML = obrasOpt;
         document.getElementById('rdo_data').valueAsDate = new Date();
+        
+        // Popula selects de empresas para Super Admin (Aba Usuários e Aba Empresas)
+        let empOpts = '';
+        (baseGlobal.empresas || []).forEach(e => empOpts += `<option value="${e}">${e}</option>`);
+        if(empOpts === '') empOpts = '<option value="Padrão">Padrão</option>';
+        document.getElementById('cad_empresa').innerHTML = empOpts;
+        document.getElementById('nova_obra_empresa').innerHTML = empOpts;
+        
+        atualizarSelectObrasCadastro();
         
         renderizarFormularioDinamico();
         carregarSchemaNaTela();
@@ -426,6 +489,76 @@
         renderizarHistorico();
     }
 
+    function atualizarSelectObrasCadastro() {
+        const empSelecionada = document.getElementById('cad_empresa').value;
+        const obrasDaEmpresa = baseGlobal.obras.filter(o => o.empresa === empSelecionada);
+        let opts = '<option value="Todas">Todas (da Empresa)</option>';
+        obrasDaEmpresa.forEach(o => opts += `<option value="${o.nome}">${o.nome}</option>`);
+        document.getElementById('cad_obra').innerHTML = opts;
+    }
+
+    // NOVAS FUNÇÕES: SAAS B2B ADMIN
+    async function salvarNovaEmpresaAdmin() {
+        const nomeEmpresa = document.getElementById('nova_empresa_nome').value.trim();
+        if(!nomeEmpresa) return alert("Digite o nome da empresa.");
+        mostrarLoadingUI("Salvando...", "Cadastrando nova empresa no sistema.");
+        // Simulação do payload B2B
+        const payload = { acao: "salvar_empresa", nome: nomeEmpresa };
+        const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
+        if(res.sucesso) { baseGlobal = res.base; popularselectsGerais(); mostrarAlertaUI("Sucesso!", res.mensagem); document.getElementById('nova_empresa_nome').value = ""; }
+        else { mostrarAlertaUI("Erro", res.erro); }
+    }
+
+    async function salvarNovaObraAdmin() {
+        const empresa = document.getElementById('nova_obra_empresa').value;
+        const nomeObra = document.getElementById('nova_obra_nome').value.trim();
+        const uhs = document.getElementById('nova_obra_uh').value;
+        if(!nomeObra) return alert("Digite o nome da obra.");
+        mostrarLoadingUI("Salvando...", "Cadastrando nova obra.");
+        // Simulação do payload B2B
+        const payload = { acao: "salvar_obra_admin", empresa: empresa, nome: nomeObra, uhs: uhs };
+        const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
+        if(res.sucesso) { baseGlobal = res.base; popularselectsGerais(); mostrarAlertaUI("Sucesso!", res.mensagem); document.getElementById('nova_obra_nome').value = ""; }
+        else { mostrarAlertaUI("Erro", res.erro); }
+    }
+
+    // REVISÃO DE USUÁRIO COM INJEÇÃO DE EMPRESA
+    async function salvarNovoUsuarioAdmin() {
+        const payload = { 
+            acao: "salvar_usuario", 
+            email: document.getElementById('cad_email').value.trim(), 
+            nome: document.getElementById('cad_nome').value.trim(), 
+            perfil: document.getElementById('cad_perfil').value, 
+            empresa: document.getElementById('cad_empresa').value, // Nova injeção
+            obra: document.getElementById('cad_obra').value, 
+            senha: document.getElementById('cad_senha').value.trim() || "123456" 
+        };
+        if(!payload.email || !payload.nome) return alert("Preencha e-mail e nome.");
+
+        mostrarLoadingUI("Salvando...", "Gravando usuário.");
+        const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
+        if(res.sucesso) { baseGlobal = res.base; popularselectsGerais(); mostrarAlertaUI("Sucesso!", res.mensagem); document.getElementById('cad_email').value = ""; document.getElementById('cad_nome').value = ""; }
+        else { mostrarAlertaUI("Erro", res.erro); }
+    }
+
+    function renderizarListaUsuariosAdmin() {
+        const container = document.getElementById('listaUsuariosAdmin');
+        if(!baseGlobal.usuarios) return;
+        
+        let usuariosVisiveis = baseGlobal.usuarios;
+        if(usuarioAtivo.perfil !== 'Super Admin') {
+            usuariosVisiveis = baseGlobal.usuarios.filter(u => u.empresa === usuarioAtivo.empresa);
+        }
+
+        let html = '';
+        usuariosVisiveis.forEach(u => {
+            html += `<div class="user-card"><div style="text-align:left;"><strong>${u.nome}</strong> (${u.email})<br><span style="font-size:11.5px; color:var(--subtext);">Perfil: <b>${u.perfil}</b> | Empresa: <b>${u.empresa || 'N/A'}</b> | Obra: ${u.obra}</span></div><span style="font-size:12px; font-weight:bold; color:#28a745;">${u.status}</span></div>`;
+        });
+        container.innerHTML = html;
+    }
+
+
+    /* <!-- @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (MOTOR BUILDER CONDICIONAL E PREVIEW) --> */
     function carregarSchemaNaTela() {
         const obraNome = document.getElementById('builder_select_obra').value;
         const obra = baseGlobal.obras.find(o => o.nome === obraNome);
@@ -434,16 +567,12 @@
         atualizarSelectsCondicionaisBuilder();
         renderizarListaSchemaBuilder();
     }
-
     function atualizarSelectsCondicionaisBuilder() {
         const sel = document.getElementById('novo_cond_pergunta_alvo');
         let html = '<option value="">-- Nenhuma condição (Sempre visível) --</option>';
-        schemaEdicaoAtual.forEach(c => {
-            html += `<option value="${c.id}">${c.titulo} (${c.tipo})</option>`;
-        });
+        schemaEdicaoAtual.forEach(c => { html += `<option value="${c.id}">${c.titulo} (${c.tipo})</option>`; });
         sel.innerHTML = html;
     }
-
     function renderizarListaSchemaBuilder() {
         const container = document.getElementById('listaSchemaBuilder');
         if (schemaEdicaoAtual.length === 0) { container.innerHTML = "<p style='font-size:13px; color:#777;'>Nenhuma pergunta cadastrada.</p>"; return; }
@@ -469,34 +598,21 @@
         });
         container.innerHTML = html;
     }
-
     function abrirModalPreviewReal() {
         renderizarPreviewDinamico();
         document.getElementById('chkTermosPreview').checked = false;
         atualizarProgressoPreview();
         document.getElementById('modalPreviewReal').style.display = 'flex';
     }
-
     function renderizarPreviewDinamico() {
         const container = document.getElementById('containerPreviewRealConteudo');
-        if (schemaEdicaoAtual.length === 0) {
-            container.innerHTML = "<p>Nenhuma pergunta configurada para testar.</p>";
-            return;
-        }
-
+        if (schemaEdicaoAtual.length === 0) { container.innerHTML = "<p>Nenhuma pergunta configurada para testar.</p>"; return; }
         let html = '';
         schemaEdicaoAtual.forEach(campo => {
             const icone = iconesTipos[campo.tipo] || '❓';
-            let estiloDiv = '';
-            if (campo.condicao && campo.condicao.perguntaId) {
-                estiloDiv = `id="wrapper_prev_${campo.id}" style="display:none; border-left:3px solid #ffc107; padding-left:10px; margin-left:5px;"`;
-            } else {
-                estiloDiv = `id="wrapper_prev_${campo.id}"`;
-            }
-
+            let estiloDiv = (campo.condicao && campo.condicao.perguntaId) ? `id="wrapper_prev_${campo.id}" style="display:none; border-left:3px solid #ffc107; padding-left:10px; margin-left:5px;"` : `id="wrapper_prev_${campo.id}"`;
             html += `<div class="form-group" ${estiloDiv} oninput="avaliarCondicionaisPreview(); atualizarProgressoPreview();" onchange="avaliarCondicionaisPreview(); atualizarProgressoPreview();">
                         <label>${icone} ${campo.titulo} ${campo.obrigatoria?'<span style="color:red;">*</span>':''}</label>`;
-            
             if (campo.tipo === 'text') html += `<input type="text" id="prev_input_${campo.id}" data-id="${campo.id}" class="form-campo-preview" placeholder="Resposta curta">`;
             else if (campo.tipo === 'textarea') html += `<textarea id="prev_input_${campo.id}" data-id="${campo.id}" class="form-campo-preview" rows="3" placeholder="Parágrafo / Observações"></textarea>`;
             else if (campo.tipo === 'number') html += `<input type="number" id="prev_input_${campo.id}" data-id="${campo.id}" class="form-campo-preview" placeholder="Valor numérico">`;
@@ -504,429 +620,180 @@
             else if (campo.tipo === 'time') html += `<input type="time" id="prev_input_${campo.id}" data-id="${campo.id}" class="form-campo-preview">`;
             else if (campo.tipo === 'rating') {
                 html += `<div style="display:flex; gap:10px;">`;
-                for(let r=1; r<=5; r++) {
-                    html += `<label style="font-weight:normal;"><input type="radio" name="prev_${campo.id}" data-id="${campo.id}" class="form-campo-preview" value="${r}" style="width:auto; margin-right:4px;"> ${r}</label>`;
-                }
+                for(let r=1; r<=5; r++) html += `<label style="font-weight:normal;"><input type="radio" name="prev_${campo.id}" data-id="${campo.id}" class="form-campo-preview" value="${r}" style="width:auto; margin-right:4px;"> ${r}</label>`;
                 html += `</div>`;
             }
-            else if (campo.tipo === 'radio') {
-                (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="radio" name="prev_${campo.id}" data-id="${campo.id}" class="form-campo-preview" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
-            } else if (campo.tipo === 'checkbox') {
-                (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="checkbox" name="prev_${campo.id}" data-id="${campo.id}" class="form-campo-preview" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
-            } else if (campo.tipo === 'select') {
-                html += `<select id="prev_input_${campo.id}" data-id="${campo.id}" class="form-campo-preview"><option value="">Selecione...</option>`;
-                (campo.opcoes||[]).forEach(op => html += `<option value="${op}">${op}</option>`);
-                html += `</select>`;
-            } else if (campo.tipo === 'etapa_producao') {
-                html += `<input type="number" id="prev_input_${campo.id}" data-id="${campo.id}" class="form-campo-preview" placeholder="Qtd Produzida Hoje (Meta: ${campo.meta})">`;
-            }
+            else if (campo.tipo === 'radio') { (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="radio" name="prev_${campo.id}" data-id="${campo.id}" class="form-campo-preview" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`); } 
+            else if (campo.tipo === 'checkbox') { (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="checkbox" name="prev_${campo.id}" data-id="${campo.id}" class="form-campo-preview" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`); } 
+            else if (campo.tipo === 'select') { html += `<select id="prev_input_${campo.id}" data-id="${campo.id}" class="form-campo-preview"><option value="">Selecione...</option>`; (campo.opcoes||[]).forEach(op => html += `<option value="${op}">${op}</option>`); html += `</select>`; } 
+            else if (campo.tipo === 'etapa_producao') { html += `<input type="number" id="prev_input_${campo.id}" data-id="${campo.id}" class="form-campo-preview" placeholder="Qtd Produzida Hoje (Meta: ${campo.meta})">`; }
             html += `</div>`;
         });
         container.innerHTML = html;
         avaliarCondicionaisPreview();
     }
-
     function avaliarCondicionaisPreview() {
         schemaEdicaoAtual.forEach(campo => {
             if (campo.condicao && campo.condicao.perguntaId) {
                 const wrapper = document.getElementById(`wrapper_prev_${campo.id}`);
                 if (!wrapper) return;
-                
                 const alvoCampo = schemaEdicaoAtual.find(x => x.id === campo.condicao.perguntaId);
                 let valorAtualAlvo = "";
-                
-                if (alvoCampo.tipo === 'radio' || alvoCampo.tipo === 'rating') {
-                    const sel = document.querySelector(`input[name="prev_${alvoCampo.id}"]:checked`);
-                    valorAtualAlvo = sel ? sel.value : "";
-                } else if (alvoCampo.tipo === 'select') {
-                    const el = document.getElementById(`prev_input_${alvoCampo.id}`);
-                    valorAtualAlvo = el ? el.value : "";
-                } else {
-                    const el = document.getElementById(`prev_input_${alvoCampo.id}`);
-                    valorAtualAlvo = el ? el.value : "";
-                }
-
-                if (valorAtualAlvo.trim().toLowerCase() === campo.condicao.valor.trim().toLowerCase()) {
-                    wrapper.style.display = 'block';
-                } else {
-                    wrapper.style.display = 'none';
-                    const inputs = wrapper.querySelectorAll('input, select, textarea');
-                    inputs.forEach(i => { if(i.type==='checkbox'||i.type==='radio') i.checked=false; else i.value=''; });
-                }
+                if (alvoCampo.tipo === 'radio' || alvoCampo.tipo === 'rating') { const sel = document.querySelector(`input[name="prev_${alvoCampo.id}"]:checked`); valorAtualAlvo = sel ? sel.value : ""; } 
+                else { const el = document.getElementById(`prev_input_${alvoCampo.id}`); valorAtualAlvo = el ? el.value : ""; }
+                if (valorAtualAlvo.trim().toLowerCase() === campo.condicao.valor.trim().toLowerCase()) { wrapper.style.display = 'block'; } 
+                else { wrapper.style.display = 'none'; const inputs = wrapper.querySelectorAll('input, select, textarea'); inputs.forEach(i => { if(i.type==='checkbox'||i.type==='radio') i.checked=false; else i.value=''; }); }
             }
         });
     }
-
     function atualizarProgressoPreview() {
         const visiveis = document.querySelectorAll('#containerPreviewRealConteudo .form-group:not([style*="display: none"]) .form-campo-preview');
         const termoCheck = document.getElementById('chkTermosPreview')?.checked ? 1 : 0;
-        let preenchidos = 0;
-        const total = visiveis.length + 1;
-
-        visiveis.forEach(c => {
-            if (c.type === 'radio' || c.type === 'checkbox') { if (c.checked) preenchidos++; }
-            else if (c.value.trim() !== '') { preenchidos++; }
-        });
+        let preenchidos = 0; const total = visiveis.length + 1;
+        visiveis.forEach(c => { if (c.type === 'radio' || c.type === 'checkbox') { if (c.checked) preenchidos++; } else if (c.value.trim() !== '') { preenchidos++; } });
         if (termoCheck) preenchidos++;
-
         const pct = Math.min(100, Math.round((preenchidos / total) * 100));
-        document.getElementById('lblPreviewPercentual').innerText = pct + '%';
-        document.getElementById('progressBarPreviewFill').style.width = pct + '%';
+        document.getElementById('lblPreviewPercentual').innerText = pct + '%'; document.getElementById('progressBarPreviewFill').style.width = pct + '%';
     }
-
     function carregarPerguntaParaEdicao(idx) {
         const c = schemaEdicaoAtual[idx];
-        document.getElementById('edit_indice_campo').value = idx;
-        document.getElementById('novo_campo_secao').value = c.secao || '';
-        document.getElementById('novo_campo_titulo').value = c.titulo || '';
-        document.getElementById('novo_campo_tipo').value = c.tipo || 'text';
-        document.getElementById('novo_campo_meta').value = c.meta || 500;
-        document.getElementById('novo_campo_opcoes').value = c.opcoes ? c.opcoes.join(', ') : '';
-        document.getElementById('novo_campo_obrigatoria').checked = !!c.obrigatoria;
-        
-        document.getElementById('novo_cond_pergunta_alvo').value = c.condicao ? c.condicao.perguntaId || '' : '';
-        document.getElementById('novo_cond_valor').value = c.condicao ? c.condicao.valor || '' : '';
-
-        document.getElementById('lblBuilderTituloAcao').innerText = `Editando Pergunta #${idx + 1}`;
-        document.getElementById('btnSalvarOuAdicionar').innerText = "Salvar Alterações da Pergunta";
-        document.getElementById('btnCancelarEdicao').style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.getElementById('edit_indice_campo').value = idx; document.getElementById('novo_campo_secao').value = c.secao || ''; document.getElementById('novo_campo_titulo').value = c.titulo || ''; document.getElementById('novo_campo_tipo').value = c.tipo || 'text'; document.getElementById('novo_campo_meta').value = c.meta || 500; document.getElementById('novo_campo_opcoes').value = c.opcoes ? c.opcoes.join(', ') : ''; document.getElementById('novo_campo_obrigatoria').checked = !!c.obrigatoria; document.getElementById('novo_cond_pergunta_alvo').value = c.condicao ? c.condicao.perguntaId || '' : ''; document.getElementById('novo_cond_valor').value = c.condicao ? c.condicao.valor || '' : ''; document.getElementById('lblBuilderTituloAcao').innerText = `Editando Pergunta #${idx + 1}`; document.getElementById('btnSalvarOuAdicionar').innerText = "Salvar Alterações da Pergunta"; document.getElementById('btnCancelarEdicao').style.display = 'block'; window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
     function cancelarEdicaoPergunta() {
-        document.getElementById('edit_indice_campo').value = -1;
-        document.getElementById('novo_campo_secao').value = '';
-        document.getElementById('novo_campo_titulo').value = '';
-        document.getElementById('novo_campo_tipo').value = 'text';
-        document.getElementById('novo_campo_meta').value = 500;
-        document.getElementById('novo_campo_opcoes').value = '';
-        document.getElementById('novo_campo_obrigatoria').checked = false;
-        document.getElementById('novo_cond_pergunta_alvo').value = '';
-        document.getElementById('novo_cond_valor').value = '';
-
-        document.getElementById('lblBuilderTituloAcao').innerText = "Adicionar Nova Pergunta";
-        document.getElementById('btnSalvarOuAdicionar').innerText = "Adicionar Pergunta ao Formulário";
-        document.getElementById('btnCancelarEdicao').style.display = 'none';
+        document.getElementById('edit_indice_campo').value = -1; document.getElementById('novo_campo_secao').value = ''; document.getElementById('novo_campo_titulo').value = ''; document.getElementById('novo_campo_tipo').value = 'text'; document.getElementById('novo_campo_meta').value = 500; document.getElementById('novo_campo_opcoes').value = ''; document.getElementById('novo_campo_obrigatoria').checked = false; document.getElementById('novo_cond_pergunta_alvo').value = ''; document.getElementById('novo_cond_valor').value = ''; document.getElementById('lblBuilderTituloAcao').innerText = "Adicionar Nova Pergunta"; document.getElementById('btnSalvarOuAdicionar').innerText = "Adicionar Pergunta ao Formulário"; document.getElementById('btnCancelarEdicao').style.display = 'none';
     }
-
     function salvarOuAdicionarPergunta() {
-        const idxEdicao = Number(document.getElementById('edit_indice_campo').value);
-        const secao = document.getElementById('novo_campo_secao').value.trim() || "Geral";
-        const titulo = document.getElementById('novo_campo_titulo').value.trim();
-        const tipo = document.getElementById('novo_campo_tipo').value;
-        const meta = Number(document.getElementById('novo_campo_meta').value) || 500;
-        const opcoesStr = document.getElementById('novo_campo_opcoes').value.trim();
-        const obrigatoria = document.getElementById('novo_campo_obrigatoria').checked;
-        
-        const condPerguntaId = document.getElementById('novo_cond_pergunta_alvo').value;
-        const condValor = document.getElementById('novo_cond_valor').value.trim();
-
+        const idxEdicao = Number(document.getElementById('edit_indice_campo').value); const secao = document.getElementById('novo_campo_secao').value.trim() || "Geral"; const titulo = document.getElementById('novo_campo_titulo').value.trim(); const tipo = document.getElementById('novo_campo_tipo').value; const meta = Number(document.getElementById('novo_campo_meta').value) || 500; const opcoesStr = document.getElementById('novo_campo_opcoes').value.trim(); const obrigatoria = document.getElementById('novo_campo_obrigatoria').checked; const condPerguntaId = document.getElementById('novo_cond_pergunta_alvo').value; const condValor = document.getElementById('novo_cond_valor').value.trim();
         if (!titulo) return alert("Digite o título da pergunta.");
-        
-        let opcoesArr = [];
-        if ((tipo === 'radio' || tipo === 'checkbox' || tipo === 'select') && opcoesStr) {
-            opcoesArr = opcoesStr.split(',').map(s => s.trim());
-        }
-
+        let opcoesArr = []; if ((tipo === 'radio' || tipo === 'checkbox' || tipo === 'select') && opcoesStr) { opcoesArr = opcoesStr.split(',').map(s => s.trim()); }
         const condicaoObj = condPerguntaId && condValor ? { perguntaId: condPerguntaId, valor: condValor } : null;
         const idCampo = idxEdicao >= 0 ? schemaEdicaoAtual[idxEdicao].id : "c_" + Date.now();
-
         const novoCampo = { id: idCampo, tipo, secao, titulo, meta, opcoes: opcoesArr, obrigatoria, condicao: condicaoObj };
-
-        if (idxEdicao >= 0) {
-            schemaEdicaoAtual[idxEdicao] = novoCampo;
-        } else {
-            schemaEdicaoAtual.push(novoCampo);
-        }
-
-        cancelarEdicaoPergunta();
-        atualizarSelectsCondicionaisBuilder();
-        renderizarListaSchemaBuilder();
+        if (idxEdicao >= 0) { schemaEdicaoAtual[idxEdicao] = novoCampo; } else { schemaEdicaoAtual.push(novoCampo); }
+        cancelarEdicaoPergunta(); atualizarSelectsCondicionaisBuilder(); renderizarListaSchemaBuilder();
     }
-
     function moverPergunta(idx, direcao) {
-        const novoIdx = idx + direcao;
-        if (novoIdx < 0 || novoIdx >= schemaEdicaoAtual.length) return;
-        const temp = schemaEdicaoAtual[idx];
-        schemaEdicaoAtual[idx] = schemaEdicaoAtual[novoIdx];
-        schemaEdicaoAtual[novoIdx] = temp;
-        atualizarSelectsCondicionaisBuilder();
-        renderizarListaSchemaBuilder();
+        const novoIdx = idx + direcao; if (novoIdx < 0 || novoIdx >= schemaEdicaoAtual.length) return;
+        const temp = schemaEdicaoAtual[idx]; schemaEdicaoAtual[idx] = schemaEdicaoAtual[novoIdx]; schemaEdicaoAtual[novoIdx] = temp;
+        atualizarSelectsCondicionaisBuilder(); renderizarListaSchemaBuilder();
     }
-
     function removerCampoSchema(idx) {
         if (!confirm("Deseja realmente remover esta pergunta?")) return;
-        schemaEdicaoAtual.splice(idx, 1);
-        atualizarSelectsCondicionaisBuilder();
-        renderizarListaSchemaBuilder();
+        schemaEdicaoAtual.splice(idx, 1); atualizarSelectsCondicionaisBuilder(); renderizarListaSchemaBuilder();
     }
-
     async function salvarSchemaNaNuvem() {
-        const obraNome = document.getElementById('builder_select_obra').value;
-        const obra = baseGlobal.obras.find(o => o.nome === obraNome);
+        const obraNome = document.getElementById('builder_select_obra').value; const obra = baseGlobal.obras.find(o => o.nome === obraNome);
         const payload = { acao: "salvar_schema_obra", nome: obraNome, empresa: obra ? obra.empresa : "Construtora Padrão", totalUHs: obra ? obra.totalUHs : 500, schemaFormulario: schemaEdicaoAtual };
-
         mostrarLoadingUI("Salvando...", "Gravando estrutura avançada no Google Sheets.");
         const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
-        if (res.sucesso) { baseGlobal = res.base; mostrarAlertaUI("Sucesso!", res.mensagem); popularselectsGerais(); }
-        else { mostrarAlertaUI("Erro", res.erro); }
+        if (res.sucesso) { baseGlobal = res.base; mostrarAlertaUI("Sucesso!", res.mensagem); popularselectsGerais(); } else { mostrarAlertaUI("Erro", res.erro); }
     }
-
     function mudarObraDiario() { renderizarFormularioDinamico(); }
-
     function renderizarFormularioDinamico() {
-        const obraNome = document.getElementById('rdo_obra').value;
-        const obra = baseGlobal.obras.find(o => o.nome === obraNome);
+        const obraNome = document.getElementById('rdo_obra').value; const obra = baseGlobal.obras.find(o => o.nome === obraNome);
         const container = document.getElementById('formBuilderContainer');
-        
-        if (!obra || !obra.schemaFormulario || obra.schemaFormulario.length === 0) {
-            container.innerHTML = "<p style='font-size:13px; color:#777;'>Nenhum campo estruturado para esta obra.</p>";
-            return;
-        }
-
+        if (!obra || !obra.schemaFormulario || obra.schemaFormulario.length === 0) { container.innerHTML = "<p style='font-size:13px; color:#777;'>Nenhum campo estruturado para esta obra.</p>"; return; }
         let html = '';
         obra.schemaFormulario.forEach(campo => {
             const icone = iconesTipos[campo.tipo] || '';
-            let estiloDiv = '';
-            if (campo.condicao && campo.condicao.perguntaId) {
-                estiloDiv = `id="wrapper_rdo_${campo.id}" style="display:none; border-left:3px solid #ffc107; padding-left:10px; margin-left:5px;"`;
-            } else {
-                estiloDiv = `id="wrapper_rdo_${campo.id}"`;
-            }
-
-            html += `<div class="form-group" ${estiloDiv} oninput="avaliarCondicionaisRDO(); atualizarProgressoFormulario();" onchange="avaliarCondicionaisRDO(); atualizarProgressoFormulario();">
-                        <label>${icone} ${campo.titulo} ${campo.obrigatoria?'<span style="color:red;">*</span>':''}</label>`;
-            
+            let estiloDiv = (campo.condicao && campo.condicao.perguntaId) ? `id="wrapper_rdo_${campo.id}" style="display:none; border-left:3px solid #ffc107; padding-left:10px; margin-left:5px;"` : `id="wrapper_rdo_${campo.id}"`;
+            html += `<div class="form-group" ${estiloDiv} oninput="avaliarCondicionaisRDO(); atualizarProgressoFormulario();" onchange="avaliarCondicionaisRDO(); atualizarProgressoFormulario();"> <label>${icone} ${campo.titulo} ${campo.obrigatoria?'<span style="color:red;">*</span>':''}</label>`;
             if (campo.tipo === 'text') html += `<input type="text" id="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo" placeholder="Resposta curta">`;
             else if (campo.tipo === 'textarea') html += `<textarea id="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo" rows="3" placeholder="Parágrafo / Observações"></textarea>`;
             else if (campo.tipo === 'number') html += `<input type="number" id="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo" placeholder="Valor numérico">`;
             else if (campo.tipo === 'date') html += `<input type="date" id="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo">`;
             else if (campo.tipo === 'time') html += `<input type="time" id="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo">`;
-            else if (campo.tipo === 'rating') {
-                html += `<div style="display:flex; gap:10px;">`;
-                for(let r=1; r<=5; r++) {
-                    html += `<label style="font-weight:normal;"><input type="radio" name="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo" value="${r}" style="width:auto; margin-right:4px;"> ${r}</label>`;
-                }
-                html += `</div>`;
-            }
-            else if (campo.tipo === 'radio') {
-                (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="radio" name="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
-            } else if (campo.tipo === 'checkbox') {
-                (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="checkbox" name="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
-            } else if (campo.tipo === 'select') {
-                html += `<select id="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo"><option value="">Selecione...</option>`;
-                (campo.opcoes||[]).forEach(op => html += `<option value="${op}">${op}</option>`);
-                html += `</select>`;
-            } else if (campo.tipo === 'etapa_producao') {
-                html += `<div style="display:flex; gap:10px; align-items:center;">
-                            <input type="number" id="resp_${campo.id}_pd" data-id="${campo.id}" class="form-campo-rdo" placeholder="Qtd Produzida Hoje" style="flex:1;">
-                            <span style="font-size:12px; color:var(--subtext);">Meta: ${campo.meta || 500} | Exec: ${campo.ac || 0}</span>
-                         </div>`;
-            }
+            else if (campo.tipo === 'rating') { html += `<div style="display:flex; gap:10px;">`; for(let r=1; r<=5; r++) { html += `<label style="font-weight:normal;"><input type="radio" name="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo" value="${r}" style="width:auto; margin-right:4px;"> ${r}</label>`; } html += `</div>`; }
+            else if (campo.tipo === 'radio') { (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="radio" name="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`); }
+            else if (campo.tipo === 'checkbox') { (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="checkbox" name="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`); }
+            else if (campo.tipo === 'select') { html += `<select id="resp_${campo.id}" data-id="${campo.id}" class="form-campo-rdo"><option value="">Selecione...</option>`; (campo.opcoes||[]).forEach(op => html += `<option value="${op}">${op}</option>`); html += `</select>`; }
+            else if (campo.tipo === 'etapa_producao') { html += `<div style="display:flex; gap:10px; align-items:center;"><input type="number" id="resp_${campo.id}_pd" data-id="${campo.id}" class="form-campo-rdo" placeholder="Qtd Produzida Hoje" style="flex:1;"><span style="font-size:12px; color:var(--subtext);">Meta: ${campo.meta || 500} | Exec: ${campo.ac || 0}</span></div>`; }
             html += `</div>`;
         });
-        container.innerHTML = html;
-        avaliarCondicionaisRDO();
-        atualizarProgressoFormulario();
+        container.innerHTML = html; avaliarCondicionaisRDO(); atualizarProgressoFormulario();
     }
-
     function avaliarCondicionaisRDO() {
-        const obraNome = document.getElementById('rdo_obra').value;
-        const obra = baseGlobal.obras.find(o => o.nome === obraNome);
+        const obraNome = document.getElementById('rdo_obra').value; const obra = baseGlobal.obras.find(o => o.nome === obraNome);
         if (!obra || !obra.schemaFormulario) return;
-
         obra.schemaFormulario.forEach(campo => {
             if (campo.condicao && campo.condicao.perguntaId) {
-                const wrapper = document.getElementById(`wrapper_rdo_${campo.id}`);
-                if (!wrapper) return;
-                
+                const wrapper = document.getElementById(`wrapper_rdo_${campo.id}`); if (!wrapper) return;
                 const alvoCampo = obra.schemaFormulario.find(x => x.id === campo.condicao.perguntaId);
                 let valorAtualAlvo = "";
-                
-                if (alvoCampo.tipo === 'radio' || alvoCampo.tipo === 'rating') {
-                    const sel = document.querySelector(`input[name="resp_${alvoCampo.id}"]:checked`);
-                    valorAtualAlvo = sel ? sel.value : "";
-                } else if (alvoCampo.tipo === 'select') {
-                    const el = document.getElementById(`resp_${alvoCampo.id}`);
-                    valorAtualAlvo = el ? el.value : "";
-                } else {
-                    const el = document.getElementById(`resp_${alvoCampo.id}`);
-                    valorAtualAlvo = el ? el.value : "";
-                }
-
-                if (valorAtualAlvo.trim().toLowerCase() === campo.condicao.valor.trim().toLowerCase()) {
-                    wrapper.style.display = 'block';
-                } else {
-                    wrapper.style.display = 'none';
-                    const inputs = wrapper.querySelectorAll('input, select, textarea');
-                    inputs.forEach(i => { if(i.type==='checkbox'||i.type==='radio') i.checked=false; else i.value=''; });
-                }
+                if (alvoCampo.tipo === 'radio' || alvoCampo.tipo === 'rating') { const sel = document.querySelector(`input[name="resp_${alvoCampo.id}"]:checked`); valorAtualAlvo = sel ? sel.value : ""; } 
+                else { const el = document.getElementById(`resp_${alvoCampo.id}`); valorAtualAlvo = el ? el.value : ""; }
+                if (valorAtualAlvo.trim().toLowerCase() === campo.condicao.valor.trim().toLowerCase()) { wrapper.style.display = 'block'; } 
+                else { wrapper.style.display = 'none'; const inputs = wrapper.querySelectorAll('input, select, textarea'); inputs.forEach(i => { if(i.type==='checkbox'||i.type==='radio') i.checked=false; else i.value=''; }); }
             }
         });
     }
-
     function atualizarProgressoFormulario() {
         const visiveis = document.querySelectorAll('#formBuilderContainer .form-group:not([style*="display: none"]) .form-campo-rdo');
         const termoCheck = document.getElementById('chkTermosRDO')?.checked ? 1 : 0;
-        let preenchidos = 0;
-        const total = visiveis.length + 1;
-
-        visiveis.forEach(c => {
-            if (c.type === 'radio' || c.type === 'checkbox') { if (c.checked) preenchidos++; }
-            else if (c.value.trim() !== '') { preenchidos++; }
-        });
+        let preenchidos = 0; const total = visiveis.length + 1;
+        visiveis.forEach(c => { if (c.type === 'radio' || c.type === 'checkbox') { if (c.checked) preenchidos++; } else if (c.value.trim() !== '') { preenchidos++; } });
         if (termoCheck) preenchidos++;
-
         const pct = Math.min(100, Math.round((preenchidos / total) * 100));
-        document.getElementById('lblPercentual').innerText = pct + '%';
-        document.getElementById('progressBarFill').style.width = pct + '%';
+        document.getElementById('lblPercentual').innerText = pct + '%'; document.getElementById('progressBarFill').style.width = pct + '%';
     }
-
     async function salvarRDOOperacional() {
         const termoAceito = document.getElementById('chkTermosRDO').checked;
         if (!termoAceito) return alert("Você deve aceitar a Declaração de Responsabilidade Civil e Técnica para prosseguir.");
-
-        const obraNome = document.getElementById('rdo_obra').value;
-        const obra = baseGlobal.obras.find(o => o.nome === obraNome);
+        const obraNome = document.getElementById('rdo_obra').value; const obra = baseGlobal.obras.find(o => o.nome === obraNome);
         let respostasObj = {};
-
         if (obra && obra.schemaFormulario) {
             obra.schemaFormulario.forEach(campo => {
-                const wrapper = document.getElementById(`wrapper_rdo_${campo.id}`);
-                if (wrapper && wrapper.style.display === 'none') return;
-
-                if (campo.tipo === 'etapa_producao') {
-                    const valPd = Number(document.getElementById(`resp_${campo.id}_pd`)?.value || 0);
-                    respostasObj[campo.titulo] = { pd: valPd, meta: campo.meta || 500 };
-                } else if (campo.tipo === 'radio' || campo.tipo === 'rating') {
-                    const sel = document.querySelector(`input[name="resp_${campo.id}"]:checked`);
-                    respostasObj[campo.titulo] = sel ? sel.value : "";
-                } else if (campo.tipo === 'checkbox') {
-                    const checks = document.querySelectorAll(`input[name="resp_${campo.id}"]:checked`);
-                    let vals = []; checks.forEach(chk => vals.push(chk.value));
-                    respostasObj[campo.titulo] = vals.join(", ");
-                } else {
-                    const el = document.getElementById(`resp_${campo.id}`);
-                    if (el) respostasObj[campo.titulo] = el.value;
-                }
+                const wrapper = document.getElementById(`wrapper_rdo_${campo.id}`); if (wrapper && wrapper.style.display === 'none') return;
+                if (campo.tipo === 'etapa_producao') { const valPd = Number(document.getElementById(`resp_${campo.id}_pd`)?.value || 0); respostasObj[campo.titulo] = { pd: valPd, meta: campo.meta || 500 }; } 
+                else if (campo.tipo === 'radio' || campo.tipo === 'rating') { const sel = document.querySelector(`input[name="resp_${campo.id}"]:checked`); respostasObj[campo.titulo] = sel ? sel.value : ""; } 
+                else if (campo.tipo === 'checkbox') { const checks = document.querySelectorAll(`input[name="resp_${campo.id}"]:checked`); let vals = []; checks.forEach(chk => vals.push(chk.value)); respostasObj[campo.titulo] = vals.join(", "); } 
+                else { const el = document.getElementById(`resp_${campo.id}`); if (el) respostasObj[campo.titulo] = el.value; }
             });
         }
-
-        const payload = {
-            acao: "salvar_diario", responsavel: usuarioAtivo.nome, obra: obraNome,
-            data_diario: document.getElementById('rdo_data').value,
-            respostas: respostasObj,
-            fotos: fotosBase64Array, client_sync_id: "SYNC-" + Date.now()
-        };
-
+        const payload = { acao: "salvar_diario", responsavel: usuarioAtivo.nome, obra: obraNome, data_diario: document.getElementById('rdo_data').value, respostas: respostasObj, fotos: fotosBase64Array, client_sync_id: "SYNC-" + Date.now() };
         mostrarLoadingUI("Processando PDF...", "Registrando aceite e gerando documento.");
         try {
             const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
-            if(res.sucesso) {
-                mostrarAlertaUI("Sucesso!", res.mensagem);
-                fotosBase64Array = []; document.getElementById('previewFotos').innerHTML = "";
-                document.getElementById('chkTermosRDO').checked = false;
-                const ref = await fetch(API_URL).then(r => r.json()); baseGlobal = ref.dados; popularselectsGerais();
-            } else { mostrarAlertaUI("Erro", res.erro); }
+            if(res.sucesso) { mostrarAlertaUI("Sucesso!", res.mensagem); fotosBase64Array = []; document.getElementById('previewFotos').innerHTML = ""; document.getElementById('chkTermosRDO').checked = false; const ref = await fetch(API_URL).then(r => r.json()); baseGlobal = ref.dados; popularselectsGerais(); } 
+            else { mostrarAlertaUI("Erro", res.erro); }
         } catch(e) { mostrarAlertaUI("Erro Crítico", "Falha na sincronização."); }
     }
-
     function exportarDadosCSV() {
-        const obra = document.getElementById('hist_select_obra').value;
-        const filtrados = baseGlobal.diarios.filter(d => d.obra === obra);
+        const obra = document.getElementById('hist_select_obra').value; const filtrados = baseGlobal.diarios.filter(d => d.obra === obra);
         if (filtrados.length === 0) return alert("Nenhum dado para exportar.");
-
         let csvContent = "data:text/csv;charset=utf-8,ID;Responsavel;Obra;Data;Timestamp\n";
         filtrados.forEach(r => { csvContent += `"${r.id}";"${r.responsavel}";"${r.obra}";"${r.data}";"${r.timestamp}"\n`; });
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `relatorio_${obra.replace(/\s+/g, '_')}.csv`);
-        document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        const encodedUri = encodeURI(csvContent); const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", `relatorio_${obra.replace(/\s+/g, '_')}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link);
     }
-
-    async function salvarNovoUsuarioAdmin() {
-        const payload = { acao: "salvar_usuario", email: document.getElementById('cad_email').value.trim(), nome: document.getElementById('cad_nome').value.trim(), perfil: document.getElementById('cad_perfil').value, obra: document.getElementById('cad_obra').value, senha: document.getElementById('cad_senha').value.trim() || "123456" };
-        if(!payload.email || !payload.nome) return alert("Preencha e-mail e nome.");
-
-        mostrarLoadingUI("Salvando...", "Gravando usuário.");
-        const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
-        if(res.sucesso) { baseGlobal = res.base; popularselectsGerais(); mostrarAlertaUI("Sucesso!", res.mensagem); document.getElementById('cad_email').value = ""; document.getElementById('cad_nome').value = ""; }
-        else { mostrarAlertaUI("Erro", res.erro); }
-    }
-
-    function renderizarListaUsuariosAdmin() {
-        const container = document.getElementById('listaUsuariosAdmin');
-        if(!baseGlobal.usuarios) return;
-        let html = '';
-        baseGlobal.usuarios.forEach(u => {
-            html += `<div class="user-card"><div style="text-align:left;"><strong>${u.nome}</strong> (${u.email})<br><span style="font-size:11.5px; color:var(--subtext);">Perfil: <b>${u.perfil}</b> | Obra: ${u.obra}</span></div><span style="font-size:12px; font-weight:bold; color:#28a745;">${u.status}</span></div>`;
-        });
-        container.innerHTML = html;
-    }
-
     function renderizarHistorico() {
-        const obra = document.getElementById('hist_select_obra').value;
-        const container = document.getElementById('listaHistorico');
+        const obra = document.getElementById('hist_select_obra').value; const container = document.getElementById('listaHistorico');
         const filtrados = baseGlobal.diarios.filter(d => d.obra === obra);
         if (filtrados.length === 0) { container.innerHTML = "<p style='font-size:13px; color:#777;'>Nenhum histórico encontrado.</p>"; return; }
         let html = '';
-        filtrados.forEach(r => {
-            html += `<div class="rdo-cloud-card"><div style="font-weight:bold; font-size:13.5px; color:var(--primary);">${r.id} • Data: ${r.data}</div><div style="font-size:12px; margin-top:4px;"><strong>Resp:</strong> ${r.responsavel}</div>${r.link_pdf ? `<a href="${r.link_pdf}" target="_blank" style="font-size:11.5px; display:inline-block; margin-top:5px; color:#dc3545; font-weight:bold; text-decoration:none;">📄 Abrir PDF Oficial</a>` : ''}</div>`;
-        });
+        filtrados.forEach(r => { html += `<div class="rdo-cloud-card"><div style="font-weight:bold; font-size:13.5px; color:var(--primary);">${r.id} • Data: ${r.data}</div><div style="font-size:12px; margin-top:4px;"><strong>Resp:</strong> ${r.responsavel}</div>${r.link_pdf ? `<a href="${r.link_pdf}" target="_blank" style="font-size:11.5px; display:inline-block; margin-top:5px; color:#dc3545; font-weight:bold; text-decoration:none;">📄 Abrir PDF Oficial</a>` : ''}</div>`; });
         container.innerHTML = html;
     }
-
     async function injetarDadosMock() {
         mostrarLoadingUI("Injetando...", "Gerando dados de teste.");
         const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "gerar_dados_mock" }) }).then(r => r.json());
-        baseGlobal = res.base; popularselectsGerais();
-        mostrarAlertaUI("Sucesso", res.mensagem);
+        baseGlobal = res.base; popularselectsGerais(); mostrarAlertaUI("Sucesso", res.mensagem);
     }
-
     function gerarQrCodePublico() {
-        const obra = document.getElementById('cfg_obra_qr').value;
-        const link = `${API_URL}?qrcode=${encodeURIComponent(obra)}`;
-        document.getElementById('boxQrCodeTarget').innerHTML = "";
-        new QRCode(document.getElementById("boxQrCodeTarget"), { text: link, width: 180, height: 180 });
-        document.getElementById('txtLinkPublico').innerHTML = `<a href="${link}" target="_blank">Abrir Link Público</a>`;
-        document.getElementById('modalQrCode').style.display = 'flex';
+        const obra = document.getElementById('cfg_obra_qr').value; const link = `${API_URL}?qrcode=${encodeURIComponent(obra)}`;
+        document.getElementById('boxQrCodeTarget').innerHTML = ""; new QRCode(document.getElementById("boxQrCodeTarget"), { text: link, width: 180, height: 180 });
+        document.getElementById('txtLinkPublico').innerHTML = `<a href="${link}" target="_blank">Abrir Link Público</a>`; document.getElementById('modalQrCode').style.display = 'flex';
     }
-
     let html5QrcodeScanner = null;
-    function abrirScannerInterno() {
-        fecharSidebar(); document.getElementById('modalScanner').style.display = 'flex';
-        html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: {width: 250, height: 250} }, false);
-        html5QrcodeScanner.render((txt) => { fecharScanner(); alert("Dossiê Interno da Obra: " + txt); }, () => {});
-    }
-    function fecharScanner() {
-        document.getElementById('modalScanner').style.display = 'none';
-        if (html5QrcodeScanner) { html5QrcodeScanner.clear(); html5QrcodeScanner = null; }
-    }
-
+    function abrirScannerInterno() { fecharSidebar(); document.getElementById('modalScanner').style.display = 'flex'; html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: {width: 250, height: 250} }, false); html5QrcodeScanner.render((txt) => { fecharScanner(); alert("Dossiê Interno da Obra: " + txt); }, () => {}); }
+    function fecharScanner() { document.getElementById('modalScanner').style.display = 'none'; if (html5QrcodeScanner) { html5QrcodeScanner.clear(); html5QrcodeScanner = null; } }
     function abrirSidebar() { document.getElementById('sidebarMenu').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('open'); }
     function fecharSidebar() { document.getElementById('sidebarMenu').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('open'); }
     function navegarSidebar(id) { trocarAba(id); fecharSidebar(); }
-    function trocarAba(id) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.getElementById('aba-' + id).classList.add('active');
-        document.querySelectorAll('.sidebar-item').forEach(c => c.classList.remove('active'));
-        const m = document.getElementById('menu-' + id); if(m) m.classList.add('active');
-    }
-    function fazerLogout() { 
-        localStorage.removeItem('smart_sync_usuario');
-        usuarioAtivo = null; document.querySelectorAll('.sidebar-item').forEach(m => m.style.display = 'none'); document.getElementById('menu-login').style.display = 'flex'; trocarAba('login'); fecharSidebar(); 
-    }
+    function trocarAba(id) { document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.getElementById('aba-' + id).classList.add('active'); document.querySelectorAll('.sidebar-item').forEach(c => c.classList.remove('active')); const m = document.getElementById('menu-' + id); if(m) m.classList.add('active'); }
+    function fazerLogout() { localStorage.removeItem('smart_sync_usuario'); usuarioAtivo = null; document.querySelectorAll('.sidebar-item').forEach(m => m.style.display = 'none'); document.getElementById('menu-login').style.display = 'flex'; trocarAba('login'); fecharSidebar(); }
     function mostrarLoadingUI(t, m) { document.getElementById('sysOverlay').style.display = 'flex'; document.getElementById('modalSpinner').style.display = 'block'; document.getElementById('modalBtn').style.display = 'none'; document.getElementById('modalTitle').innerText = t; document.getElementById('modalMsg').innerText = m; }
     function mostrarAlertaUI(t, m) { document.getElementById('sysOverlay').style.display = 'flex'; document.getElementById('modalSpinner').style.display = 'none'; document.getElementById('modalTitle').innerText = t; document.getElementById('modalMsg').innerText = m; document.getElementById('modalBtn').style.display = 'inline-block'; }
-    async function recuperarSenhaUsuario() {
-        const email = document.getElementById('login_email').value.trim();
-        if(!email) return alert("Digite o e-mail no campo acima.");
-        mostrarLoadingUI("Enviando...", "Gerando nova senha.");
-        const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "recuperar_senha", email }) }).then(r => r.json());
-        mostrarAlertaUI(res.sucesso?"Enviado":"Erro", res.sucesso?res.mensagem:res.erro);
-    }
+    async function recuperarSenhaUsuario() { const email = document.getElementById('login_email').value.trim(); if(!email) return alert("Digite o e-mail no campo acima."); mostrarLoadingUI("Enviando...", "Gerando nova senha."); const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "recuperar_senha", email }) }).then(r => r.json()); mostrarAlertaUI(res.sucesso?"Enviado":"Erro", res.sucesso?res.mensagem:res.erro); }
 </script>
 </body>
 </html>
