@@ -37,7 +37,13 @@
         
         .top-header { background: var(--primary); color: var(--header-text); display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 1000; }
         .menu-hamburger { font-size: 22px; cursor: pointer; padding: 5px; }
-        .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; margin-left: 15px; }
+        .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; margin-left: 12px; display: flex; align-items: center; gap: 8px; }
+        
+        /* INDICADOR DE STATUS OFFLINE/ONLINE */
+        .net-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; background: #2ecc71; box-shadow: 0 0 6px #2ecc71; }
+        .net-dot.offline { background: #ff5252; box-shadow: 0 0 6px #ff5252; }
+        .pending-pill { font-size: 10px; background: #ffc107; color: #000; padding: 2px 6px; border-radius: 10px; font-weight: bold; cursor: pointer; display: none; }
+
         .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; cursor: pointer; }
         
         /* BOTÃO SUPER DISCRETO DE ALTERNAR TEMA */
@@ -62,7 +68,7 @@
         .sidebar-header { background: var(--primary); color: var(--header-text); padding: 20px 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
         .sidebar-close { cursor: pointer; font-size: 20px; }
         .sidebar-menu { display: flex; flex-direction: column; padding: 15px 0; overflow-y: auto; }
-        .sidebar-item { padding: 14px 20px; font-weight: 600; font-size: 14px; cursor: pointer; border-left: 4px solid transparent; color: var(--text-color); display: flex; align-items: center; gap: 10px; }
+        .sidebar-item { padding: 14px 20px; font-weight: 600; font-size: 14px; cursor: pointer; border-left: 4px solid transparent; color: var(--text-color); display: flex; align-items: center; justify-content: space-between; }
         .sidebar-item:hover, .sidebar-item.active { background: rgba(0,0,0,0.05); border-left: 4px solid var(--primary); color: var(--primary); }
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2400; }
         .sidebar-overlay.open { display: block; }
@@ -89,7 +95,7 @@
 
         .card-pergunta-builder { background: var(--card-bg); border: 1px solid var(--border-color); border-left: 5px solid var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); position: relative; }
         .card-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; }
-        .btn-card-action { background: none; border: none; font-size: 16px; cursor: pointer; padding: 2px 5px; color: var(--subtext); }
+        .btn-card-action { background: none; border: none; font-size: 16px; cursor: pointer; padding: 2px 5px; color: var(--subtext); width: auto; margin: 0; }
         .badge-tipo { font-size: 11px; background: rgba(0,0,0,0.08); color: var(--text-color); padding: 3px 8px; border-radius: 4px; font-weight: bold; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
 
         .checkbox-group, .radio-group { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
@@ -98,6 +104,9 @@
 
         .preview-foto-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
         .preview-foto { width: 75px; height: 75px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-color); }
+
+        .offline-banner { display: none; background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 10px 14px; border-radius: 8px; font-size: 12px; margin-bottom: 15px; font-weight: 600; }
+        .fila-card { border: 1px solid var(--border-color); border-left: 4px solid #ffc107; padding: 12px; border-radius: 8px; margin-bottom: 10px; background: rgba(0,0,0,0.02); }
 
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 3000; align-items: center; justify-content: center; }
         .modal-box { background: var(--card-bg); padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 380px; border: 1px solid var(--border-color); }
@@ -115,19 +124,27 @@
         <span class="sidebar-close" onclick="fecharSidebar()">✕</span>
     </div>
     <div class="sidebar-menu">
-        <div class="sidebar-item active" onclick="navegarSidebar('login')">👤 Identificação / Perfil</div>
-        <div class="sidebar-item" id="side-item-diario" onclick="navegarSidebar('diario')" style="display:none;">📝 Diário de Campo</div>
-        <div class="sidebar-item admin-only" onclick="navegarSidebar('builder')" style="display:none;">🎨 Construtor GoogleForms</div>
-        <div class="sidebar-item admin-only" onclick="navegarSidebar('configuracoes')" style="display:none;">⚙️ Configurações Gerais</div>
-        <div class="sidebar-item admin-only" onclick="navegarSidebar('permissoes')" style="display:none;">🔐 Permissões e Perfis</div>
+        <div class="sidebar-item active" onclick="navegarSidebar('login')"><span>👤 Identificação / Perfil</span></div>
+        <div class="sidebar-item" id="side-item-diario" onclick="navegarSidebar('diario')" style="display:none;"><span>📝 Diário de Campo</span></div>
+        <div class="sidebar-item" id="side-item-offline" onclick="navegarSidebar('offline')" style="display:none;">
+            <span>⏳ Fila Offline / Sincronizar</span>
+            <span id="sidebarBadgeFila" style="background:#ffc107; color:#000; padding:2px 7px; border-radius:10px; font-size:11px; display:none;">0</span>
+        </div>
+        <div class="sidebar-item admin-only" onclick="navegarSidebar('builder')" style="display:none;"><span>🎨 Construtor GoogleForms</span></div>
+        <div class="sidebar-item admin-only" onclick="navegarSidebar('configuracoes')" style="display:none;"><span>⚙️ Configurações Gerais</span></div>
+        <div class="sidebar-item admin-only" onclick="navegarSidebar('permissoes')" style="display:none;"><span>🔐 Permissões e Perfis</span></div>
     </div>
 </div>
 
 <!-- TOP HEADER -->
 <div class="top-header">
     <div class="menu-hamburger" onclick="abrirSidebar()">☰</div>
-    <div class="brand-title">SmartSyncGest</div>
-    <div style="display:flex; align-items:center; gap:10px;">
+    <div class="brand-title">
+        <span>SmartSyncGest</span>
+        <span id="netStatusDot" class="net-dot" title="Online"></span>
+        <span id="headerPendingPill" class="pending-pill" onclick="navegarSidebar('offline')">0 pendente(s)</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px;">
         <div id="usuario-logado" class="user-badge" onclick="navegarSidebar('login')">👤 Entrar</div>
         <button class="theme-toggle-btn" title="Alternar Tema" onclick="ciclarTemaVisual()">◐</button>
     </div>
@@ -137,9 +154,10 @@
 <div id="aba-login" class="tab-content active">
     <div class="container" style="text-align: center;">
         <h2>Identificação de Acesso</h2>
+        <div id="loginOfflineInfo" class="offline-banner">📡 Modo Offline ativo: utilizando dados locais em cache do dispositivo.</div>
         <div class="form-group">
             <label>Selecione o Usuário</label>
-            <select id="select_usuario" style="padding: 12px;"><option>Carregando API...</option></select>
+            <select id="select_usuario" style="padding: 12px;"><option>Carregando dados...</option></select>
         </div>
         <button class="btn-primary" onclick="efetuarLogin()">Entrar no Sistema</button>
     </div>
@@ -172,7 +190,6 @@
 
         <hr style="border:0; border-top:1px solid var(--border-color); margin:20px 0;">
 
-        <!-- PAINEL DE ADIÇÃO E EDIÇÃO DE PERGUNTAS -->
         <div style="background:rgba(0,0,0,0.02); padding:15px; border-radius:8px; border:1px dashed var(--primary); margin-bottom:20px;">
             <h4 id="builder_form_label" style="margin-top:0; color:var(--primary);">+ Adicionar Novo Campo / Pergunta</h4>
             
@@ -233,6 +250,9 @@
 <div id="aba-diario" class="tab-content">
     <div class="container">
         <h2>Diário de Engenharia de Campo</h2>
+        <div id="diarioOfflineBanner" class="offline-banner">
+            📡 Sem conexão com a internet. Ao finalizar, o diário e as fotos serão salvos no celular e sincronizados automaticamente quando houver sinal.
+        </div>
         <form id="formDiario" onsubmit="enviarDiario(event)">
             <div class="form-group">
                 <label>Obra Selecionada</label>
@@ -259,18 +279,40 @@
     </div>
 </div>
 
-<!-- TELA 4: CONFIGURAÇÕES GERAIS (ESTRUTURAL PARA EXPANSÃO) -->
+<!-- TELA 4: FILA OFFLINE E SINCRONIZAÇÃO (PWA) -->
+<div id="aba-offline" class="tab-content">
+    <div class="container">
+        <h2>⏳ Fila de Sincronização Offline</h2>
+        <p style="font-size:13px; color:var(--subtext);">
+            Status atual da conexão: <strong id="statusConexaoTexto">Verificando...</strong>
+        </p>
+        <button class="btn-primary" id="btnSincronizarAgora" onclick="sincronizarFilaOffline(true)">🔄 Sincronizar Pendentes Agora</button>
+        
+        <h3 style="font-size:15px; color:var(--primary); margin-top:20px;">Registros Aguardando Envio:</h3>
+        <div id="listaFilaOfflineContainer">
+            <p style="font-size:13px; color:var(--subtext);">Nenhum diário pendente no dispositivo.</p>
+        </div>
+
+        <h3 style="font-size:15px; color:var(--primary); margin-top:25px;">Últimos PDFs Gerados neste Dispositivo:</h3>
+        <div id="listaHistoricoLocalContainer">
+            <p style="font-size:13px; color:var(--subtext);">Nenhum histórico recente salvo localmente.</p>
+        </div>
+    </div>
+</div>
+
+<!-- TELA 5: CONFIGURAÇÕES GERAIS -->
 <div id="aba-configuracoes" class="tab-content">
     <div class="container">
         <h2>⚙️ Configurações do Sistema</h2>
         <p style="font-size:13px; color:var(--subtext);">Painel administrativo para parâmetros globais da plataforma SmartSyncGest.</p>
         <div style="padding: 15px; background: rgba(0,0,0,0.03); border-radius: 8px; font-size: 13px;">
-            <p><strong>Configurações ativas:</strong> Parâmetros de armazenamento PDF no Google Drive e retenção de diários.</p>
+            <p><strong>Armazenamento Offline (PWA):</strong> Ativo via IndexedDB + Service Worker.</p>
+            <button class="btn-secondary" onclick="forcarAtualizacaoCache()">🔄 Atualizar Cache de Obras do Servidor</button>
         </div>
     </div>
 </div>
 
-<!-- TELA 5: PERMISSÕES E PERFIS (ESTRUTURAL PARA EXPANSÃO) -->
+<!-- TELA 6: PERMISSÕES E PERFIS -->
 <div id="aba-permissoes" class="tab-content">
     <div class="container">
         <h2>🔐 Permissões e Perfis de Acesso</h2>
@@ -295,29 +337,268 @@
 <script>
     const API_URL = typeof CONFIG !== 'undefined' ? CONFIG.API_URL : "SUA_URL_AQUI/exec";
     const LISTA_TEMAS = ['azul', 'verde', 'laranja', 'dark', 'amarelo', 'roxo', 'vermelho', 'elegante', 'teal', 'terra'];
-    
+    const CACHE_BASE_KEY = 'smartsync_base_cache_v1';
+    const HIST_LOCAL_KEY = 'smartsync_hist_pdfs_v1';
+
     let baseGlobal = { obras: [], usuarios: [] };
     let usuarioAtivo = null;
     let schemaFormularioAtual = [];
     let fotosAnexadasModulos = {};
     let itemEditandoIndex = null;
+    let sincronizandoEmAndamento = false;
     
     let paginaAtualIndex = 0;
     let totalPaginasForm = 1;
 
-    window.addEventListener('DOMContentLoaded', () => {
+    // =========================================================================
+    // MOTOR INDEXEDDB PARA FILA OFFLINE (DIÁRIOS + FOTOS SEM LIMITE DE 5MB)
+    // =========================================================================
+    const DB_NAME = "SmartSyncOfflineDB";
+    const DB_VERSION = 1;
+    const STORE_FILA = "fila_sincronizacao";
+
+    function abrirBancoOffline() {
+        return new Promise((resolve, reject) => {
+            const req = indexedDB.open(DB_NAME, DB_VERSION);
+            req.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains(STORE_FILA)) {
+                    db.createObjectStore(STORE_FILA, { keyPath: "id", autoIncrement: true });
+                }
+            };
+            req.onsuccess = (e) => resolve(e.target.result);
+            req.onerror = (e) => reject(e.target.error);
+        });
+    }
+
+    async function adicionarNaFilaOffline(item) {
+        const db = await abrirBancoOffline();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_FILA, "readwrite");
+            const store = tx.objectStore(STORE_FILA);
+            const req = store.add(item);
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    async function listarFilaOffline() {
+        const db = await abrirBancoOffline();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_FILA, "readonly");
+            const store = tx.objectStore(STORE_FILA);
+            const req = store.getAll();
+            req.onsuccess = () => resolve(req.result || []);
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    async function removerDaFilaOffline(id) {
+        const db = await abrirBancoOffline();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_FILA, "readwrite");
+            const store = tx.objectStore(STORE_FILA);
+            const req = store.delete(id);
+            req.onsuccess = () => resolve(true);
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    // =========================================================================
+    // REGISTRO DO SERVICE WORKER & MONITORAMENTO DE CONEXÃO
+    // =========================================================================
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js').catch(() => {});
+        });
+    }
+
+    window.addEventListener('online', () => {
+        atualizarIndicadorRede();
+        sincronizarFilaOffline(false);
+    });
+    window.addEventListener('offline', () => {
+        atualizarIndicadorRede();
+    });
+
+    function atualizarIndicadorRede() {
+        const online = navigator.onLine;
+        const dot = document.getElementById('netStatusDot');
+        const txt = document.getElementById('statusConexaoTexto');
+        const bannerDiario = document.getElementById('diarioOfflineBanner');
+        const bannerLogin = document.getElementById('loginOfflineInfo');
+
+        if (online) {
+            dot.classList.remove('offline');
+            dot.title = "Conectado (Online)";
+            if (txt) { txt.innerText = "🟢 Online (Conectado à Nuvem)"; txt.style.color = "#28a745"; }
+            if (bannerDiario) bannerDiario.style.display = "none";
+            if (bannerLogin) bannerLogin.style.display = "none";
+        } else {
+            dot.classList.add('offline');
+            dot.title = "Sem Internet (Modo Offline)";
+            if (txt) { txt.innerText = "🔴 Offline (Salvando no Dispositivo)"; txt.style.color = "#dc3545"; }
+            if (bannerDiario) bannerDiario.style.display = "block";
+            if (bannerLogin) bannerLogin.style.display = "block";
+        }
+    }
+
+    async function atualizarInterfaceFilaOffline() {
+        const fila = await listarFilaOffline();
+        const qtd = fila.length;
+
+        const pill = document.getElementById('headerPendingPill');
+        const sideBadge = document.getElementById('sidebarBadgeFila');
+
+        if (qtd > 0) {
+            pill.style.display = 'inline-block';
+            pill.innerText = `${qtd} pendente(s)`;
+            sideBadge.style.display = 'inline-block';
+            sideBadge.innerText = qtd;
+        } else {
+            pill.style.display = 'none';
+            sideBadge.style.display = 'none';
+        }
+
+        const container = document.getElementById('listaFilaOfflineContainer');
+        if (container) {
+            if (qtd === 0) {
+                container.innerHTML = "<p style='font-size:13px; color:var(--subtext);'>Nenhum diário pendente no dispositivo.</p>";
+            } else {
+                let html = '';
+                fila.forEach(item => {
+                    const qtdFotos = item.payload && item.payload.fotos ? item.payload.fotos.length : 0;
+                    html += `
+                        <div class="fila-card">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <strong>${item.titulo || 'Registro Offline'}</strong>
+                                <button class="btn-card-action" style="color:#dc3545; font-size:13px;" onclick="excluirItemFila(${item.id})">🗑️ Descartar</button>
+                            </div>
+                            <div style="font-size:12px; color:var(--subtext); margin-top:4px;">
+                                Data: ${item.data_criacao} | Fotos anexadas: ${qtdFotos}
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+        }
+
+        renderizarHistoricoLocalPDFs();
+    }
+
+    async function excluirItemFila(id) {
+        if (!confirm("Deseja realmente apagar este registro pendente antes de enviar?")) return;
+        await removerDaFilaOffline(id);
+        await atualizarInterfaceFilaOffline();
+    }
+
+    function salvarPdfNoHistoricoLocal(obra, dataDiario, urlPdf) {
+        try {
+            let hist = JSON.parse(localStorage.getItem(HIST_LOCAL_KEY) || "[]");
+            hist.unshift({ obra: obra, data: dataDiario, url: urlPdf, hora: new Date().toLocaleTimeString('pt-BR') });
+            if (hist.length > 15) hist = hist.slice(0, 15);
+            localStorage.setItem(HIST_LOCAL_KEY, JSON.stringify(hist));
+            renderizarHistoricoLocalPDFs();
+        } catch(e) {}
+    }
+
+    function renderizarHistoricoLocalPDFs() {
+        const container = document.getElementById('listaHistoricoLocalContainer');
+        if (!container) return;
+        let hist = [];
+        try { hist = JSON.parse(localStorage.getItem(HIST_LOCAL_KEY) || "[]"); } catch(e) {}
+
+        if (hist.length === 0) {
+            container.innerHTML = "<p style='font-size:13px; color:var(--subtext);'>Nenhum histórico recente salvo localmente.</p>";
+            return;
+        }
+
+        let html = '';
+        hist.forEach(h => {
+            html += `
+                <div style="padding:10px; border:1px solid var(--border-color); border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; font-size:13px;">
+                    <div>
+                        <strong>${h.obra}</strong><br>
+                        <span style="font-size:11px; color:var(--subtext);">Data RDO: ${h.data} (Enviado às ${h.hora})</span>
+                    </div>
+                    <a href="${h.url}" target="_blank" style="background:var(--primary); color:#fff; padding:6px 10px; border-radius:6px; text-decoration:none; font-size:12px; font-weight:bold;">📄 PDF</a>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    async function sincronizarFilaOffline(manual = false) {
+        if (sincronizandoEmAndamento) return;
+        const fila = await listarFilaOffline();
+        if (fila.length === 0) {
+            if (manual) abrirModalAviso("Tudo Sincronizado", "Não há nenhum registro pendente na fila offline.");
+            return;
+        }
+        if (!navigator.onLine) {
+            if (manual) abrirModalAviso("Sem Conexão", "Você ainda está sem sinal de internet. Tente novamente quando conectar.");
+            return;
+        }
+
+        sincronizandoEmAndamento = true;
+        if (manual) abrirModal("Sincronizando...", `Enviando ${fila.length} registro(s) salvo(s) offline para a nuvem.`);
+
+        let enviados = 0;
+        let falhas = 0;
+
+        for (let i = 0; i < fila.length; i++) {
+            const item = fila[i];
+            const res = await apiRequest(item.payload.acao, "POST", item.payload);
+            if (res && res.sucesso) {
+                await removerDaFilaOffline(item.id);
+                enviados++;
+                if (res.url_pdf && item.payload.acao === "salvar_diario") {
+                    salvarPdfNoHistoricoLocal(item.payload.obra, item.payload.data_diario, res.url_pdf);
+                }
+            } else {
+                falhas++;
+            }
+        }
+
+        sincronizandoEmAndamento = false;
+        await atualizarInterfaceFilaOffline();
+        
+        if (enviados > 0) {
+            await carregarDadosSistema();
+        }
+
+        if (manual) {
+            fecharModal(
+                enviados > 0 ? "Sincronização Concluída!" : "Falha na Sincronização",
+                `${enviados} registro(s) enviado(s) com sucesso.${falhas > 0 ? ` ${falhas} ainda aguardando conexão estável.` : ''}`,
+                true
+            );
+        }
+    }
+
+    // =========================================================================
+    // INICIALIZAÇÃO DO APLICATIVO
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('diario_data').valueAsDate = new Date();
         const temaSalvo = localStorage.getItem('smartsync_tema') || 'azul';
         aplicarTemaVisual(temaSalvo);
-        carregarDadosSistema();
+        
+        atualizarIndicadorRede();
+        await atualizarInterfaceFilaOffline();
+        await carregarDadosSistema();
+
+        if (navigator.onLine) {
+            sincronizarFilaOffline(false);
+        }
     });
 
     function ciclarTemaVisual() {
         const temaAtual = localStorage.getItem('smartsync_tema') || 'azul';
         let idx = LISTA_TEMAS.indexOf(temaAtual);
         idx = (idx + 1) % LISTA_TEMAS.length;
-        const novoTema = LISTA_TEMAS[idx];
-        aplicarTemaVisual(novoTema);
+        aplicarTemaVisual(LISTA_TEMAS[idx]);
     }
 
     function aplicarTemaVisual(nomeTema) {
@@ -342,11 +623,13 @@
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.sidebar-item').forEach(c => c.classList.remove('active'));
         document.getElementById('aba-' + abaId).classList.add('active');
+        if (abaId === 'offline') atualizarInterfaceFilaOffline();
     }
 
     async function apiRequest(acao, metodo = "GET", payload = null) {
+        if (!navigator.onLine) return null;
         try {
-            if(metodo === "GET") {
+            if (metodo === "GET") {
                 const res = await fetch(`${API_URL}?acao=${acao}`);
                 return await res.json();
             } else {
@@ -356,12 +639,35 @@
         } catch(e) { return null; }
     }
 
+    async function forcarAtualizacaoCache() {
+        if (!navigator.onLine) return alert("Conecte-se à internet para atualizar o cache de obras.");
+        abrirModal("Atualizando Cache...", "Baixando obras e formulários mais recentes.");
+        await carregarDadosSistema();
+        fecharModal("Cache Atualizado!", "As obras e formulários estão salvos no dispositivo para uso offline.", true);
+    }
+
     async function carregarDadosSistema() {
-        const res = await apiRequest("listar_dados", "GET");
-        
-        if (res && res.sucesso && res.dados && res.dados.usuarios && res.dados.usuarios.length > 0) {
-            baseGlobal = res.dados;
-        } else {
+        let carregouDaNuvem = false;
+
+        if (navigator.onLine) {
+            const res = await apiRequest("listar_dados", "GET");
+            if (res && res.sucesso && res.dados && res.dados.usuarios && res.dados.usuarios.length > 0) {
+                baseGlobal = res.dados;
+                localStorage.setItem(CACHE_BASE_KEY, JSON.stringify(baseGlobal));
+                carregouDaNuvem = true;
+            }
+        }
+
+        if (!carregouDaNuvem) {
+            const cacheLocal = localStorage.getItem(CACHE_BASE_KEY);
+            if (cacheLocal) {
+                try {
+                    baseGlobal = JSON.parse(cacheLocal);
+                } catch(e) {}
+            }
+        }
+
+        if (!baseGlobal || !baseGlobal.usuarios || baseGlobal.usuarios.length === 0) {
             baseGlobal = {
                 obras: [
                     { nome: "Obra Modelo Genérica", empresa: "Construtora Padrão", totalUHs: 500, schemaFormulario: [
@@ -404,7 +710,8 @@
         localStorage.setItem('smartsync_user_email', usuarioAtivo.email);
 
         document.getElementById('usuario-logado').innerText = `${usuarioAtivo.nome} [${usuarioAtivo.perfil}]`;
-        document.getElementById('side-item-diario').style.display = 'block';
+        document.getElementById('side-item-diario').style.display = 'flex';
+        document.getElementById('side-item-offline').style.display = 'flex';
 
         if(usuarioAtivo.perfil === 'Administrador') {
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
@@ -448,9 +755,6 @@
         carregarFormularioParaEdicao();
     }
 
-    // =========================================================================
-    // EDIÇÃO DE PERGUNTAS / CAMPOS NO CONSTRUTOR GOOGLEFORMS
-    // =========================================================================
     function editarCampoBuilder(index) {
         itemEditandoIndex = index;
         const campo = schemaFormularioAtual[index];
@@ -553,8 +857,6 @@
         const empresa = document.getElementById('builder_empresa').value;
         const totalUHs = document.getElementById('builder_total_uhs').value;
 
-        abrirModal("Salvando Formulário...", "Gravando estrutura no banco de dados.");
-
         const payload = { 
             acao: "salvar_schema_obra", 
             nome: nomeObra, 
@@ -563,13 +865,32 @@
             schemaFormulario: schemaFormularioAtual 
         };
 
+        // Atualiza imediatamente o cache local do dispositivo
+        const idxObra = baseGlobal.obras.findIndex(o => o.nome === nomeObra);
+        if (idxObra >= 0) {
+            baseGlobal.obras[idxObra].empresa = empresa;
+            baseGlobal.obras[idxObra].totalUHs = totalUHs;
+            baseGlobal.obras[idxObra].schemaFormulario = JSON.parse(JSON.stringify(schemaFormularioAtual));
+        } else {
+            baseGlobal.obras.push({ nome: nomeObra, empresa: empresa, totalUHs: totalUHs, schemaFormulario: JSON.parse(JSON.stringify(schemaFormularioAtual)) });
+        }
+        localStorage.setItem(CACHE_BASE_KEY, JSON.stringify(baseGlobal));
+
+        abrirModal("Salvando Formulário...", "Gravando estrutura no banco de dados.");
         const res = await apiRequest("salvar_schema_obra", "POST", payload);
-        await carregarDadosSistema();
-        
-        const titulo = (res && res.sucesso) ? "Formulário Salvo!" : "Aviso do Sistema";
-        const mensagem = res ? (res.mensagem || res.erro || "Estrutura gravada com sucesso.") : "Sem resposta do servidor.";
-        
-        fecharModal(titulo, mensagem, true);
+
+        if (res && res.sucesso) {
+            await carregarDadosSistema();
+            fecharModal("Formulário Salvo!", res.mensagem || "Estrutura gravada com sucesso.", true);
+        } else {
+            await adicionarNaFilaOffline({
+                titulo: `Configuração Obra: ${nomeObra}`,
+                data_criacao: new Date().toLocaleString('pt-BR'),
+                payload: payload
+            });
+            await atualizarInterfaceFilaOffline();
+            fecharModal("Salvo Offline!", "Sem sinal no momento. O formulário já está ativo neste aparelho e será enviado à nuvem automaticamente quando conectar.", true);
+        }
     }
 
     function renderizarFormularioEngenheiro() {
@@ -775,9 +1096,23 @@
         });
     }
 
+    function abaterSaldoOtimistaOffline(nomeObra, respostas) {
+        const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
+        if (!obraObj || !obraObj.schemaFormulario) return;
+
+        obraObj.schemaFormulario.forEach(campo => {
+            if (campo.tipo === 'etapa_producao' && respostas[campo.titulo] && respostas[campo.titulo].pd) {
+                const pdLancado = Number(respostas[campo.titulo].pd || 0);
+                campo.ac = Number(campo.ac || 0) + pdLancado;
+                campo.sd = Math.max(0, Number(campo.meta || 0) - campo.ac);
+            }
+        });
+        localStorage.setItem(CACHE_BASE_KEY, JSON.stringify(baseGlobal));
+    }
+
     async function enviarDiario(event) {
         event.preventDefault();
-        abrirModal("Publicando Diário...", "Processando campos e gerando PDF no Google Drive.");
+        abrirModal("Processando Diário...", "Verificando conexão e salvando registro.");
 
         let respostas = {};
         let todasFotos = [];
@@ -813,10 +1148,15 @@
             respostas[k] = `[${fotosAnexadasModulos[k].length} foto(s) anexada(s)]`;
         }
 
+        const obraSelecionada = document.getElementById('diario_select_obra').value;
+        const dataDiario = document.getElementById('diario_data').value;
+        const clientSyncId = "SYNC-" + Date.now() + "-" + Math.random().toString(36).substring(2, 7);
+
         const payload = {
-            acao: "salvar_diario", 
-            obra: document.getElementById('diario_select_obra').value,
-            data_diario: document.getElementById('diario_data').value,
+            acao: "salvar_diario",
+            client_sync_id: clientSyncId,
+            obra: obraSelecionada,
+            data_diario: dataDiario,
             responsavel: usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável",
             respostas: respostas, 
             fotos: todasFotos
@@ -826,13 +1166,26 @@
         
         if (res && res.sucesso) {
             document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold;">📄 Visualizar Prancha PDF Oficial no Drive</a>`;
+            salvarPdfNoHistoricoLocal(obraSelecionada, dataDiario, res.url_pdf);
             await carregarDadosSistema();
+            renderizarFormularioEngenheiro();
+            fecharModal("Diário Publicado!", res.mensagem || "Diário salvo e PDF gerado com sucesso.", true);
+        } else {
+            // Salva na fila IndexedDB para sincronização automática posterior
+            await adicionarNaFilaOffline({
+                titulo: `RDO: ${obraSelecionada} (${dataDiario})`,
+                data_criacao: new Date().toLocaleString('pt-BR'),
+                payload: payload
+            });
+            abaterSaldoOtimistaOffline(obraSelecionada, respostas);
+            await atualizarInterfaceFilaOffline();
+            renderizarFormularioEngenheiro();
+            fecharModal(
+                "Salvo no Dispositivo (Offline)!",
+                "Sem internet no momento. O diário e as fotos foram guardados com segurança na Fila Offline e serão enviados automaticamente assim que o sinal voltar.",
+                true
+            );
         }
-        
-        const titulo = (res && res.sucesso) ? "Diário Publicado!" : "Aviso do Sistema";
-        const mensagem = res ? (res.mensagem || res.erro || "Processamento concluído.") : "Não foi possível obter resposta do servidor.";
-        
-        fecharModal(titulo, mensagem, true);
     }
 
     function abrirModal(titulo, msg) {
@@ -843,11 +1196,19 @@
         document.getElementById('modalTitle').innerText = titulo;
         document.getElementById('modalMsg').innerText = msg;
     }
-    function fecharModal(titulo, msg, showBtn = true) {
+    function abrirModalAviso(titulo, msg) {
+        document.getElementById('sysOverlay').style.display = 'flex';
         document.getElementById('modalSpinner').style.display = 'none';
+        document.getElementById('modalLink').innerHTML = '';
         document.getElementById('modalTitle').innerText = titulo;
         document.getElementById('modalMsg').innerText = msg;
-        if(showBtn) document.getElementById('modalBtn').style.display = 'inline-block';
+        document.getElementById('modalBtn').style.display = 'inline-block';
+    }
+    function fecharModal(titulo, msg, showBtn = true) {
+        document.getElementById('modalSpinner').style.display = 'none';
+        if (titulo) document.getElementById('modalTitle').innerText = titulo;
+        if (msg) document.getElementById('modalMsg').innerText = msg;
+        if (showBtn) document.getElementById('modalBtn').style.display = 'inline-block';
         else document.getElementById('sysOverlay').style.display = 'none';
     }
 </script>
