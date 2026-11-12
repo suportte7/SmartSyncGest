@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Builder & SaaS Multi-Tenant</title>
+    <title>SmartSyncGest - SaaS Multi-Tenant com Ghost Login</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -25,14 +25,18 @@
 
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text-color); margin: 0; padding-bottom: 30px; transition: background 0.3s, color 0.3s; }
         
-        .top-header { background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.15); transition: background 0.3s; }
+        .top-header { background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.15); transition: background 0.3s; }
         .menu-hamburger { font-size: 22px; cursor: pointer; padding: 5px; }
-        .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; margin-left: 12px; }
+        .brand-title { font-size: 16px; font-weight: bold; flex-grow: 1; margin-left: 10px; }
         
-        .btn-tema-icone { font-size: 20px; cursor: pointer; padding: 0 10px; opacity: 0.9; }
+        .btn-tema-icone { font-size: 18px; cursor: pointer; padding: 0 8px; opacity: 0.9; }
         .btn-tema-icone:hover { opacity: 1; }
         
-        .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        /* Menu suspenso de personificação (Ghost Login) */
+        .ghost-switcher { background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 11.5px; cursor: pointer; margin-right: 8px; outline: none; }
+        .ghost-switcher option { background: #333; color: #fff; }
+
+        .user-badge { font-size: 11.5px; background: rgba(255,255,255,0.2); padding: 5px 8px; border-radius: 20px; cursor: pointer; }
         
         /* <!-- @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (LAYOUT GERAL) --> */
         .sidebar { position: fixed; top: 0; left: -290px; width: 280px; height: 100%; background: var(--card-bg); box-shadow: 2px 0 12px rgba(0,0,0,0.3); transition: left 0.3s ease; z-index: 2500; display: flex; flex-direction: column; }
@@ -84,10 +88,7 @@
         <div class="sidebar-item" id="menu-diario" onclick="navegarSidebar('diario')">📝 Diário Dinâmico (Campo)</div>
         <div class="sidebar-item" id="menu-builder" onclick="navegarSidebar('builder')">🛠️ Construtor de Formulários</div>
         <div class="sidebar-item" id="menu-historico" onclick="navegarSidebar('historico')">📊 Painel Consolidado & CSV</div>
-        
-        <!-- NOVO: GESTÃO DE OBRAS/EMPRESAS (SAAS) -->
         <div class="sidebar-item" id="menu-empresas" onclick="navegarSidebar('empresas')">🏢 Gestão de Obras & Empresas</div>
-        
         <div class="sidebar-item" id="menu-usuarios" onclick="navegarSidebar('usuarios')">👥 Gestão de Usuários</div>
         <div class="sidebar-item" id="menu-scanner" onclick="abrirScannerInterno()">🔍 Scanner de Obra</div>
         <div class="sidebar-item" id="menu-configuracoes" onclick="navegarSidebar('configuracoes')">⚙️ Configurações & Mock</div>
@@ -100,6 +101,10 @@
     <div class="menu-hamburger" onclick="abrirSidebar()">☰</div>
     <div class="brand-title">SmartSyncGest</div>
     <div style="display:flex; align-items:center;">
+        <!-- SELETOR DE GHOST LOGIN (EXCLUSIVO SUPER ADMIN) -->
+        <select id="ghostSwitcherSelect" class="ghost-switcher" style="display:none;" onchange="alternarGhostLogin(this.value)">
+            <option value="">🏢 [Visão Global Super Admin]</option>
+        </select>
         <span class="btn-tema-icone" onclick="ciclarTema()" title="Trocar Tema">🎨</span>
         <div id="usuario-logado" class="user-badge" onclick="abrirSidebar()">Login</div>
     </div>
@@ -209,7 +214,7 @@
     </div>
 </div>
 
-<!-- NOVO - TELA 8: GESTÃO DE OBRAS E EMPRESAS (SAAS SUPER ADMIN) -->
+<!-- TELA 8: GESTÃO DE OBRAS E EMPRESAS (SAAS SUPER ADMIN) -->
 <div id="aba-empresas" class="tab-content">
     <div class="container">
         <h2>🏢 Gestão de Obras & Empresas</h2>
@@ -231,7 +236,7 @@
     </div>
 </div>
 
-<!-- TELA 5: GESTÃO DE USUÁRIOS (ATUALIZADO COM EMPRESA) -->
+<!-- TELA 5: GESTÃO DE USUÁRIOS -->
 <div id="aba-usuarios" class="tab-content">
     <div class="container">
         <h2>👥 Gestão de Usuários</h2>
@@ -239,7 +244,6 @@
             <h3 style="margin-top:0; font-size:14px; color:var(--primary);">Novo Usuário</h3>
             <div class="form-group"><label>E-mail</label><input type="email" id="cad_email" placeholder="engenheiro@construtora.com"></div>
             <div class="form-group"><label>Nome Completo</label><input type="text" id="cad_nome" placeholder="Nome"></div>
-            
             <div class="form-group"><label>Perfil</label>
                 <select id="cad_perfil">
                     <option value="Engenheiro">Engenheiro</option>
@@ -248,11 +252,8 @@
                     <option value="Super Admin">Super Admin (Dono do SaaS)</option>
                 </select>
             </div>
-            
-            <!-- NOVO: VÍNCULO DE EMPRESA -->
             <div class="form-group"><label>Empresa Vinculada</label><select id="cad_empresa" onchange="atualizarSelectObrasCadastro()"></select></div>
             <div class="form-group"><label>Obra</label><select id="cad_obra"><option value="Todas">Todas (da Empresa)</option></select></div>
-            
             <div class="form-group"><label>Senha</label><input type="text" id="cad_senha" value="123456"></div>
             <button class="btn-primary" onclick="salvarNovoUsuarioAdmin()">Cadastrar Usuário</button>
         </div>
@@ -275,8 +276,8 @@
     <div class="container">
         <h2>📚 Manual do Sistema</h2>
         <div class="tutorial-box">
-            <h3>SaaS B2B Multi-Tenant</h3>
-            <p style="font-size:13px;">Super Admins gerenciam Empresas e Obras. Engenheiros e Administradores de Construtoras só visualizam dados e obras da sua própria empresa.</p>
+            <h3>Ghost Login (Personificação)</h3>
+            <p style="font-size:13px;">Como Super Admin, utilize o menu suspenso no canto superior direito para alternar instantaneamente entre a visão de qualquer Construtora e realizar suporte ou consultoria.</p>
         </div>
     </div>
 </div>
@@ -332,6 +333,7 @@
     let baseGlobal = { obras: [], usuarios: [], diarios: [], empresas: [] };
     let schemaEdicaoAtual = [];
     let fotosBase64Array = [];
+    let empresaGhostAtiva = null; // Variável de personificação ativa
 
     // <!-- @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (LÓGICA DOS 10 TEMAS E ÍCONES) -->
     const temasDisponiveis = ['padrao', 'escuro', 'construtora', 'moderno', 'oceano', 'floresta', 'por-do-sol', 'corporativo', 'neon', 'minimalista'];
@@ -373,7 +375,6 @@
             const res = await fetch(API_URL).then(r => r.json());
             if (res.sucesso) {
                 baseGlobal = res.dados;
-                // Preenche vetor de empresas dinamicamente baseado nas obras se não houver
                 if(!baseGlobal.empresas) {
                     const empSet = new Set(baseGlobal.obras.map(o => o.empresa));
                     baseGlobal.empresas = Array.from(empSet).filter(e => e);
@@ -426,10 +427,12 @@
         } catch (e) { mostrarAlertaUI("Erro", "Falha de conexão com a API."); }
     }
 
-    // ATUALIZAÇÃO B2B: CONFIGURAÇÃO DE MENU
     function configurarMenuPorPerfil() {
         document.querySelectorAll('.sidebar-item').forEach(m => m.style.display = 'none');
-        const empLabel = usuarioAtivo.empresa ? ` - ${usuarioAtivo.empresa}` : '';
+        
+        // Define empresa efetiva considerando o Ghost Login
+        const empresaEfetiva = empresaGhostAtiva || usuarioAtivo.empresa;
+        const empLabel = empresaEfetiva ? ` - ${empresaEfetiva}${empresaGhostAtiva ? ' [GHOST]' : ''}` : '';
         document.getElementById('usuario-logado').innerText = `${usuarioAtivo.nome} [${usuarioAtivo.perfil}${empLabel}]`;
         
         document.getElementById('menu-diario').style.display = 'flex';
@@ -438,29 +441,44 @@
         document.getElementById('menu-tutorial').style.display = 'flex';
         document.getElementById('menu-logout').style.display = 'flex';
 
-        // Administradores e Coordenadores da Construtora podem ver o Builder da sua empresa
         if (usuarioAtivo.perfil === 'Administrador' || usuarioAtivo.perfil === 'Coordenador' || usuarioAtivo.perfil === 'Super Admin') {
             document.getElementById('menu-builder').style.display = 'flex';
             document.getElementById('menu-usuarios').style.display = 'flex';
             document.getElementById('menu-configuracoes').style.display = 'flex';
         }
         
-        // APENAS O SUPER ADMIN VÊ O CADASTRO DE EMPRESAS/OBRAS
+        const ghostSelect = document.getElementById('ghostSwitcherSelect');
         if (usuarioAtivo.perfil === 'Super Admin') {
             document.getElementById('menu-empresas').style.display = 'flex';
+            
+            // Popula o menu de Ghost Login no Topo
+            let ghostOpts = '<option value="">🏢 [Visão Global Super Admin]</option>';
+            (baseGlobal.empresas || []).forEach(e => {
+                ghostOpts += `<option value="${e}" ${empresaGhostAtiva === e ? 'selected' : ''}>👁️ Ver como: ${e}</option>`;
+            });
+            ghostSelect.innerHTML = ghostOpts;
+            ghostSelect.style.display = 'inline-block';
+        } else {
+            ghostSelect.style.display = 'none';
         }
     }
 
-    // ATUALIZAÇÃO B2B: ISOLAMENTO MULTI-TENANT
+    // GHOST LOGIN: ALTERNAR EMPRESA ATIVA NO TOPO
+    function alternarGhostLogin(empresaNome) {
+        empresaGhostAtiva = empresaNome ? empresaNome : null;
+        configurarMenuPorPerfil();
+        popularselectsGerais();
+    }
+
     function popularselectsGerais() {
         let obrasPermitidas = [];
+        const empresaEfetiva = empresaGhostAtiva || usuarioAtivo.empresa;
         
-        if (usuarioAtivo.perfil === 'Super Admin') {
-            obrasPermitidas = baseGlobal.obras; // Dono do SaaS vê tudo
+        if (usuarioAtivo.perfil === 'Super Admin' && !empresaGhostAtiva) {
+            obrasPermitidas = baseGlobal.obras; 
         } else {
-            // Outros usuários só veem obras da própria empresa
-            obrasPermitidas = baseGlobal.obras.filter(o => o.empresa === usuarioAtivo.empresa);
-            if (usuarioAtivo.obra !== "Todas") {
+            obrasPermitidas = baseGlobal.obras.filter(o => o.empresa === empresaEfetiva);
+            if (usuarioAtivo.obra !== "Todas" && !empresaGhostAtiva) {
                 obrasPermitidas = obrasPermitidas.filter(o => o.nome === usuarioAtivo.obra);
             }
         }
@@ -474,7 +492,6 @@
         document.getElementById('cfg_obra_qr').innerHTML = obrasOpt;
         document.getElementById('rdo_data').valueAsDate = new Date();
         
-        // Popula selects de empresas para Super Admin (Aba Usuários e Aba Empresas)
         let empOpts = '';
         (baseGlobal.empresas || []).forEach(e => empOpts += `<option value="${e}">${e}</option>`);
         if(empOpts === '') empOpts = '<option value="Padrão">Padrão</option>';
@@ -482,7 +499,6 @@
         document.getElementById('nova_obra_empresa').innerHTML = empOpts;
         
         atualizarSelectObrasCadastro();
-        
         renderizarFormularioDinamico();
         carregarSchemaNaTela();
         renderizarListaUsuariosAdmin();
@@ -497,15 +513,13 @@
         document.getElementById('cad_obra').innerHTML = opts;
     }
 
-    // NOVAS FUNÇÕES: SAAS B2B ADMIN
     async function salvarNovaEmpresaAdmin() {
         const nomeEmpresa = document.getElementById('nova_empresa_nome').value.trim();
         if(!nomeEmpresa) return alert("Digite o nome da empresa.");
         mostrarLoadingUI("Salvando...", "Cadastrando nova empresa no sistema.");
-        // Simulação do payload B2B
         const payload = { acao: "salvar_empresa", nome: nomeEmpresa };
         const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
-        if(res.sucesso) { baseGlobal = res.base; popularselectsGerais(); mostrarAlertaUI("Sucesso!", res.mensagem); document.getElementById('nova_empresa_nome').value = ""; }
+        if(res.sucesso) { baseGlobal = res.base; popularselectsGerais(); configurarMenuPorPerfil(); mostrarAlertaUI("Sucesso!", res.mensagem); document.getElementById('nova_empresa_nome').value = ""; }
         else { mostrarAlertaUI("Erro", res.erro); }
     }
 
@@ -515,21 +529,19 @@
         const uhs = document.getElementById('nova_obra_uh').value;
         if(!nomeObra) return alert("Digite o nome da obra.");
         mostrarLoadingUI("Salvando...", "Cadastrando nova obra.");
-        // Simulação do payload B2B
         const payload = { acao: "salvar_obra_admin", empresa: empresa, nome: nomeObra, uhs: uhs };
         const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
         if(res.sucesso) { baseGlobal = res.base; popularselectsGerais(); mostrarAlertaUI("Sucesso!", res.mensagem); document.getElementById('nova_obra_nome').value = ""; }
         else { mostrarAlertaUI("Erro", res.erro); }
     }
 
-    // REVISÃO DE USUÁRIO COM INJEÇÃO DE EMPRESA
     async function salvarNovoUsuarioAdmin() {
         const payload = { 
             acao: "salvar_usuario", 
             email: document.getElementById('cad_email').value.trim(), 
             nome: document.getElementById('cad_nome').value.trim(), 
             perfil: document.getElementById('cad_perfil').value, 
-            empresa: document.getElementById('cad_empresa').value, // Nova injeção
+            empresa: document.getElementById('cad_empresa').value, 
             obra: document.getElementById('cad_obra').value, 
             senha: document.getElementById('cad_senha').value.trim() || "123456" 
         };
@@ -544,19 +556,17 @@
     function renderizarListaUsuariosAdmin() {
         const container = document.getElementById('listaUsuariosAdmin');
         if(!baseGlobal.usuarios) return;
-        
+        const empresaEfetiva = empresaGhostAtiva || usuarioAtivo.empresa;
         let usuariosVisiveis = baseGlobal.usuarios;
-        if(usuarioAtivo.perfil !== 'Super Admin') {
-            usuariosVisiveis = baseGlobal.usuarios.filter(u => u.empresa === usuarioAtivo.empresa);
+        if(usuarioAtivo.perfil !== 'Super Admin' || empresaGhostAtiva) {
+            usuariosVisiveis = baseGlobal.usuarios.filter(u => u.empresa === empresaEfetiva);
         }
-
         let html = '';
         usuariosVisiveis.forEach(u => {
             html += `<div class="user-card"><div style="text-align:left;"><strong>${u.nome}</strong> (${u.email})<br><span style="font-size:11.5px; color:var(--subtext);">Perfil: <b>${u.perfil}</b> | Empresa: <b>${u.empresa || 'N/A'}</b> | Obra: ${u.obra}</span></div><span style="font-size:12px; font-weight:bold; color:#28a745;">${u.status}</span></div>`;
         });
         container.innerHTML = html;
     }
-
 
     /* <!-- @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (MOTOR BUILDER CONDICIONAL E PREVIEW) --> */
     function carregarSchemaNaTela() {
