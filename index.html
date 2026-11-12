@@ -106,57 +106,37 @@
         .preview-foto-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
         .preview-foto { width: 75px; height: 75px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-color); }
 
-        /* BLOCO DE ASSINATURA DIGITAL TOUCH DO RESPONSÁVEL (CANVAS) */
-        .assinatura-box {
-            border: 1px solid var(--border-color);
+        /* BLOCO DE TERMO DE RESPONSABILIDADE E ACEITE ELETRÔNICO */
+        .termo-box {
+            border: 1px solid var(--primary);
+            border-left: 5px solid var(--primary);
             border-radius: 10px;
-            padding: 14px;
+            padding: 16px;
             margin-bottom: 16px;
-            background: rgba(0,0,0,0.02);
+            background: rgba(0, 86, 179, 0.04);
         }
-        .assinatura-header {
+        .termo-texto {
+            font-size: 12.5px;
+            color: var(--text-color);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .termo-check-label {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .assinatura-titulo {
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 13.5px;
             font-weight: 700;
-            font-size: 13px;
             color: var(--primary);
-        }
-        .btn-limpar-ass {
-            background: #6c757d;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            padding: 4px 10px;
-            font-size: 11px;
-            font-weight: bold;
             cursor: pointer;
-            width: auto;
             margin: 0;
         }
-        .btn-limpar-ass:hover { background: #5a6268; }
-        .canvas-pad-wrapper {
-            background: #ffffff;
-            border: 2px dashed #b0bec5;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-        }
-        .canvas-assinatura {
-            display: block;
-            width: 100%;
-            height: 150px;
-            background: #ffffff;
-            touch-action: none;
-            cursor: crosshair;
-        }
-        .assinatura-dica {
-            font-size: 11px;
-            color: var(--subtext);
-            margin-top: 5px;
+        .termo-check-label input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            min-width: 20px;
+            margin-top: 1px;
+            cursor: pointer;
         }
 
         .offline-banner { display: none; background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 10px 14px; border-radius: 8px; font-size: 12px; margin-bottom: 15px; font-weight: 600; }
@@ -307,12 +287,12 @@
     </div>
 </div>
 
-<!-- TELA 3: DIÁRIO DE CAMPO PAGINADO + ASSINATURA DO RESPONSÁVEL (ENGENHEIRO) -->
+<!-- TELA 3: DIÁRIO DE CAMPO PAGINADO + TERMO DE RESPONSABILIDADE -->
 <div id="aba-diario" class="tab-content">
     <div class="container">
         <h2>Diário de Engenharia de Campo</h2>
         <div id="diarioOfflineBanner" class="offline-banner">
-            📡 Sem conexão com a internet. Ao finalizar, o diário, fotos e assinatura serão salvos no celular e sincronizados automaticamente quando houver sinal.
+            📡 Sem conexão com a internet. Ao finalizar, o diário e as fotos serão salvos no celular e sincronizados automaticamente quando houver sinal.
         </div>
         <form id="formDiario" onsubmit="enviarDiario(event)" novalidate>
             <div class="form-group">
@@ -331,25 +311,17 @@
 
             <div id="container_formulario_dinamico"></div>
 
-            <!-- BLOCO DE ASSINATURA EXCLUSIVA DO ENGENHEIRO RESPONSÁVEL -->
+            <!-- BLOCO DE TERMO DE RESPONSABILIDADE E ASSINATURA ELETRÔNICA -->
             <div id="blocoAssinaturasDigitais" style="display:none; margin-top: 25px;">
-                <div class="secao-header">✍️ Assinatura do Responsável Técnico</div>
-                <p style="font-size:12px; color:var(--subtext); margin-top:-8px; margin-bottom:14px;">
-                    O RDO é emitido pelo engenheiro responsável pela obra. Assine no quadro abaixo com o dedo ou caneta.
-                </p>
-
-                <div class="assinatura-box">
-                    <div class="assinatura-header">
-                        <span class="assinatura-titulo">Engenheiro Responsável pela Obra</span>
-                        <button type="button" class="btn-limpar-ass" onclick="limparAssinatura('engenheiro')">🧹 Limpar</button>
+                <div class="secao-header">🛡️ Termo de Responsabilidade e Assinatura Eletrônica</div>
+                <div class="termo-box" id="boxTermoResponsabilidade">
+                    <div class="termo-texto">
+                        Declaro, na qualidade de <strong>Engenheiro Responsável pela Obra</strong> (<span id="termo_nome_responsavel">---</span>), que todas as informações, medições físicas, efetivo e condições climáticas registradas neste Diário de Engenharia são verdadeiras e refletem fielmente a realidade do canteiro na data informada.
                     </div>
-                    <div class="form-group" style="margin-bottom:8px;">
-                        <input type="text" id="ass_nome_engenheiro" placeholder="Nome do Engenheiro Responsável" style="padding:7px 10px; font-size:13px;">
-                    </div>
-                    <div class="canvas-pad-wrapper">
-                        <canvas id="canvas_ass_engenheiro" class="canvas-assinatura" width="500" height="150"></canvas>
-                    </div>
-                    <div class="assinatura-dica">Assine no quadro branco acima (opcional se preferir assinar no papel depois)</div>
+                    <label class="termo-check-label">
+                        <input type="checkbox" id="chk_aceite_termo">
+                        <span>Concordo e assino eletronicamente este Diário de Obra <span class="req-star">*</span></span>
+                    </label>
                 </div>
             </div>
 
@@ -432,109 +404,6 @@
     
     let paginaAtualIndex = 0;
     let totalPaginasForm = 1;
-
-    // ESTADO DO QUADRO DE ASSINATURA TOUCH DO RESPONSÁVEL
-    const estadoAssinaturas = {
-        engenheiro: { assinado: false, desenhando: false }
-    };
-
-    // =========================================================================
-    // MOTOR DE ASSINATURA DIGITAL TOUCH / MOUSE (CANVAS)
-    // =========================================================================
-    function inicializarPadsAssinatura() {
-        const papel = 'engenheiro';
-        const canvas = document.getElementById(`canvas_ass_${papel}`);
-        if (!canvas || canvas.dataset.inicializado === "1") return;
-        canvas.dataset.inicializado = "1";
-
-        const ctx = canvas.getContext('2d');
-        ctx.strokeStyle = '#001f3f';
-        ctx.lineWidth = 2.6;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-
-        function obterPosicao(evt) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            let clientX, clientY;
-
-            if (evt.touches && evt.touches.length > 0) {
-                clientX = evt.touches[0].clientX;
-                clientY = evt.touches[0].clientY;
-            } else {
-                clientX = evt.clientX;
-                clientY = evt.clientY;
-            }
-            return {
-                x: (clientX - rect.left) * scaleX,
-                y: (clientY - rect.top) * scaleY
-            };
-        }
-
-        function iniciarTraco(evt) {
-            if (evt.cancelable) evt.preventDefault();
-            estadoAssinaturas[papel].desenhando = true;
-            estadoAssinaturas[papel].assinado = true;
-            const pos = obterPosicao(evt);
-            ctx.beginPath();
-            ctx.moveTo(pos.x, pos.y);
-        }
-
-        function moverTraco(evt) {
-            if (!estadoAssinaturas[papel].desenhando) return;
-            if (evt.cancelable) evt.preventDefault();
-            const pos = obterPosicao(evt);
-            ctx.lineTo(pos.x, pos.y);
-            ctx.stroke();
-        }
-
-        function finalizarTraco(evt) {
-            if (!estadoAssinaturas[papel].desenhando) return;
-            if (evt && evt.cancelable) evt.preventDefault();
-            estadoAssinaturas[papel].desenhando = false;
-            ctx.closePath();
-        }
-
-        canvas.addEventListener('mousedown', iniciarTraco);
-        canvas.addEventListener('mousemove', moverTraco);
-        canvas.addEventListener('mouseup', finalizarTraco);
-        canvas.addEventListener('mouseleave', finalizarTraco);
-
-        canvas.addEventListener('touchstart', iniciarTraco, { passive: false });
-        canvas.addEventListener('touchmove', moverTraco, { passive: false });
-        canvas.addEventListener('touchend', finalizarTraco, { passive: false });
-        canvas.addEventListener('touchcancel', finalizarTraco, { passive: false });
-    }
-
-    function limparAssinatura(papel) {
-        const canvas = document.getElementById(`canvas_ass_${papel}`);
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        estadoAssinaturas[papel].assinado = false;
-        estadoAssinaturas[papel].desenhando = false;
-    }
-
-    function limparTodasAssinaturas() {
-        limparAssinatura('engenheiro');
-        if (usuarioAtivo && document.getElementById('ass_nome_engenheiro')) {
-            document.getElementById('ass_nome_engenheiro').value = usuarioAtivo.nome || "";
-        }
-    }
-
-    function coletarAssinaturasPayload() {
-        const canvas = document.getElementById('canvas_ass_engenheiro');
-        const nomeInput = document.getElementById('ass_nome_engenheiro');
-        const nome = nomeInput ? nomeInput.value.trim() : (usuarioAtivo ? usuarioAtivo.nome : "");
-        const imagem = (canvas && estadoAssinaturas.engenheiro.assinado) ? canvas.toDataURL('image/png') : "";
-        return {
-            engenheiro: {
-                nome: nome,
-                imagem: imagem
-            }
-        };
-    }
 
     // =========================================================================
     // MOTOR INDEXEDDB PARA FILA OFFLINE
@@ -780,7 +649,6 @@
         const temaSalvo = localStorage.getItem('smartsync_tema') || 'azul';
         aplicarTemaVisual(temaSalvo);
         
-        inicializarPadsAssinatura();
         atualizarIndicadorRede();
         await atualizarInterfaceFilaOffline();
         await carregarDadosSistema();
@@ -1112,7 +980,13 @@
         fotosAnexadasModulos = {};
         paginaAtualIndex = 0;
 
-        limparTodasAssinaturas();
+        // Reseta o aceite do termo e atualiza o nome do engenheiro responsável
+        const chkTermo = document.getElementById('chk_aceite_termo');
+        if (chkTermo) chkTermo.checked = false;
+        const boxTermo = document.getElementById('boxTermoResponsabilidade');
+        if (boxTermo) boxTermo.classList.remove('campo-erro-borda');
+        const spanNomeResp = document.getElementById('termo_nome_responsavel');
+        if (spanNomeResp) spanNomeResp.innerText = usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável";
 
         if (!obraObj || !obraObj.schemaFormulario || obraObj.schemaFormulario.length === 0) {
             container.innerHTML = "<p>O gestor ainda não configurou perguntas para esta obra.</p>";
@@ -1325,7 +1199,8 @@
             document.getElementById('btnPagSubmit').style.display = 'block';
             if (blocoAss) {
                 blocoAss.style.display = 'block';
-                inicializarPadsAssinatura();
+                const spanNomeResp = document.getElementById('termo_nome_responsavel');
+                if (spanNomeResp) spanNomeResp.innerText = usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável";
             }
         } else {
             document.getElementById('btnPagProxima').style.display = 'block';
@@ -1391,6 +1266,7 @@
             return;
         }
 
+        // Valida todas as páginas antes de enviar
         for (let p = 0; p < totalPaginasForm; p++) {
             if (!validarPaginaAtual(p)) {
                 if (p !== paginaAtualIndex) {
@@ -1403,7 +1279,24 @@
             }
         }
 
-        abrirModal("Processando Diário...", "Consolidando dados, fotos e assinatura do responsável.");
+        // Valida o aceite do Termo de Responsabilidade
+        const chkTermo = document.getElementById('chk_aceite_termo');
+        const boxTermo = document.getElementById('boxTermoResponsabilidade');
+        if (boxTermo) boxTermo.classList.remove('campo-erro-borda');
+
+        if (!chkTermo || !chkTermo.checked) {
+            if (boxTermo) {
+                boxTermo.classList.add('campo-erro-borda');
+                boxTermo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            abrirModalAviso(
+                "Aceite Obrigatório",
+                "Marque a caixa de confirmação do Termo de Responsabilidade para assinar eletronicamente e publicar o Diário de Obra."
+            );
+            return;
+        }
+
+        abrirModal("Processando Diário...", "Consolidando dados, fotos e aceite eletrônico do responsável.");
 
         let respostas = {};
         let todasFotos = [];
@@ -1441,7 +1334,6 @@
 
         const obraSelecionada = document.getElementById('diario_select_obra').value;
         const clientSyncId = "SYNC-" + Date.now() + "-" + Math.random().toString(36).substring(2, 7);
-        const assinaturasCapturadas = coletarAssinaturasPayload();
 
         const payload = {
             acao: "salvar_diario",
@@ -1451,7 +1343,12 @@
             responsavel: usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável",
             respostas: respostas, 
             fotos: todasFotos,
-            assinaturas: assinaturasCapturadas
+            termo_aceite: {
+                aceito: true,
+                nome_responsavel: usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável",
+                email_responsavel: usuarioAtivo ? usuarioAtivo.email : "",
+                data_hora_aceite: new Date().toLocaleString('pt-BR')
+            }
         };
 
         const res = await apiRequest("salvar_diario", "POST", payload);
@@ -1473,7 +1370,7 @@
             renderizarFormularioEngenheiro();
             atualizarModalFinal(
                 "Salvo no Dispositivo (Offline)!",
-                "Sem internet no momento. O diário, as fotos e a assinatura foram guardados com segurança na Fila Offline e serão enviados automaticamente assim que o sinal voltar."
+                "Sem internet no momento. O diário, as fotos e o aceite eletrônico foram guardados na Fila Offline e serão enviados automaticamente quando o sinal voltar."
             );
         }
     }
