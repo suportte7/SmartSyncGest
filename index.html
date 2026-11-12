@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SmartSyncGest - RDO Operacional Completo</title>
     
-    <!-- Bibliotecas Externas Necessárias para o QR Code Funcionar -->
+    <!-- Bibliotecas Externas e Configuração -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="config.js"></script> <!-- Importando sua URL de forma profissional -->
 
     <style>
         :root { --primary: #0056b3; --bg: #f4f7f6; --card-bg: #ffffff; --text-color: #333333; --border-color: #e0e0e0; --subtext: #666666; }
@@ -214,12 +215,7 @@
 </div>
 
 <script>
-    // -------------------------------------------------------------------------
-    // ATENÇÃO: SUBSTITUA PELA SUA URL DO GOOGLE APPS SCRIPT NA LINHA ABAIXO
-    // (Não se esqueça de clicar em Implantar > Gerenciar Implantações > Nova Versão)
-    // -------------------------------------------------------------------------
-    const API_URL = "SUA_URL_AQUI/exec";
-
+    // A URL agora será importada automaticamente do arquivo config.js através de CONFIG.API_URL
     let usuarioAtivo = null;
     let baseGlobal = { obras: [], diarios: [] };
     let fotosBase64Array = [];
@@ -271,7 +267,7 @@
                     const MAX_WIDTH = 800; const scaleSize = MAX_WIDTH / img.width;
                     cvs.width = MAX_WIDTH; cvs.height = img.height * scaleSize;
                     cCtx.drawImage(img, 0, 0, cvs.width, cvs.height);
-                    const b64 = cvs.toDataURL('image/jpeg', 0.6); // COMPRESSÃO 60% DA QUALIDADE
+                    const b64 = cvs.toDataURL('image/jpeg', 0.6);
                     fotosBase64Array.push(b64);
                     const imgThumb = document.createElement('img');
                     imgThumb.src = b64; imgThumb.style.height = '70px'; imgThumb.style.borderRadius = '6px';
@@ -297,7 +293,7 @@
         fecharScanner();
         mostrarAlertaUI("Scanner Concluído", "Dossiê Interno Carregado para a Obra:\n" + decodedText + "\n\nO sistema buscará as Não Conformidades (RNCs) e históricos internos vinculados ao seu perfil de " + usuarioAtivo.perfil);
     }
-    function erroQR(err) { /* Ignora erros contínuos da câmera buscando foco */ }
+    function erroQR(err) {}
     function fecharScanner() {
         document.getElementById('modalScanner').style.display = 'none';
         if (html5QrcodeScanner) { html5QrcodeScanner.clear(); html5QrcodeScanner = null; }
@@ -313,7 +309,7 @@
 
         mostrarLoadingUI("Autenticando...", "Validando as credenciais no servidor.");
         try {
-            const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "login", email: email, senha: senha }) }).then(r => r.json());
+            const res = await fetch(CONFIG.API_URL, { method: "POST", body: JSON.stringify({ acao: "login", email: email, senha: senha }) }).then(r => r.json());
             if (res && res.sucesso && res.usuario) {
                 usuarioAtivo = res.usuario;
                 baseGlobal = res.base; 
@@ -335,7 +331,7 @@
 
         mostrarLoadingUI("Gerando senha...", "Comunicando com o servidor de E-mails.");
         try {
-            const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "recuperar_senha", email: email }) }).then(r => r.json());
+            const res = await fetch(CONFIG.API_URL, { method: "POST", body: JSON.stringify({ acao: "recuperar_senha", email: email }) }).then(r => r.json());
             mostrarAlertaUI(res.sucesso ? "Enviado!" : "Erro", res.sucesso ? res.mensagem : res.erro);
         } catch (e) { mostrarAlertaUI("Erro", "Falha na comunicação."); }
     }
@@ -344,14 +340,12 @@
         document.querySelectorAll('.sidebar-item').forEach(m => m.style.display = 'none');
         document.getElementById('usuario-logado').innerText = `${usuarioAtivo.nome} [${usuarioAtivo.perfil}]`;
         
-        // Menus Padrões
         document.getElementById('menu-diario').style.display = 'flex';
         document.getElementById('menu-historico').style.display = 'flex';
         document.getElementById('menu-scanner').style.display = 'flex';
         document.getElementById('menu-tutorial').style.display = 'flex';
         document.getElementById('menu-logout').style.display = 'flex';
 
-        // Menus e Tutoriais Administrativos (RBAC)
         if (usuarioAtivo.perfil === 'Administrador' || usuarioAtivo.perfil === 'Coordenador') {
             document.getElementById('menu-configuracoes').style.display = 'flex';
             document.getElementById('tut-admin').style.display = 'block';
@@ -384,12 +378,11 @@
         
         mostrarLoadingUI("Processando PDF...", "Isso leva alguns segundos, enviando imagens para o Drive.");
         try {
-            const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
+            const res = await fetch(CONFIG.API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
             if (res.sucesso) {
                 mostrarAlertaUI("Sucesso!", "O PDF Oficial foi gerado no Google Drive.");
                 fotosBase64Array = []; document.getElementById('previewFotos').innerHTML = ""; limparAssinatura();
-                // Atualiza a base para o histórico
-                const ref = await fetch(API_URL).then(r => r.json()); baseGlobal = ref.dados; popularObrasSelects();
+                const ref = await fetch(CONFIG.API_URL).then(r => r.json()); baseGlobal = ref.dados; popularObrasSelects();
             } else {
                 mostrarAlertaUI("Erro ao Salvar", res.erro);
             }
@@ -400,8 +393,8 @@
         if (!confirm("Injetar diários falsos de teste no banco?")) return;
         mostrarLoadingUI("Injetando...", "Simulando avanço no Sheets.");
         try {
-            const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "gerar_dados_mock" }) }).then(r => r.json());
-            const loginRes = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "login", email: usuarioAtivo.email, senha: document.getElementById('login_senha').value }) }).then(r => r.json());
+            const res = await fetch(CONFIG.API_URL, { method: "POST", body: JSON.stringify({ acao: "gerar_dados_mock" }) }).then(r => r.json());
+            const loginRes = await fetch(CONFIG.API_URL, { method: "POST", body: JSON.stringify({ acao: "login", email: usuarioAtivo.email, senha: document.getElementById('login_senha').value }) }).then(r => r.json());
             baseGlobal = loginRes.base;
             mostrarAlertaUI("Mock Completo", res.mensagem);
             popularObrasSelects();
@@ -411,7 +404,7 @@
     function gerarQrCodePublico() {
         const obra = document.getElementById('cfg_obra_qr').value;
         if (!obra) return;
-        const linkPublico = `${API_URL}?qrcode=${encodeURIComponent(obra)}`;
+        const linkPublico = `${CONFIG.API_URL}?qrcode=${encodeURIComponent(obra)}`;
         
         document.getElementById('boxQrCodeTarget').innerHTML = "";
         new QRCode(document.getElementById("boxQrCodeTarget"), {
