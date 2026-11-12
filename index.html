@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - SaaS Multi-Tenant com Ghost Login</title>
+    <title>SmartSyncGest - SaaS Multi-Tenant com Trava Jurídica RDO</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -32,7 +32,6 @@
         .btn-tema-icone { font-size: 18px; cursor: pointer; padding: 0 8px; opacity: 0.9; }
         .btn-tema-icone:hover { opacity: 1; }
         
-        /* Menu suspenso de personificação (Ghost Login) */
         .ghost-switcher { background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 11.5px; cursor: pointer; margin-right: 8px; outline: none; }
         .ghost-switcher option { background: #333; color: #fff; }
 
@@ -101,7 +100,6 @@
     <div class="menu-hamburger" onclick="abrirSidebar()">☰</div>
     <div class="brand-title">SmartSyncGest</div>
     <div style="display:flex; align-items:center;">
-        <!-- SELETOR DE GHOST LOGIN (EXCLUSIVO SUPER ADMIN) -->
         <select id="ghostSwitcherSelect" class="ghost-switcher" style="display:none;" onchange="alternarGhostLogin(this.value)">
             <option value="">🏢 [Visão Global Super Admin]</option>
         </select>
@@ -276,8 +274,8 @@
     <div class="container">
         <h2>📚 Manual do Sistema</h2>
         <div class="tutorial-box">
-            <h3>Ghost Login (Personificação)</h3>
-            <p style="font-size:13px;">Como Super Admin, utilize o menu suspenso no canto superior direito para alternar instantaneamente entre a visão de qualquer Construtora e realizar suporte ou consultoria.</p>
+            <h3>Trava Jurídica de RDO (Ponto 2)</h3>
+            <p style="font-size:13px;">Os diários possuem ciclos (Aberto, Em Análise e Trancado). Diários trancados geram o PDF oficial e ficam congelados contra qualquer edição ou exclusão, assegurando validade jurídica e técnica.</p>
         </div>
     </div>
 </div>
@@ -333,7 +331,7 @@
     let baseGlobal = { obras: [], usuarios: [], diarios: [], empresas: [] };
     let schemaEdicaoAtual = [];
     let fotosBase64Array = [];
-    let empresaGhostAtiva = null; // Variável de personificação ativa
+    let empresaGhostAtiva = null;
 
     // <!-- @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (LÓGICA DOS 10 TEMAS E ÍCONES) -->
     const temasDisponiveis = ['padrao', 'escuro', 'construtora', 'moderno', 'oceano', 'floresta', 'por-do-sol', 'corporativo', 'neon', 'minimalista'];
@@ -430,7 +428,6 @@
     function configurarMenuPorPerfil() {
         document.querySelectorAll('.sidebar-item').forEach(m => m.style.display = 'none');
         
-        // Define empresa efetiva considerando o Ghost Login
         const empresaEfetiva = empresaGhostAtiva || usuarioAtivo.empresa;
         const empLabel = empresaEfetiva ? ` - ${empresaEfetiva}${empresaGhostAtiva ? ' [GHOST]' : ''}` : '';
         document.getElementById('usuario-logado').innerText = `${usuarioAtivo.nome} [${usuarioAtivo.perfil}${empLabel}]`;
@@ -450,8 +447,6 @@
         const ghostSelect = document.getElementById('ghostSwitcherSelect');
         if (usuarioAtivo.perfil === 'Super Admin') {
             document.getElementById('menu-empresas').style.display = 'flex';
-            
-            // Popula o menu de Ghost Login no Topo
             let ghostOpts = '<option value="">🏢 [Visão Global Super Admin]</option>';
             (baseGlobal.empresas || []).forEach(e => {
                 ghostOpts += `<option value="${e}" ${empresaGhostAtiva === e ? 'selected' : ''}>👁️ Ver como: ${e}</option>`;
@@ -463,7 +458,6 @@
         }
     }
 
-    // GHOST LOGIN: ALTERNAR EMPRESA ATIVA NO TOPO
     function alternarGhostLogin(empresaNome) {
         empresaGhostAtiva = empresaNome ? empresaNome : null;
         configurarMenuPorPerfil();
@@ -760,7 +754,17 @@
                 else { const el = document.getElementById(`resp_${campo.id}`); if (el) respostasObj[campo.titulo] = el.value; }
             });
         }
-        const payload = { acao: "salvar_diario", responsavel: usuarioAtivo.nome, obra: obraNome, data_diario: document.getElementById('rdo_data').value, respostas: respostasObj, fotos: fotosBase64Array, client_sync_id: "SYNC-" + Date.now() };
+        // PONTO 2: INCLUSÃO DE STATUS JURÍDICO INICIAL TRANCADO (VALIDADO)
+        const payload = { 
+            acao: "salvar_diario", 
+            responsavel: usuarioAtivo.nome, 
+            obra: obraNome, 
+            data_diario: document.getElementById('rdo_data').value, 
+            status_juridico: "trancado", // Bloqueio jurídico automático no fechamento
+            respostas: respostasObj, 
+            fotos: fotosBase64Array, 
+            client_sync_id: "SYNC-" + Date.now() 
+        };
         mostrarLoadingUI("Processando PDF...", "Registrando aceite e gerando documento.");
         try {
             const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
@@ -771,8 +775,8 @@
     function exportarDadosCSV() {
         const obra = document.getElementById('hist_select_obra').value; const filtrados = baseGlobal.diarios.filter(d => d.obra === obra);
         if (filtrados.length === 0) return alert("Nenhum dado para exportar.");
-        let csvContent = "data:text/csv;charset=utf-8,ID;Responsavel;Obra;Data;Timestamp\n";
-        filtrados.forEach(r => { csvContent += `"${r.id}";"${r.responsavel}";"${r.obra}";"${r.data}";"${r.timestamp}"\n`; });
+        let csvContent = "data:text/csv;charset=utf-8,ID;Responsavel;Obra;Data;StatusJuridico;Timestamp\n";
+        filtrados.forEach(r => { csvContent += `"${r.id}";"${r.responsavel}";"${r.obra}";"${r.data}";"${r.status_juridico || 'trancado'}";"${r.timestamp}"\n`; });
         const encodedUri = encodeURI(csvContent); const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", `relatorio_${obra.replace(/\s+/g, '_')}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link);
     }
     function renderizarHistorico() {
@@ -780,7 +784,21 @@
         const filtrados = baseGlobal.diarios.filter(d => d.obra === obra);
         if (filtrados.length === 0) { container.innerHTML = "<p style='font-size:13px; color:#777;'>Nenhum histórico encontrado.</p>"; return; }
         let html = '';
-        filtrados.forEach(r => { html += `<div class="rdo-cloud-card"><div style="font-weight:bold; font-size:13.5px; color:var(--primary);">${r.id} • Data: ${r.data}</div><div style="font-size:12px; margin-top:4px;"><strong>Resp:</strong> ${r.responsavel}</div>${r.link_pdf ? `<a href="${r.link_pdf}" target="_blank" style="font-size:11.5px; display:inline-block; margin-top:5px; color:#dc3545; font-weight:bold; text-decoration:none;">📄 Abrir PDF Oficial</a>` : ''}</div>`; });
+        filtrados.forEach(r => {
+            const statusJ = r.status_juridico || 'trancado';
+            let badgeStatus = '<span style="color:#28a745;">🟢 Aberto</span>';
+            if (statusJ === 'analise') badgeStatus = '<span style="color:#d9534f;">🟡 Em Análise</span>';
+            if (statusJ === 'trancado') badgeStatus = '<span style="color:#dc3545; font-weight:bold;">🔒 Trancado (Validado)</span>';
+
+            html += `<div class="rdo-cloud-card">
+                        <div style="font-weight:bold; font-size:13.5px; color:var(--primary); display:flex; justify-content:space-between; align-items:center;">
+                            <span>${r.id} • Data: ${r.data}</span>
+                            <span>${badgeStatus}</span>
+                        </div>
+                        <div style="font-size:12px; margin-top:4px;"><strong>Resp:</strong> ${r.responsavel}</div>
+                        ${r.link_pdf ? `<a href="${r.link_pdf}" target="_blank" style="font-size:11.5px; display:inline-block; margin-top:5px; color:#dc3545; font-weight:bold; text-decoration:none;">📄 Abrir PDF Oficial (Imutável)</a>` : ''}
+                     </div>`;
+        });
         container.innerHTML = html;
     }
     async function injetarDadosMock() {
