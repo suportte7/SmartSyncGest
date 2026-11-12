@@ -3,28 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Builder Master com Condicional & Temas</title>
+    <title>SmartSyncGest - Builder & RDO</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="config.js"></script>
 
     <style>
+        /* @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (TEMAS E VARIÁVEIS CSS) */
         :root { --primary: #0056b3; --bg: #f4f7f6; --card-bg: #ffffff; --text-color: #333333; --border-color: #e0e0e0; --subtext: #666666; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text-color); margin: 0; padding-bottom: 30px; transition: background 0.3s, color 0.3s; }
         
-        /* Temas de Cores */
+        /* 10 Temas Validados */
         body.tema-escuro { --primary: #1e1e1e; --bg: #121212; --card-bg: #1e1e1e; --text-color: #e0e0e0; --border-color: #333333; --subtext: #aaaaaa; }
         body.tema-construtora { --primary: #d9534f; --bg: #fdfefe; --card-bg: #ffffff; --text-color: #2c3e50; --border-color: #dcdcdc; --subtext: #7f8c8d; }
         body.tema-moderno { --primary: #6c5ce7; --bg: #f8f9fa; --card-bg: #ffffff; --text-color: #2d3436; --border-color: #dfe6e9; --subtext: #636e72; }
+        body.tema-oceano { --primary: #0097e6; --bg: #f1f2f6; --card-bg: #ffffff; --text-color: #2f3640; --border-color: #dcdde1; --subtext: #718093; }
+        body.tema-floresta { --primary: #44bd32; --bg: #f5f6fa; --card-bg: #ffffff; --text-color: #2f3640; --border-color: #dcdde1; --subtext: #718093; }
+        body.tema-por-do-sol { --primary: #e1b12c; --bg: #f5f6fa; --card-bg: #ffffff; --text-color: #2f3640; --border-color: #dcdde1; --subtext: #718093; }
+        body.tema-corporativo { --primary: #273c75; --bg: #f5f6fa; --card-bg: #ffffff; --text-color: #2f3640; --border-color: #dcdde1; --subtext: #718093; }
+        body.tema-neon { --primary: #00d2d3; --bg: #222f3e; --card-bg: #222f3e; --text-color: #c8d6e5; --border-color: #576574; --subtext: #8395a7; }
+        body.tema-minimalista { --primary: #2d3436; --bg: #ffffff; --card-bg: #ffffff; --text-color: #2d3436; --border-color: #b2bec3; --subtext: #636e72; }
 
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text-color); margin: 0; padding-bottom: 30px; transition: background 0.3s, color 0.3s; }
+        
         .top-header { background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.15); transition: background 0.3s; }
         .menu-hamburger { font-size: 22px; cursor: pointer; padding: 5px; }
         .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; margin-left: 12px; }
-        .header-actions { display: flex; gap: 8px; align-items: center; }
-        .theme-selector { background: rgba(255,255,255,0.2); border: none; color: #fff; padding: 5px 8px; border-radius: 6px; font-size: 12px; cursor: pointer; }
-        .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; cursor: pointer; }
         
+        /* Botão discreto validado */
+        .btn-tema-icone { font-size: 20px; cursor: pointer; padding: 0 10px; opacity: 0.9; }
+        .btn-tema-icone:hover { opacity: 1; }
+        
+        .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        
+        /* @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (LAYOUT GERAL) */
         .sidebar { position: fixed; top: 0; left: -290px; width: 280px; height: 100%; background: var(--card-bg); box-shadow: 2px 0 12px rgba(0,0,0,0.3); transition: left 0.3s ease; z-index: 2500; display: flex; flex-direction: column; }
         .sidebar.open { left: 0; }
         .sidebar-header { background: var(--primary); color: #fff; padding: 20px 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; }
@@ -65,6 +77,7 @@
 </head>
 <body>
 
+<!-- @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (SIDEBAR E TOPO) -->
 <div id="sidebarOverlay" class="sidebar-overlay" onclick="fecharSidebar()"></div>
 <div id="sidebarMenu" class="sidebar">
     <div class="sidebar-header"><span>SmartSyncGest</span><span class="sidebar-close" onclick="fecharSidebar()">✕</span></div>
@@ -84,14 +97,9 @@
 <div class="top-header">
     <div class="menu-hamburger" onclick="abrirSidebar()">☰</div>
     <div class="brand-title">SmartSyncGest</div>
-    <div class="header-actions">
-        <select id="seletorTema" class="theme-selector" onchange="mudarTemaSistema(this.value)">
-            <option value="padrao">🎨 Padrão</option>
-            <option value="escuro">🌙 Escuro</option>
-            <option value="construtora">🏗️ Construtora</option>
-            <option value="moderno">⚡ Moderno</option>
-        </select>
-        <div id="usuario-logado" class="user-badge" onclick="abrirSidebar()">Fazer Login</div>
+    <div style="display:flex; align-items:center;">
+        <span class="btn-tema-icone" onclick="ciclarTema()" title="Trocar Tema">🎨</span>
+        <div id="usuario-logado" class="user-badge" onclick="abrirSidebar()">Login</div>
     </div>
 </div>
 
@@ -134,7 +142,7 @@
     </div>
 </div>
 
-<!-- TELA 3: CONSTRUTOR DE FORMULÁRIOS (BUILDER MASTER COM CONDICIONAL) -->
+<!-- TELA 3: CONSTRUTOR DE FORMULÁRIOS (AQUI ESTÃO AS NOVAS FUNÇÕES) -->
 <div id="aba-builder" class="tab-content">
     <div class="container">
         <h2>🛠️ Construtor de Formulários (Builder Master)</h2>
@@ -165,7 +173,7 @@
             <div class="form-group"><label>Opções (Para Radio, Checkbox ou Select - separadas por vírgula)</label><input type="text" id="novo_campo_opcoes" placeholder="Sol, Nublado, Chuva"></div>
             <div class="form-group"><label>Meta Contratual (Apenas para Etapa de Produção)</label><input type="number" id="novo_campo_meta" value="500"></div>
             
-            <!-- RECURSO AVANÇADO: LÓGICA CONDICIONAL -->
+            <!-- @GEMINI: NOVA ÁREA DE CONDICIONAL -->
             <div style="background:var(--card-bg); padding:12px; border-radius:8px; border:1px dashed var(--primary); margin-bottom:15px;">
                 <h4 style="margin:0 0 8px 0; font-size:13px; color:var(--primary);">🔀 Lógica Condicional (Opcional)</h4>
                 <div class="form-group" style="margin-bottom:8px;"><label style="font-size:12px;">Exibir esta pergunta SOMENTE SE:</label>
@@ -235,7 +243,7 @@
         <h2>📚 Manual do Sistema</h2>
         <div class="tutorial-box">
             <h3>Guia de Lógica Condicional & Temas</h3>
-            <p style="font-size:13px;">Selecione o tema de sua preferência no topo direito da tela e configure perguntas condicionais no Construtor.</p>
+            <p style="font-size:13px;">Toque no ícone da paleta 🎨 no topo direito para alterar entre os 10 temas. Configure perguntas condicionais no Construtor.</p>
         </div>
     </div>
 </div>
@@ -243,7 +251,7 @@
 <!-- MODAL PREVIEW INTERATIVO REAL -->
 <div id="modalPreviewReal" class="overlay" onclick="document.getElementById('modalPreviewReal').style.display='none'">
     <div class="modal-box" onclick="event.stopPropagation()">
-        <h3 style="margin-top:0; color:var(--primary);">👁️ Preview Interativo com Lógica Condicional</h3>
+        <h3 style="margin-top:0; color:var(--primary);">👁️ Preview Interativo</h3>
         <p style="font-size:12px; color:var(--subtext); margin-bottom:15px;">Teste as condições alterando as respostas e veja os campos aparecerem dinamicamente.</p>
         
         <label style="font-size:12px; margin-bottom:4px; text-align:left;">Progresso do Teste: <span id="lblPreviewPercentual">0%</span></label>
@@ -264,7 +272,7 @@
     </div>
 </div>
 
-<!-- MODAL QR CODE -->
+<!-- DEMAIS MODAIS (VALIDADOS - PROIBIDO ALTERAR) -->
 <div id="modalQrCode" class="overlay" onclick="document.getElementById('modalQrCode').style.display='none'">
     <div class="modal-box" onclick="event.stopPropagation()">
         <h3 style="margin-top:0; color:var(--primary);">QR Code Público</h3>
@@ -273,8 +281,6 @@
         <button class="btn-primary" onclick="document.getElementById('modalQrCode').style.display='none'">Fechar</button>
     </div>
 </div>
-
-<!-- MODAL SCANNER -->
 <div id="modalScanner" class="overlay">
     <div class="modal-box">
         <h3 style="margin-top:0; color:var(--primary);">Scanner Interno</h3>
@@ -282,8 +288,6 @@
         <button class="btn-danger" style="margin-top:15px;" onclick="fecharScanner()">Fechar</button>
     </div>
 </div>
-
-<!-- MODAL LOADING -->
 <div id="sysOverlay" class="overlay">
     <div class="modal-box">
         <div id="modalSpinner" class="spinner"></div>
@@ -300,6 +304,28 @@
     let schemaEdicaoAtual = [];
     let fotosBase64Array = [];
 
+    // @GEMINI: ÁREA VALIDADA - PROIBIDO ALTERAR (LÓGICA DOS 10 TEMAS)
+    const temasDisponiveis = ['padrao', 'escuro', 'construtora', 'moderno', 'oceano', 'floresta', 'por-do-sol', 'corporativo', 'neon', 'minimalista'];
+    let indiceTemaAtual = 0;
+
+    function carregarTemaSalvo() {
+        const temaSalvo = localStorage.getItem('smart_sync_tema') || 'padrao';
+        indiceTemaAtual = temasDisponiveis.indexOf(temaSalvo);
+        if (indiceTemaAtual === -1) indiceTemaAtual = 0;
+        aplicarTema(temasDisponiveis[indiceTemaAtual], false);
+    }
+
+    function ciclarTema() {
+        indiceTemaAtual = (indiceTemaAtual + 1) % temasDisponiveis.length;
+        aplicarTema(temasDisponiveis[indiceTemaAtual], true);
+    }
+
+    function aplicarTema(tema, salvar = true) {
+        document.body.className = tema === 'padrao' ? '' : 'tema-' + tema;
+        if (salvar) localStorage.setItem('smart_sync_tema', tema);
+    }
+
+    // NOVOS ÍCONES DO BUILDER
     const iconesTipos = {
         'text': '✏️', 'textarea': '📄', 'number': '#️⃣', 'radio': '🔘',
         'checkbox': '☑️', 'select': '📋', 'date': '📅', 'time': '⏰',
@@ -307,21 +333,13 @@
     };
 
     window.addEventListener('DOMContentLoaded', () => {
-        const temaSalvo = localStorage.getItem('smart_sync_tema') || 'padrao';
-        document.getElementById('seletorTema').value = temaSalvo;
-        mudarTemaSistema(temaSalvo, false);
-
+        carregarTemaSalvo(); // Carrega o tema salvo
         const sessaoSalva = localStorage.getItem('smart_sync_usuario');
         if (sessaoSalva) {
             try { usuarioAtivo = JSON.parse(sessaoSalva); carregarBaseDadosInicial(); }
             catch(e) { localStorage.removeItem('smart_sync_usuario'); }
         }
     });
-
-    function mudarTemaSistema(tema, salvar = true) {
-        document.body.className = tema === 'padrao' ? '' : 'tema-' + tema;
-        if (salvar) localStorage.setItem('smart_sync_tema', tema);
-    }
 
     async function carregarBaseDadosInicial() {
         mostrarLoadingUI("Carregando...", "Sincronizando com a nuvem.");
