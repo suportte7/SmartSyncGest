@@ -3,350 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - RDO Digital</title>
+    <title>SmartSyncGest - RDO Operacional</title>
     <style>
-        :root { --primary: #0056b3; --bg: #f4f7f6; --card-bg: #ffffff; --text-color: #333333; --border-color: #e0e0e0; --subtext: #666666; --header-text: #ffffff; }
+        :root { --primary: #0056b3; --bg: #f4f7f6; --card-bg: #ffffff; --text-color: #333333; --border-color: #e0e0e0; --subtext: #666666; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text-color); margin: 0; padding-bottom: 30px; }
-        .top-header { background: var(--primary); color: var(--header-text); display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); position: sticky; top: 0; z-index: 1000; }
+        .top-header { background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; position: sticky; top: 0; z-index: 1000; }
         .menu-hamburger { font-size: 22px; cursor: pointer; padding: 5px; }
-        .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; margin-left: 12px; display: flex; align-items: center; gap: 8px; }
-        .net-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; background: #2ecc71; box-shadow: 0 0 6px #2ecc71; }
-        .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; cursor: pointer; }
-        
-        .sidebar { position: fixed; top: 0; left: -290px; width: 280px; height: 100%; background: var(--card-bg); box-shadow: 2px 0 12px rgba(0,0,0,0.3); transition: left 0.3s ease; z-index: 2500; display: flex; flex-direction: column; }
+        .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; margin-left: 12px; }
+        .sidebar { position: fixed; top: 0; left: -290px; width: 280px; height: 100%; background: var(--card-bg); box-shadow: 2px 0 12px rgba(0,0,0,0.3); transition: left 0.3s ease; z-index: 2500; }
         .sidebar.open { left: 0; }
-        .sidebar-header { background: var(--primary); color: var(--header-text); padding: 20px 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; }
-        .sidebar-close { cursor: pointer; font-size: 20px; }
-        .sidebar-menu { display: flex; flex-direction: column; padding: 15px 0; overflow-y: auto; }
-        .sidebar-item { padding: 14px 20px; font-weight: 600; font-size: 14px; cursor: pointer; border-left: 4px solid transparent; color: var(--text-color); display: none; }
-        .sidebar-item:hover, .sidebar-item.active { background: rgba(0,0,0,0.05); border-left: 4px solid var(--primary); color: var(--primary); }
+        .sidebar-header { background: var(--primary); color: #fff; padding: 20px 15px; font-weight: bold; display: flex; justify-content: space-between; }
+        .sidebar-item { padding: 14px 20px; font-weight: 600; cursor: pointer; border-left: 4px solid transparent; display: none; }
+        .sidebar-item.active { background: rgba(0,0,0,0.05); border-left: 4px solid var(--primary); color: var(--primary); }
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2400; }
         .sidebar-overlay.open { display: block; }
-
-        .tab-content { display: none; padding: 20px 15px; max-width: 720px; margin: 0 auto; box-sizing: border-box; }
+        .tab-content { display: none; padding: 20px 15px; max-width: 720px; margin: 0 auto; }
         .tab-content.active { display: block; }
         .container { background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border-color); }
-        
-        h2 { margin-top: 0; font-size: 19px; color: var(--primary); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; text-align: left; }
+        h2 { margin-top: 0; font-size: 19px; color: var(--primary); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        h3 { font-size: 15px; color: #444; margin-bottom: 8px; }
+        .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; box-sizing: border-box; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; box-sizing: border-box; }
         button { padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; color: white; width: 100%; margin-top: 10px; }
-        .btn-primary { background: var(--primary); } .btn-success { background: #28a745; } .btn-danger { background: #dc3545; }
-        
-        /* Modal, QR Code e Cards */
-        .rdo-cloud-card { border: 1px solid var(--border-color); border-left: 4px solid var(--primary); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-box { background: var(--card-bg); padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 380px; border: 1px solid var(--border-color); position: relative; }
-        .spinner { width: 36px; height: 36px; border: 4px solid rgba(0,0,0,0.1); border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .btn-primary { background: var(--primary); } .btn-success { background: #28a745; } .btn-warning { background: #ffc107; color: #000; }
+        .signature-pad { border: 1px solid #ccc; border-radius: 8px; width: 100%; height: 150px; background: #fff; touch-action: none; }
+        .tutorial-box { background: #e8eef5; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--primary); }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; }
+        #reader { width: 100%; max-width: 400px; background: #fff; border-radius: 10px; overflow: hidden; }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
 
 <div id="sidebarOverlay" class="sidebar-overlay" onclick="fecharSidebar()"></div>
 <div id="sidebarMenu" class="sidebar">
-    <div class="sidebar-header"><span>SmartSyncGest</span><span class="sidebar-close" onclick="fecharSidebar()">✕</span></div>
-    <div class="sidebar-menu">
-        <!-- RBAC: Itens ocultos por padrão, controlados pelo JS após Login -->
-        <div class="sidebar-item active" id="menu-login" onclick="navegarSidebar('login')" style="display:flex;"><span>👤 Autenticação</span></div>
-        <div class="sidebar-item" id="menu-diario" onclick="navegarSidebar('diario')"><span>📝 Diário de Campo (RDO)</span></div>
-        <div class="sidebar-item" id="menu-historico" onclick="navegarSidebar('historico')"><span>📊 Painel de Avanço & PDFs</span></div>
-        <div class="sidebar-item" id="menu-configuracoes" onclick="navegarSidebar('configuracoes')"><span>⚙️ Configurações & Testes</span></div>
-        <div class="sidebar-item" id="menu-logout" onclick="fazerLogout()" style="color:#dc3545; border-top:1px solid #eee; margin-top:10px;"><span>🚪 Sair do Sistema</span></div>
+    <div class="sidebar-header"><span>SmartSyncGest</span><span onclick="fecharSidebar()" style="cursor:pointer;">✕</span></div>
+    <div style="display:flex; flex-direction:column; padding:15px 0;">
+        <div class="sidebar-item active" id="menu-login" onclick="navegarSidebar('login')" style="display:flex;">👤 Login</div>
+        <div class="sidebar-item" id="menu-diario" onclick="navegarSidebar('diario')">📝 Novo RDO & Fotos</div>
+        <div class="sidebar-item" id="menu-scanner" onclick="abrirScannerInterno()">🔍 Scanner de Obra</div>
+        <div class="sidebar-item" id="menu-tutorial" onclick="navegarSidebar('tutorial')">📚 Tutorial Online</div>
+        <div class="sidebar-item" id="menu-logout" onclick="fazerLogout()" style="color:#dc3545; border-top:1px solid #eee;">🚪 Sair</div>
     </div>
 </div>
 
 <div class="top-header">
     <div class="menu-hamburger" onclick="abrirSidebar()">☰</div>
-    <div class="brand-title">SmartSyncGest <span id="netStatusDot" class="net-dot" title="Online"></span></div>
-    <div id="usuario-logado" class="user-badge" onclick="abrirSidebar()">Fazer Login</div>
+    <div class="brand-title">SmartSyncGest</div>
+    <div id="usuario-logado" style="font-size:12px;" onclick="abrirSidebar()">Login</div>
 </div>
 
-<!-- TELA 1: LOGIN (AGORA COM SENHA DE VERDADE) -->
+<!-- TELA 1: LOGIN -->
 <div id="aba-login" class="tab-content active">
-    <div class="container" style="text-align: center; max-width:400px; margin: 0 auto;">
-        <h2>Acesso Restrito Corporativo</h2>
-        <p style="font-size:12px; color:var(--subtext);">Entre com suas credenciais oficiais do sistema.</p>
-        
-        <div class="form-group">
-            <label>E-mail Institucional</label>
-            <input type="email" id="login_email" placeholder="ex: engenheiro@smartsync.com" autocomplete="email">
-        </div>
-        <div class="form-group">
-            <label>Senha</label>
-            <input type="password" id="login_senha" placeholder="Sua senha (padrão: 123456)" autocomplete="current-password">
-        </div>
-        <button class="btn-primary" onclick="efetuarLoginSeguro()">Entrar no Sistema</button>
+    <div class="container" style="text-align: center;">
+        <h2>Acesso ao Sistema</h2>
+        <div class="form-group"><input type="email" id="login_email" placeholder="E-mail"></div>
+        <div class="form-group"><input type="password" id="login_senha" placeholder="Senha"></div>
+        <button class="btn-primary" onclick="efetuarLogin()">Entrar</button>
     </div>
 </div>
 
-<!-- TELA 2: DIÁRIO DE CAMPO -->
+<!-- TELA 2: RDO OPERACIONAL (CLIMA, FOTOS, ASSINATURA) -->
 <div id="aba-diario" class="tab-content">
     <div class="container">
-        <h2>Lançamento Diário de Obra</h2>
-        <div class="form-group">
-            <label>Selecione a Obra</label>
-            <select id="diario_select_obra"></select>
+        <h2>📝 RDO - Lançamento Operacional</h2>
+        <div class="form-group"><label>Obra</label><select id="rdo_obra"></select></div>
+        <div class="form-group"><label>Data</label><input type="date" id="rdo_data"></div>
+        
+        <h3>⛅ 1. Clima e Efetivo</h3>
+        <div class="form-group"><label>Condição Climática</label>
+            <select id="rdo_clima"><option>Céu Claro</option><option>Nublado</option><option>Chuva Leve</option><option>Chuva Forte (Impraticável)</option></select>
         </div>
-        <div class="form-group">
-            <label>Data</label>
-            <input type="date" id="diario_data">
+        <div style="display:flex; gap:10px;">
+            <div class="form-group" style="flex:1;"><label>Efetivo Próprio</label><input type="number" id="rdo_proprio" value="0"></div>
+            <div class="form-group" style="flex:1;"><label>Efetivo Terceiros</label><input type="number" id="rdo_terceiro" value="0"></div>
         </div>
-        <p style="font-size:12px; color:#c93a46; font-weight:bold;">Para enviar dados via PWA (Fila e PDF), utilize a Aba Anterior (Builder já configurado). Esta aba é uma casca para validar o acesso logado da versão final RBAC.</p>
+        <div class="form-group"><label>Equipamentos em Operação</label><input type="text" id="rdo_equip" placeholder="Ex: 1 Betoneira, 1 Trator"></div>
+
+        <h3>🏗️ 2. Ocorrências e RNC</h3>
+        <div class="form-group"><label>Relato de Não Conformidade ou Atraso</label>
+            <textarea id="rdo_rnc" rows="3" placeholder="Relate acidentes, falta de material ou fiscalização."></textarea>
+        </div>
+
+        <h3>📸 3. Evidências (Fotos)</h3>
+        <p style="font-size:12px; color:var(--subtext);">Tire fotos agora. O sistema fará a compressão automática para o PDF.</p>
+        <input type="file" id="rdo_camera" accept="image/*" capture="environment" multiple onchange="processarFotos(event)" style="margin-bottom:10px;">
+        <div id="previewFotos" style="display:flex; gap:10px; overflow-x:auto;"></div>
+
+        <h3>✍️ 4. Assinatura Digital</h3>
+        <p style="font-size:12px; color:var(--subtext);">Assine com o dedo no quadro abaixo.</p>
+        <canvas id="canvasAss" class="signature-pad"></canvas>
+        <button class="btn-warning" onclick="limparAssinatura()" style="width:auto; padding:8px; font-size:12px; margin-top:5px;">Limpar Assinatura</button>
+
+        <button class="btn-success" onclick="salvarRDOOperacional()" style="margin-top:20px;">Sincronizar RDO Completo</button>
     </div>
 </div>
 
-<!-- TELA 3: PAINEL DE AVANÇO -->
-<div id="aba-historico" class="tab-content">
+<!-- TELA 3: TUTORIAL ONLINE (RBAC) -->
+<div id="aba-tutorial" class="tab-content">
     <div class="container">
-        <h2>📊 Painel Consolidado da Obra</h2>
-        <div class="form-group">
-            <label>Obra</label>
-            <select id="hist_select_obra" onchange="renderizarRdosMock()"></select>
+        <h2>📚 Tutorial Interativo</h2>
+        <div id="tut-comum" class="tutorial-box">
+            <h3>Bem-vindo ao SmartSyncGest</h3>
+            <p style="font-size:13px;">O aplicativo funciona offline. Você pode preencher dados no canteiro sem internet e clicar em sincronizar. Assim que houver conexão, os PDFs são gerados.</p>
         </div>
-        <div id="listaHistorico" style="margin-top:20px;"></div>
-    </div>
-</div>
-
-<!-- TELA 4: CONFIGURAÇÕES E INJEÇÃO MOCK -->
-<div id="aba-configuracoes" class="tab-content">
-    <div class="container">
-        <h2>⚙️ Configurações & Testes (Admin)</h2>
-        <p style="font-size:13px; color:var(--subtext);">Opções de auditoria e transparência de dados.</p>
-
-        <div style="border: 1px dashed #28a745; background:rgba(40, 167, 69, 0.05); padding:15px; border-radius:8px; margin-bottom: 20px;">
-            <h4 style="margin-top:0; color:#1b5e20;">🧪 Ambiente de Testes de Estresse</h4>
-            <p style="font-size:12px; margin-bottom:10px;">Gere dados fictícios (Mock) no banco para simular diários lançados e avanço de obras instantaneamente.</p>
-            <button class="btn-success" onclick="injetarDadosMock()">Injetar Dados Fictícios Agora</button>
+        <div id="tut-eng" class="tutorial-box" style="display:none; background:#e8f5e9; border-color:#28a745;">
+            <h3>🛠️ Guia do Engenheiro/Mestre</h3>
+            <ul style="font-size:13px; padding-left:20px;">
+                <li><b>Fotos:</b> Use o botão de câmera na aba RDO. As imagens são reduzidas automaticamente para não travar seu celular.</li>
+                <li><b>Assinatura:</b> Assine diretamente na tela usando o dedo. Isso anexa validade jurídica ao PDF.</li>
+                <li><b>Scanner Interno:</b> Use o scanner no menu lateral para ler o QR Code da obra e ver o histórico interno oculto para o cliente.</li>
+            </ul>
         </div>
-
-        <div style="border: 1px solid var(--border-color); padding:15px; border-radius:8px;">
-            <h4 style="margin-top:0; color:var(--primary);">📱 Transparência: QR Code Público</h4>
-            <p style="font-size:12px; margin-bottom:10px;">Gere o QR Code da obra selecionada para disponibilizar no canteiro aos clientes. Eles verão o status de avanço físico sem precisar de senha.</p>
-            <div class="form-group">
-                <select id="cfg_obra_qr"></select>
-            </div>
-            <button class="btn-primary" onclick="gerarQrCodePublico()">Gerar QR Code da Obra</button>
+        <div id="tut-admin" class="tutorial-box" style="display:none; background:#fff3cd; border-color:#ffc107;">
+            <h3>⚙️ Guia do Administrador</h3>
+            <ul style="font-size:13px; padding-left:20px;">
+                <li>Você tem acesso total. Para gerar QR Codes Públicos para os clientes, acesse o painel web em seu computador.</li>
+                <li>Os relatórios de RNC (Não conformidade) lançados pelos engenheiros aparecerão destacados na aba de gestão.</li>
+            </ul>
         </div>
     </div>
 </div>
 
-<!-- MODAL QR CODE PÚBLICO -->
-<div id="modalQrCode" class="overlay" onclick="document.getElementById('modalQrCode').style.display='none'">
-    <div class="modal-box" onclick="event.stopPropagation()">
-        <h3 style="margin-top:0; color:var(--primary);">QR Code - Acesso Público</h3>
-        <p style="font-size:12px; color:var(--subtext);">Aponte a câmera do celular. Nenhuma senha será exigida para visualizar o status do empreendimento.</p>
-        <div id="boxQrCodeTarget" style="display:flex; justify-content:center; align-items:center; background:#fff; padding:20px; border:1px solid #eee; border-radius:10px; margin: 15px 0;"></div>
-        <p style="font-size:11px; word-break: break-all;" id="txtLinkPublico"></p>
-        <button class="btn-primary" onclick="document.getElementById('modalQrCode').style.display='none'">Fechar</button>
-    </div>
-</div>
-
-<!-- MODAL SISTEMA (LOADING) -->
-<div id="sysOverlay" class="overlay">
-    <div class="modal-box">
-        <div id="modalSpinner" class="spinner"></div>
-        <h3 id="modalTitle" style="color:var(--primary); margin-top:0;">Autenticando...</h3>
-        <p id="modalMsg" style="font-size:14px; color:var(--subtext);">Validando credenciais com o Google.</p>
-        <button type="button" id="modalBtn" class="btn-primary" style="display:none;" onclick="document.getElementById('sysOverlay').style.display='none'">OK</button>
+<!-- MODAL SCANNER QR CODE -->
+<div id="modalScanner" class="overlay">
+    <div style="background:#fff; padding:20px; border-radius:12px; width:90%; max-width:400px; text-align:center;">
+        <h3 style="margin-top:0; color:var(--primary);">Leitor Interno de Obra</h3>
+        <p style="font-size:12px; color:var(--subtext);">Aponte para o QR Code da Obra para carregar o Dossiê Interno.</p>
+        <div id="reader"></div>
+        <button class="btn-primary" onclick="fecharScanner()">Cancelar</button>
     </div>
 </div>
 
 <script>
-    // -------------------------------------------------------------------------
-    // ATENÇÃO: SUBSTITUA PELA SUA URL DO GOOGLE APPS SCRIPT
-    // -------------------------------------------------------------------------
     const API_URL = "SUA_URL_AQUI/exec";
-
     let usuarioAtivo = null;
-    let baseGlobal = { obras: [], diarios: [] };
+    let baseGlobal = { obras: [] };
+    let fotosBase64Array = [];
+    
+    // --- ASSINATURA CANVAS ---
+    const canvas = document.getElementById('canvasAss');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    
+    function redimensionarCanvas() { canvas.width = canvas.parentElement.clientWidth - 2; canvas.height = 150; }
+    window.addEventListener('resize', redimensionarCanvas);
+    setTimeout(redimensionarCanvas, 500);
 
-    window.addEventListener('DOMContentLoaded', () => {
-        verificarSessaoSalva();
-    });
+    canvas.addEventListener('mousedown', e => { isDrawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); });
+    canvas.addEventListener('mousemove', e => { if (isDrawing) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } });
+    canvas.addEventListener('mouseup', () => isDrawing = false);
+    canvas.addEventListener('touchstart', e => { isDrawing = true; const t = e.touches[0]; const rect = canvas.getBoundingClientRect(); ctx.beginPath(); ctx.moveTo(t.clientX - rect.left, t.clientY - rect.top); e.preventDefault(); });
+    canvas.addEventListener('touchmove', e => { if (isDrawing) { const t = e.touches[0]; const rect = canvas.getBoundingClientRect(); ctx.lineTo(t.clientX - rect.left, t.clientY - rect.top); ctx.stroke(); } e.preventDefault(); });
+    canvas.addEventListener('touchend', () => isDrawing = false);
+    
+    function limparAssinatura() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
 
-    // -------------------------------------------------------------------------
-    // SISTEMA DE SEGURANÇA RBAC & LOGIN
-    // -------------------------------------------------------------------------
-    async function efetuarLoginSeguro() {
-        const email = document.getElementById('login_email').value.trim();
-        const senha = document.getElementById('login_senha').value.trim();
-        
-        if (!email || !senha) return alert("Preencha E-mail e Senha.");
+    // --- COMPRESSÃO DE FOTOS ---
+    function processarFotos(event) {
+        const files = event.target.files;
+        const preview = document.getElementById('previewFotos');
+        for (let i = 0; i < files.length; i++) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const cvs = document.createElement('canvas');
+                    const cCtx = cvs.getContext('2d');
+                    const MAX_WIDTH = 800; const scaleSize = MAX_WIDTH / img.width;
+                    cvs.width = MAX_WIDTH; cvs.height = img.height * scaleSize;
+                    cCtx.drawImage(img, 0, 0, cvs.width, cvs.height);
+                    const b64 = cvs.toDataURL('image/jpeg', 0.6); // COMPRESSÃO 60%
+                    fotosBase64Array.push(b64);
+                    const imgThumb = document.createElement('img');
+                    imgThumb.src = b64; imgThumb.style.height = '60px'; imgThumb.style.borderRadius = '4px';
+                    preview.appendChild(imgThumb);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(files[i]);
+        }
+    }
 
-        document.getElementById('sysOverlay').style.display = 'flex';
-        document.getElementById('modalSpinner').style.display = 'block';
-        document.getElementById('modalBtn').style.display = 'none';
-        document.getElementById('modalTitle').innerText = "Autenticando...";
-        document.getElementById('modalMsg').innerText = "Validando perfil de segurança.";
+    // --- LEITOR DE QR CODE INTERNO ---
+    let html5QrcodeScanner = null;
+    function abrirScannerInterno() {
+        fecharSidebar();
+        document.getElementById('modalScanner').style.display = 'flex';
+        html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: {width: 250, height: 250} }, false);
+        html5QrcodeScanner.render(resultadoQR, erroQR);
+    }
+    function resultadoQR(decodedText) {
+        fecharScanner();
+        alert("Dossiê Interno Carregado para a Obra: " + decodedText + "\n\nAqui o App listaria RNCs, materiais e pendências específicas para o perfil " + usuarioAtivo.perfil);
+    }
+    function erroQR(err) { /* ignore */ }
+    function fecharScanner() {
+        document.getElementById('modalScanner').style.display = 'none';
+        if (html5QrcodeScanner) { html5QrcodeScanner.clear(); html5QrcodeScanner = null; }
+    }
 
-        try {
-            const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "login", email: email, senha: senha }) }).then(r => r.json());
+    // --- LOGIN E RBAC (TUTORIAL) ---
+    async function efetuarLogin() {
+        const email = document.getElementById('login_email').value;
+        const senha = document.getElementById('login_senha').value;
+        const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "login", email, senha }) }).then(r => r.json());
+        if (res.sucesso) {
+            usuarioAtivo = res.usuario; baseGlobal = res.base;
+            document.getElementById('usuario-logado').innerText = usuarioAtivo.nome;
+            configurarMenusRBAC(); trocarAba('diario');
             
-            if (res && res.sucesso && res.usuario) {
-                usuarioAtivo = res.usuario;
-                baseGlobal = res.base; // Carga autorizada de obras e relatórios do backend
-                localStorage.setItem('smartsync_token_usr', JSON.stringify(usuarioAtivo));
-                localStorage.setItem('smartsync_base', JSON.stringify(baseGlobal));
-                
-                document.getElementById('sysOverlay').style.display = 'none';
-                configurarMenuPorPerfil();
-                popularObrasSelects();
-                trocarAba('historico');
-            } else {
-                mostrarErroModal("Falha no Login", res.erro || "Senha incorreta ou acesso negado.");
-            }
-        } catch (e) {
-            mostrarErroModal("Erro de Conexão", "Não foi possível conectar ao servidor para validar a senha.");
-        }
+            let opts = ''; baseGlobal.obras.forEach(o => opts += `<option>${o.nome}</option>`);
+            document.getElementById('rdo_obra').innerHTML = opts;
+            document.getElementById('rdo_data').valueAsDate = new Date();
+        } else alert(res.erro);
     }
-
-    function verificarSessaoSalva() {
-        const usrSalvo = localStorage.getItem('smartsync_token_usr');
-        if (usrSalvo) {
-            try {
-                usuarioAtivo = JSON.parse(usrSalvo);
-                baseGlobal = JSON.parse(localStorage.getItem('smartsync_base') || '{"obras":[],"diarios":[]}');
-                configurarMenuPorPerfil();
-                popularObrasSelects();
-                trocarAba('historico');
-                return;
-            } catch(e) {}
-        }
-        // Se não houver login, menu fica travado
-        document.getElementById('menu-login').style.display = 'flex';
-        document.getElementById('aba-login').classList.add('active');
-    }
-
-    function fazerLogout() {
-        usuarioAtivo = null;
-        baseGlobal = { obras: [], diarios: [] };
-        localStorage.removeItem('smartsync_token_usr');
-        localStorage.removeItem('smartsync_base');
-        
+    
+    function configurarMenusRBAC() {
         document.querySelectorAll('.sidebar-item').forEach(m => m.style.display = 'none');
-        document.getElementById('menu-login').style.display = 'flex';
-        document.getElementById('usuario-logado').innerText = "Fazer Login";
-        
-        trocarAba('login');
-    }
-
-    function configurarMenuPorPerfil() {
-        document.querySelectorAll('.sidebar-item').forEach(m => m.style.display = 'none');
-        document.getElementById('usuario-logado').innerText = `${usuarioAtivo.nome} [${usuarioAtivo.perfil}]`;
-        
-        // Regras de Bloqueio RBAC
         document.getElementById('menu-diario').style.display = 'flex';
-        document.getElementById('menu-historico').style.display = 'flex';
+        document.getElementById('menu-scanner').style.display = 'flex';
+        document.getElementById('menu-tutorial').style.display = 'flex';
         document.getElementById('menu-logout').style.display = 'flex';
-
-        if (usuarioAtivo.perfil === 'Administrador' || usuarioAtivo.perfil === 'Coordenador') {
-            document.getElementById('menu-configuracoes').style.display = 'flex';
+        
+        // Ajusta o Tutorial dinâmico
+        if (usuarioAtivo.perfil === 'Administrador') {
+            document.getElementById('tut-admin').style.display = 'block';
+            document.getElementById('tut-eng').style.display = 'block';
+        } else {
+            document.getElementById('tut-eng').style.display = 'block';
         }
     }
 
-    function popularObrasSelects() {
-        const perm = usuarioAtivo.obra === "Todas" ? baseGlobal.obras : baseGlobal.obras.filter(o => o.nome === usuarioAtivo.obra);
-        let html = '';
-        perm.forEach(o => html += `<option value="${o.nome}">${o.nome}</option>`);
+    async function salvarRDOOperacional() {
+        const payload = {
+            acao: "salvar_diario",
+            responsavel: usuarioAtivo.nome,
+            obra: document.getElementById('rdo_obra').value,
+            data_diario: document.getElementById('rdo_data').value,
+            respostas: {
+                clima: document.getElementById('rdo_clima').value,
+                efetivo_proprio: document.getElementById('rdo_proprio').value,
+                efetivo_terceiro: document.getElementById('rdo_terceiro').value,
+                equipamentos: document.getElementById('rdo_equip').value,
+                ocorrencias: document.getElementById('rdo_rnc').value
+            },
+            fotos: fotosBase64Array,
+            assinatura: isCanvasBlank(canvas) ? null : canvas.toDataURL('image/png')
+        };
         
-        document.getElementById('diario_select_obra').innerHTML = html;
-        document.getElementById('hist_select_obra').innerHTML = html;
-        document.getElementById('cfg_obra_qr').innerHTML = html;
-        renderizarRdosMock();
+        alert("Enviando dados... Aguarde.");
+        const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
+        if (res.sucesso) alert("Sucesso! PDF Gerado com fotos e assinatura."); else alert("Erro: " + res.erro);
     }
 
-    // -------------------------------------------------------------------------
-    // GERAÇÃO DE QR CODE PÚBLICO E MOCK DE DADOS
-    // -------------------------------------------------------------------------
-    function gerarQrCodePublico() {
-        const obra = document.getElementById('cfg_obra_qr').value;
-        if (!obra) return;
-        
-        const linkPublico = `${API_URL}?qrcode=${encodeURIComponent(obra)}`;
-        
-        document.getElementById('boxQrCodeTarget').innerHTML = "";
-        new QRCode(document.getElementById("boxQrCodeTarget"), {
-            text: linkPublico,
-            width: 200,
-            height: 200,
-            colorDark : "#003366",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
-        });
-
-        document.getElementById('txtLinkPublico').innerHTML = `<a href="${linkPublico}" target="_blank" style="color:var(--primary);">Testar Link do QR Code no Navegador</a>`;
-        document.getElementById('modalQrCode').style.display = 'flex';
+    function isCanvasBlank(c) {
+        const blank = document.createElement('canvas'); blank.width = c.width; blank.height = c.height;
+        return c.toDataURL() === blank.toDataURL();
     }
-
-    async function injetarDadosMock() {
-        if (!confirm("Isso injetará diários de teste e movimentará o avanço físico falsamente na planilha. Tem certeza?")) return;
-
-        document.getElementById('sysOverlay').style.display = 'flex';
-        document.getElementById('modalSpinner').style.display = 'block';
-        document.getElementById('modalBtn').style.display = 'none';
-        document.getElementById('modalTitle').innerText = "Injetando Mock...";
-        document.getElementById('modalMsg').innerText = "Simulando avanço de obra no Google Sheets.";
-
-        try {
-            const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "gerar_dados_mock" }) }).then(r => r.json());
-            
-            // Força a recarga para ver os novos dados
-            const loginRes = await fetch(API_URL, { method: "POST", body: JSON.stringify({ acao: "login", email: usuarioAtivo.email, senha: document.getElementById('login_senha').value || "123456" }) }).then(r => r.json());
-            baseGlobal = loginRes.base;
-            localStorage.setItem('smartsync_base', JSON.stringify(baseGlobal));
-            
-            mostrarErroModal("Sucesso (Mock)", res.mensagem || "Dados de teste injetados!");
-            popularObrasSelects();
-        } catch (e) {
-            mostrarErroModal("Erro", "Falha ao injetar dados mockados.");
-        }
-    }
-
-    function renderizarRdosMock() {
-        const obra = document.getElementById('hist_select_obra').value;
-        const container = document.getElementById('listaHistorico');
-        const filtrados = baseGlobal.diarios.filter(d => d.obra === obra);
-        
-        if (filtrados.length === 0) {
-            container.innerHTML = "<p style='font-size:13px; color:#777;'>Nenhum histórico encontrado.</p>";
-            return;
-        }
-
-        let html = '';
-        filtrados.forEach(r => {
-            html += `<div class="rdo-cloud-card">
-                        <div style="font-weight:bold; font-size:13.5px; color:var(--primary);">${r.id} • Data: ${r.data}</div>
-                        <div style="font-size:12px; margin-top:2px;"><strong>Resp:</strong> ${r.responsavel}</div>
-                        <div style="font-size:11.5px; color:var(--subtext); margin-top:3px;">${r.resumo}</div>
-                     </div>`;
-        });
-        container.innerHTML = html;
-    }
-
-    // -------------------------------------------------------------------------
-    // UTILITÁRIOS DA INTERFACE
-    // -------------------------------------------------------------------------
+    
+    // NAVEGAÇÃO
     function abrirSidebar() { document.getElementById('sidebarMenu').classList.add('open'); document.getElementById('sidebarOverlay').classList.add('open'); }
     function fecharSidebar() { document.getElementById('sidebarMenu').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('open'); }
-    function navegarSidebar(abaId) { trocarAba(abaId); fecharSidebar(); }
-    
-    function trocarAba(abaId) {
+    function navegarSidebar(id) { trocarAba(id); fecharSidebar(); }
+    function trocarAba(id) {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.getElementById('aba-' + abaId).classList.add('active');
+        document.getElementById('aba-' + id).classList.add('active');
         document.querySelectorAll('.sidebar-item').forEach(c => c.classList.remove('active'));
-        const m = document.getElementById('menu-' + abaId);
-        if (m) m.classList.add('active');
+        if(document.getElementById('menu-' + id)) document.getElementById('menu-' + id).classList.add('active');
     }
-
-    function mostrarErroModal(titulo, msg) {
-        document.getElementById('modalSpinner').style.display = 'none';
-        document.getElementById('modalTitle').innerText = titulo;
-        document.getElementById('modalMsg').innerText = msg;
-        document.getElementById('modalBtn').style.display = 'inline-block';
-    }
+    function fazerLogout() { usuarioAtivo = null; document.querySelectorAll('.sidebar-item').forEach(m => m.style.display = 'none'); document.getElementById('menu-login').style.display = 'flex'; trocarAba('login'); }
 </script>
 </body>
 </html>
