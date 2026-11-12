@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Sistema Oficial Unificado</title>
+    <title>SmartSyncGest - Sistema Oficial Completo</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -42,7 +42,7 @@
         .btn-primary { background: var(--primary); } .btn-success { background: #28a745; } .btn-danger { background: #dc3545; } .btn-warning { background: #ffc107; color: #000; }
         .forgot-link { display: inline-block; margin-top: 20px; font-size: 14px; color: var(--primary); text-decoration: none; font-weight: 600; cursor: pointer; text-align:center; width:100%;}
         
-        .user-card { border: 1px solid var(--border-color); border-left: 4px solid #28a745; border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .user-card, .builder-item { border: 1px solid var(--border-color); border-left: 4px solid var(--primary); border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; background: #fafafa; }
         .rdo-cloud-card { border: 1px solid var(--border-color); border-left: 4px solid var(--primary); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
         .signature-pad { border: 1px solid #ccc; border-radius: 8px; width: 100%; height: 150px; background: #fff; touch-action: none; margin-bottom: 10px;}
         .tutorial-box { background: #e8eef5; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid var(--primary); }
@@ -61,7 +61,8 @@
     <div class="sidebar-header"><span>SmartSyncGest</span><span class="sidebar-close" onclick="fecharSidebar()">✕</span></div>
     <div class="sidebar-menu">
         <div class="sidebar-item active" id="menu-login" onclick="navegarSidebar('login')" style="display:flex;">👤 Autenticação</div>
-        <div class="sidebar-item" id="menu-diario" onclick="navegarSidebar('diario')">📝 Diário Dinâmico (Builder)</div>
+        <div class="sidebar-item" id="menu-diario" onclick="navegarSidebar('diario')">📝 Diário Dinâmico (Campo)</div>
+        <div class="sidebar-item" id="menu-builder" onclick="navegarSidebar('builder')">🛠️ Construtor de Formulários</div>
         <div class="sidebar-item" id="menu-historico" onclick="navegarSidebar('historico')">📊 Painel Consolidado</div>
         <div class="sidebar-item" id="menu-usuarios" onclick="navegarSidebar('usuarios')">👥 Gestão de Usuários (Admin)</div>
         <div class="sidebar-item" id="menu-scanner" onclick="abrirScannerInterno()">🔍 Scanner de Obra</div>
@@ -88,14 +89,13 @@
     </div>
 </div>
 
-<!-- TELA 2: DIÁRIO DINÂMICO (GOOGLE FORM BUILDER + RDO) -->
+<!-- TELA 2: DIÁRIO DINÂMICO (CAMPO) -->
 <div id="aba-diario" class="tab-content">
     <div class="container">
-        <h2>📝 Formulário Dinâmico (Builder)</h2>
+        <h2>📝 Formulário de Campo (RDO)</h2>
         <div class="form-group"><label>Obra Vinculada</label><select id="rdo_obra" onchange="renderizarFormularioDinamico()"></select></div>
         <div class="form-group"><label>Data</label><input type="date" id="rdo_data"></div>
         
-        <!-- Formulário Gerado Dinamicamente pelo Builder -->
         <div id="formBuilderContainer" style="margin-top:15px; text-align:left;"></div>
 
         <h3>📸 Evidências & Assinatura</h3>
@@ -109,7 +109,36 @@
     </div>
 </div>
 
-<!-- TELA 3: PAINEL CONSOLIDADO -->
+<!-- TELA 3: CONSTRUTOR DE FORMULÁRIOS (BUILDER) - RESTAURADO! -->
+<div id="aba-builder" class="tab-content">
+    <div class="container">
+        <h2>🛠️ Construtor de Formulários por Obra</h2>
+        <p style="font-size:13px; color:var(--subtext);">Crie e adicione perguntas personalizadas (como rádio, numérico ou etapa produtiva) para o formulário de campo desta obra.</p>
+        
+        <div class="form-group"><label>Selecione a Obra para Editar</label><select id="builder_select_obra" onchange="carregarSchemaNaTela()"></select></div>
+        
+        <div style="background:#f9f9f9; padding:15px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:20px; text-align:left;">
+            <h3 style="margin-top:0; font-size:14px; color:var(--primary);">Adicionar Nova Pergunta / Etapa</h3>
+            <div class="form-group"><label>Título da Pergunta ou Etapa</label><input type="text" id="novo_campo_titulo" placeholder="Ex: 03-Pintura ou Clima Tarde"></div>
+            <div class="form-group"><label>Tipo do Campo</label>
+                <select id="novo_campo_tipo">
+                    <option value="text">Texto Livre</option>
+                    <option value="radio">Múltipla Escolha (Opções)</option>
+                    <option value="etapa_producao">Etapa de Produção Física (Meta / Acumulado)</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Meta Contratual (Apenas para Etapa de Produção)</label><input type="number" id="novo_campo_meta" value="500"></div>
+            <div class="form-group"><label>Opções (Separadas por vírgula, apenas para Múltipla Escolha)</label><input type="text" id="novo_campo_opcoes" placeholder="Sol, Chuva, Nublado"></div>
+            <button class="btn-primary" onclick="adicionarCampoNoSchema()">Adicionar à Estrutura da Obra</button>
+        </div>
+
+        <h3 style="text-align:left; font-size:14px;">Campos Atuais do Formulário</h3>
+        <div id="listaSchemaBuilder" style="margin-top:10px;"></div>
+        <button class="btn-success" onclick="salvarSchemaNaNuvem()" style="margin-top:15px;">Salvar Alterações na Nuvem (Google Sheets)</button>
+    </div>
+</div>
+
+<!-- TELA 4: PAINEL CONSOLIDADO -->
 <div id="aba-historico" class="tab-content">
     <div class="container">
         <h2>📊 Painel de Histórico</h2>
@@ -118,7 +147,7 @@
     </div>
 </div>
 
-<!-- TELA 4: GESTÃO DE USUÁRIOS (ADMIN) -->
+<!-- TELA 5: GESTÃO DE USUÁRIOS (ADMIN) -->
 <div id="aba-usuarios" class="tab-content">
     <div class="container">
         <h2>👥 Gestão de Usuários</h2>
@@ -137,7 +166,7 @@
     </div>
 </div>
 
-<!-- TELA 5: CONFIGURAÇÕES E MOCK -->
+<!-- TELA 6: CONFIGURAÇÕES E MOCK -->
 <div id="aba-configuracoes" class="tab-content">
     <div class="container">
         <h2>⚙️ Configurações & Testes</h2>
@@ -147,13 +176,13 @@
     </div>
 </div>
 
-<!-- TELA 6: TUTORIAL -->
+<!-- TELA 7: TUTORIAL -->
 <div id="aba-tutorial" class="tab-content">
     <div class="container">
         <h2>📚 Manual do Sistema</h2>
         <div class="tutorial-box">
             <h3>Guia Operacional</h3>
-            <p style="font-size:13px;">O formulário de campo é gerado automaticamente com base na matriz configurada para cada obra. O sistema garante armazenamento offline e sincronização idempotente.</p>
+            <p style="font-size:13px;">O Construtor de Formulários (Builder) permite que você crie perguntas novas por obra em tempo real. O formulário de campo se adapta automaticamente.</p>
         </div>
     </div>
 </div>
@@ -191,6 +220,7 @@
     const API_URL = CONFIG.API_URL;
     let usuarioAtivo = null;
     let baseGlobal = { obras: [], usuarios: [], diarios: [] };
+    let schemaEdicaoAtual = [];
     let fotosBase64Array = [];
     
     // Canvas Assinatura
@@ -256,6 +286,7 @@
         document.getElementById('menu-logout').style.display = 'flex';
 
         if (usuarioAtivo.perfil === 'Administrador' || usuarioAtivo.perfil === 'Coordenador') {
+            document.getElementById('menu-builder').style.display = 'flex';
             document.getElementById('menu-usuarios').style.display = 'flex';
             document.getElementById('menu-configuracoes').style.display = 'flex';
         }
@@ -267,17 +298,91 @@
         perm.forEach(o => obrasOpt += `<option value="${o.nome}">${o.nome} (${o.empresa})</option>`);
         
         document.getElementById('rdo_obra').innerHTML = obrasOpt;
+        document.getElementById('builder_select_obra').innerHTML = obrasOpt;
         document.getElementById('cad_obra').innerHTML = '<option value="Todas">Todas</option>' + obrasOpt;
         document.getElementById('hist_select_obra').innerHTML = obrasOpt;
         document.getElementById('cfg_obra_qr').innerHTML = obrasOpt;
         document.getElementById('rdo_data').valueAsDate = new Date();
         
         renderizarFormularioDinamico();
+        carregarSchemaNaTela();
         renderizarListaUsuariosAdmin();
         renderizarHistorico();
     }
 
-    // --- RENDERIZADOR DO BUILDER DINÂMICO (GOOGLE FORM) ---
+    // --- CONSTRUTOR DE FORMULÁRIOS (BUILDER) ---
+    function carregarSchemaNaTela() {
+        const obraNome = document.getElementById('builder_select_obra').value;
+        const obra = baseGlobal.obras.find(o => o.nome === obraNome);
+        schemaEdicaoAtual = obra && obra.schemaFormulario ? JSON.parse(JSON.stringify(obra.schemaFormulario)) : [];
+        renderizarListaSchemaBuilder();
+    }
+
+    function renderizarListaSchemaBuilder() {
+        const container = document.getElementById('listaSchemaBuilder');
+        if (schemaEdicaoAtual.length === 0) { container.innerHTML = "<p style='font-size:13px; color:#777;'>Nenhum campo cadastrado.</p>"; return; }
+        let html = '';
+        schemaEdicaoAtual.forEach((c, idx) => {
+            html += `<div class="builder-item">
+                        <div><strong>${c.titulo}</strong><br><span style="font-size:11.5px; color:var(--subtext);">Tipo: ${c.tipo} | Meta: ${c.meta||'-'}</span></div>
+                        <button class="btn-danger" style="width:auto; padding:6px 12px; font-size:12px; margin-top:0;" onclick="removerCampoSchema(${idx})">Remover</button>
+                     </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function adicionarCampoNoSchema() {
+        const titulo = document.getElementById('novo_campo_titulo').value.trim();
+        const tipo = document.getElementById('novo_campo_tipo').value;
+        const meta = Number(document.getElementById('novo_campo_meta').value) || 500;
+        const opcoesStr = document.getElementById('novo_campo_opcoes').value.trim();
+        
+        if (!titulo) return alert("Digite o título do campo.");
+        
+        let opcoesArr = [];
+        if (tipo === 'radio' && opcoesStr) opcoesArr = opcoesStr.split(',').map(s => s.trim());
+
+        schemaEdicaoAtual.push({
+            id: "c_" + Date.now(),
+            tipo: tipo,
+            secao: "Personalizado",
+            titulo: titulo,
+            meta: meta,
+            opcoes: opcoesArr,
+            obrigatoria: false
+        });
+
+        document.getElementById('novo_campo_titulo').value = "";
+        document.getElementById('novo_campo_opcoes').value = "";
+        renderizarListaSchemaBuilder();
+    }
+
+    function removerCampoSchema(idx) {
+        schemaEdicaoAtual.splice(idx, 1);
+        renderizarListaSchemaBuilder();
+    }
+
+    async function salvarSchemaNaNuvem() {
+        const obraNome = document.getElementById('builder_select_obra').value;
+        const obra = baseGlobal.obras.find(o => o.nome === obraNome);
+        const payload = {
+            acao: "salvar_schema_obra",
+            nome: obraNome,
+            empresa: obra ? obra.empresa : "Construtora Padrão",
+            totalUHs: obra ? obra.totalUHs : 500,
+            schemaFormulario: schemaEdicaoAtual
+        };
+
+        mostrarLoadingUI("Salvando...", "Gravando formulário dinâmico na nuvem.");
+        const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
+        if (res.sucesso) {
+            baseGlobal = res.base;
+            mostrarAlertaUI("Sucesso!", res.mensagem);
+            popularselectsGerais();
+        } else { mostrarAlertaUI("Erro", res.erro); }
+    }
+
+    // --- RENDERIZADOR DO FORMULÁRIO DE CAMPO ---
     function renderizarFormularioDinamico() {
         const obraNome = document.getElementById('rdo_obra').value;
         const obra = baseGlobal.obras.find(o => o.nome === obraNome);
