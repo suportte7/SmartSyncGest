@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Builder Master Completo</title>
+    <title>SmartSyncGest - Builder Master com Ícones e Preview</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -39,7 +39,7 @@
         input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; box-sizing: border-box; }
         
         button { padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; color: white; width: 100%; margin-top: 10px; }
-        .btn-primary { background: var(--primary); } .btn-success { background: #28a745; } .btn-danger { background: #dc3545; } .btn-warning { background: #ffc107; color: #000; }
+        .btn-primary { background: var(--primary); } .btn-success { background: #28a745; } .btn-danger { background: #dc3545; } .btn-warning { background: #ffc107; color: #000; } .btn-info { background: #17a2b8; }
         .forgot-link { display: inline-block; margin-top: 20px; font-size: 14px; color: var(--primary); text-decoration: none; font-weight: 600; cursor: pointer; text-align:center; width:100%;}
         
         .builder-card { border: 1px solid var(--border-color); border-left: 4px solid var(--primary); border-radius: 8px; padding: 15px; margin-bottom: 15px; background: #fafafa; text-align: left; }
@@ -50,7 +50,7 @@
         .juridical-box { background: #fdfefe; border: 1px solid #bce8f1; border-left: 4px solid #31708f; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: left; font-size: 12.5px; color: #31708f; }
 
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-box { background: var(--card-bg); padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 380px; border: 1px solid var(--border-color); }
+        .modal-box { background: var(--card-bg); padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 480px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border-color); }
         .spinner { width: 36px; height: 36px; border: 4px solid rgba(0,0,0,0.1); border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         #reader { width: 100%; background: #fff; border-radius: 10px; overflow: hidden; margin-top:10px; }
@@ -119,11 +119,11 @@
     </div>
 </div>
 
-<!-- TELA 3: CONSTRUTOR DE FORMULÁRIOS (BUILDER MASTER COM EDIÇÃO COMPLETA) -->
+<!-- TELA 3: CONSTRUTOR DE FORMULÁRIOS (BUILDER MASTER COM ÍCONES E PREVIEW) -->
 <div id="aba-builder" class="tab-content">
     <div class="container">
         <h2>🛠️ Construtor de Formulários (Builder Master)</h2>
-        <p style="font-size:13px; color:var(--subtext);">Crie perguntas com todos os formatos avançados, edite ou reorganize a ordem a qualquer momento.</p>
+        <p style="font-size:13px; color:var(--subtext);">Crie perguntas com ícones visuais, edite, reorganize e teste com o Preview antes de salvar.</p>
         
         <div class="form-group"><label>Selecione a Obra</label><select id="builder_select_obra" onchange="carregarSchemaNaTela()"></select></div>
         
@@ -135,16 +135,16 @@
             <div class="form-group"><label>Título da Pergunta</label><input type="text" id="novo_campo_titulo" placeholder="Ex: Clima, Efetivo, etc."></div>
             <div class="form-group"><label>Tipo de Pergunta</label>
                 <select id="novo_campo_tipo">
-                    <option value="text">Resposta Curta (Texto)</option>
-                    <option value="textarea">Parágrafo (Texto Longo)</option>
-                    <option value="number">Numérico (Inteiro/Decimal)</option>
-                    <option value="radio">Múltipla Escolha (Rádio)</option>
-                    <option value="checkbox">Caixas de Seleção (Múltiplas)</option>
-                    <option value="select">Lista Suspensa (Dropdown)</option>
-                    <option value="date">Data</option>
-                    <option value="time">Hora</option>
-                    <option value="rating">Escala Linear / Classificação (1 a 5)</option>
-                    <option value="etapa_producao">Etapa de Produção Física (Meta / Acumulado)</option>
+                    <option value="text">✏️ Resposta Curta (Texto)</option>
+                    <option value="textarea">📄 Parágrafo (Texto Longo)</option>
+                    <option value="number">#️⃣ Numérico (Inteiro/Decimal)</option>
+                    <option value="radio">🔘 Múltipla Escolha (Rádio)</option>
+                    <option value="checkbox">☑️ Caixas de Seleção (Múltiplas)</option>
+                    <option value="select">📋 Lista Suspensa (Dropdown)</option>
+                    <option value="date">📅 Data</option>
+                    <option value="time">⏰ Hora</option>
+                    <option value="rating">⭐ Escala Linear / Classificação (1 a 5)</option>
+                    <option value="etapa_producao">🏗️ Etapa de Produção Física (Meta / Acumulado)</option>
                 </select>
             </div>
             <div class="form-group"><label>Opções (Para Radio, Checkbox ou Select - separadas por vírgula)</label><input type="text" id="novo_campo_opcoes" placeholder="Sol, Nublado, Chuva"></div>
@@ -154,6 +154,8 @@
             <button class="btn-primary" id="btnSalvarOuAdicionar" onclick="salvarOuAdicionarPergunta()">Adicionar Pergunta ao Formulário</button>
             <button class="btn-warning" id="btnCancelarEdicao" onclick="cancelarEdicaoPergunta()" style="display:none;">Cancelar Edição</button>
         </div>
+
+        <button class="btn-info" onclick="abrirModalPreview()" style="margin-bottom:15px;">👁️ Visualizar Formulário (Preview)</button>
 
         <h3 style="text-align:left; font-size:14px;">Perguntas Configuradas (Editáveis & Reordenáveis)</h3>
         <div id="listaSchemaBuilder" style="margin-top:10px;"></div>
@@ -205,9 +207,19 @@
     <div class="container">
         <h2>📚 Manual do Sistema</h2>
         <div class="tutorial-box">
-            <h3>Guia do Builder Master</h3>
-            <p style="font-size:13px;">Agora você pode clicar em "Editar" em qualquer pergunta existente para alterar suas configurações instantaneamente, além de reorganizar a ordem com os botões de subir e descer.</p>
+            <h3>Guia do Builder com Preview</h3>
+            <p style="font-size:13px;">Agora você conta com ícones visuais para cada tipo de pergunta e pode clicar em "Visualizar Formulário (Preview)" para testar a experiência exata do usuário antes de publicar na nuvem.</p>
         </div>
+    </div>
+</div>
+
+<!-- MODAL PREVIEW DO FORMULÁRIO -->
+<div id="modalPreview" class="overlay" onclick="document.getElementById('modalPreview').style.display='none'">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <h3 style="margin-top:0; color:var(--primary);">👁️ Pré-Visualização do Formulário</h3>
+        <p style="font-size:12px; color:var(--subtext); margin-bottom:15px;">Este é o modelo exato que o engenheiro visualizará no canteiro.</p>
+        <div id="containerPreviewConteudo" style="text-align:left; max-height:50vh; overflow-y:auto; padding:5px;"></div>
+        <button class="btn-primary" onclick="document.getElementById('modalPreview').style.display='none'" style="margin-top:15px;">Fechar Preview</button>
     </div>
 </div>
 
@@ -246,6 +258,12 @@
     let baseGlobal = { obras: [], usuarios: [], diarios: [] };
     let schemaEdicaoAtual = [];
     let fotosBase64Array = [];
+
+    const iconesTipos = {
+        'text': '✏️', 'textarea': '📄', 'number': '#️⃣', 'radio': '🔘',
+        'checkbox': '☑️', 'select': '📋', 'date': '📅', 'time': '⏰',
+        'rating': '⭐', 'etapa_producao': '🏗️'
+    };
 
     window.addEventListener('DOMContentLoaded', () => {
         const sessaoSalva = localStorage.getItem('smart_sync_usuario');
@@ -340,7 +358,7 @@
         renderizarHistorico();
     }
 
-    // --- BUILDER MASTER COM EDIÇÃO COMPLETA E REORDENAÇÃO ---
+    // --- BUILDER MASTER COM ÍCONES E PREVIEW ---
     function carregarSchemaNaTela() {
         const obraNome = document.getElementById('builder_select_obra').value;
         const obra = baseGlobal.obras.find(o => o.nome === obraNome);
@@ -354,9 +372,10 @@
         if (schemaEdicaoAtual.length === 0) { container.innerHTML = "<p style='font-size:13px; color:#777;'>Nenhuma pergunta cadastrada.</p>"; return; }
         let html = '';
         schemaEdicaoAtual.forEach((c, idx) => {
+            const icone = iconesTipos[c.tipo] || '❓';
             html += `<div class="builder-card">
                         <div style="font-size:11px; font-weight:bold; color:var(--primary); text-transform:uppercase;">${c.secao || 'Geral'}</div>
-                        <div style="font-size:15px; font-weight:bold; margin:4px 0;">${c.titulo} ${c.obrigatoria?'*':''}</div>
+                        <div style="font-size:15px; font-weight:bold; margin:4px 0;">${icone} ${c.titulo} ${c.obrigatoria?'*':''}</div>
                         <div style="font-size:12px; color:var(--subtext);">Tipo: <b>${c.tipo}</b> ${c.opcoes && c.opcoes.length>0 ? '| Opções: '+c.opcoes.join(', ') : ''}</div>
                         <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
                             <button class="btn-warning" style="width:auto; padding:5px 10px; font-size:11px; margin-top:0; color:#000;" onclick="carregarPerguntaParaEdicao(${idx})">✏️ Editar</button>
@@ -367,6 +386,36 @@
                      </div>`;
         });
         container.innerHTML = html;
+    }
+
+    function abrirModalPreview() {
+        const container = document.getElementById('containerPreviewConteudo');
+        if (schemaEdicaoAtual.length === 0) {
+            container.innerHTML = "<p>Nenhuma pergunta configurada para visualizar.</p>";
+        } else {
+            let html = '';
+            schemaEdicaoAtual.forEach(campo => {
+                const icone = iconesTipos[campo.tipo] || '❓';
+                html += `<div class="form-group" style="border-bottom:1px solid #eee; padding-bottom:10px;">
+                            <label><b>${icone} ${campo.titulo}</b> ${campo.obrigatoria?'<span style="color:red;">*</span>':''}</label>`;
+                if (campo.tipo === 'text') html += `<input type="text" disabled placeholder="[Texto curto]">`;
+                else if (campo.tipo === 'textarea') html += `<textarea disabled rows="2" placeholder="[Parágrafo]"></textarea>`;
+                else if (campo.tipo === 'number') html += `<input type="number" disabled placeholder="[Número]">`;
+                else if (campo.tipo === 'date') html += `<input type="date" disabled>`;
+                else if (campo.tipo === 'time') html += `<input type="time" disabled>`;
+                else if (campo.tipo === 'rating') html += `<p style="font-size:12px; color:#777;">⭐ 1 | 2 | 3 | 4 | 5</p>`;
+                else if (campo.tipo === 'radio' || campo.tipo === 'checkbox') {
+                    (campo.opcoes||[]).forEach(op => html += `<div style="font-size:12.5px; color:#555;">- ${op}</div>`);
+                } else if (campo.tipo === 'select') {
+                    html += `<select disabled><option>Selecione...</option></select>`;
+                } else if (campo.tipo === 'etapa_producao') {
+                    html += `<input type="number" disabled placeholder="[Meta: ${campo.meta}]">`;
+                }
+                html += `</div>`;
+            });
+            container.innerHTML = html;
+        }
+        document.getElementById('modalPreview').style.display = 'flex';
     }
 
     function carregarPerguntaParaEdicao(idx) {
@@ -416,15 +465,8 @@
         }
 
         if (idxEdicao >= 0) {
-            // Editando existente
-            schemaEdicaoAtual[idxEdicao].secao = secao;
-            schemaEdicaoAtual[idxEdicao].titulo = titulo;
-            schemaEdicaoAtual[idxEdicao].tipo = tipo;
-            schemaEdicaoAtual[idxEdicao].meta = meta;
-            schemaEdicaoAtual[idxEdicao].opcoes = opcoesArr;
-            schemaEdicaoAtual[idxEdicao].obrigatoria = obrigatoria;
+            schemaEdicaoAtual[idxEdicao] = { id: schemaEdicaoAtual[idxEdicao].id, tipo, secao, titulo, meta, opcoes: opcoesArr, obrigatoria };
         } else {
-            // Adicionando nova
             schemaEdicaoAtual.push({ id: "c_" + Date.now(), tipo, secao, titulo, meta, opcoes: opcoesArr, obrigatoria });
         }
 
@@ -458,7 +500,6 @@
         else { mostrarAlertaUI("Erro", res.erro); }
     }
 
-    // --- RENDERIZADOR DINÂMICO COMPLETO COM TODOS OS TIPOS DE PERGUNTA ---
     function mudarObraDiario() { renderizarFormularioDinamico(); }
 
     function renderizarFormularioDinamico() {
@@ -473,8 +514,9 @@
 
         let html = '';
         obra.schemaFormulario.forEach(campo => {
+            const icone = iconesTipos[campo.tipo] || '';
             html += `<div class="form-group" oninput="atualizarProgressoFormulario()" onchange="atualizarProgressoFormulario()">
-                        <label>${campo.titulo} ${campo.obrigatoria?'<span style="color:red;">*</span>':''}</label>`;
+                        <label>${icone} ${campo.titulo} ${campo.obrigatoria?'<span style="color:red;">*</span>':''}</label>`;
             
             if (campo.tipo === 'text') html += `<input type="text" id="resp_${campo.id}" class="form-campo-rdo" placeholder="Resposta curta">`;
             else if (campo.tipo === 'textarea') html += `<textarea id="resp_${campo.id}" class="form-campo-rdo" rows="3" placeholder="Parágrafo / Observações"></textarea>`;
