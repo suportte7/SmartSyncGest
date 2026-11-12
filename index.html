@@ -39,14 +39,12 @@
         .menu-hamburger { font-size: 22px; cursor: pointer; padding: 5px; }
         .brand-title { font-size: 18px; font-weight: bold; flex-grow: 1; margin-left: 12px; display: flex; align-items: center; gap: 8px; }
         
-        /* INDICADOR DE STATUS OFFLINE/ONLINE */
         .net-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; background: #2ecc71; box-shadow: 0 0 6px #2ecc71; }
         .net-dot.offline { background: #ff5252; box-shadow: 0 0 6px #ff5252; }
         .pending-pill { font-size: 10px; background: #ffc107; color: #000; padding: 2px 6px; border-radius: 10px; font-weight: bold; cursor: pointer; display: none; }
 
         .user-badge { font-size: 12px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; cursor: pointer; }
         
-        /* BOTÃO SUPER DISCRETO DE ALTERNAR TEMA */
         .theme-toggle-btn {
             background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.35);
@@ -62,7 +60,6 @@
         }
         .theme-toggle-btn:hover { opacity: 1; background: rgba(255, 255, 255, 0.15); }
 
-        /* MENU LATERAL EXPANSÍVEL (DRAWER) */
         .sidebar { position: fixed; top: 0; left: -290px; width: 280px; height: 100%; background: var(--card-bg); box-shadow: 2px 0 12px rgba(0,0,0,0.3); transition: left 0.3s ease; z-index: 2500; display: flex; flex-direction: column; }
         .sidebar.open { left: 0; }
         .sidebar-header { background: var(--primary); color: var(--header-text); padding: 20px 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
@@ -104,6 +101,59 @@
 
         .preview-foto-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
         .preview-foto { width: 75px; height: 75px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-color); }
+
+        /* BLOCO DE ASSINATURA DIGITAL TOUCH (CANVAS) */
+        .assinatura-box {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 16px;
+            background: rgba(0,0,0,0.02);
+        }
+        .assinatura-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .assinatura-titulo {
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--primary);
+        }
+        .btn-limpar-ass {
+            background: #6c757d;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            width: auto;
+            margin: 0;
+        }
+        .btn-limpar-ass:hover { background: #5a6268; }
+        .canvas-pad-wrapper {
+            background: #ffffff;
+            border: 2px dashed #b0bec5;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        .canvas-assinatura {
+            display: block;
+            width: 100%;
+            height: 140px;
+            background: #ffffff;
+            touch-action: none;
+            cursor: crosshair;
+        }
+        .assinatura-dica {
+            font-size: 11px;
+            color: var(--subtext);
+            margin-top: 5px;
+        }
 
         .offline-banner { display: none; background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 10px 14px; border-radius: 8px; font-size: 12px; margin-bottom: 15px; font-weight: 600; }
         .fila-card { border: 1px solid var(--border-color); border-left: 4px solid #ffc107; padding: 12px; border-radius: 8px; margin-bottom: 10px; background: rgba(0,0,0,0.02); }
@@ -246,12 +296,12 @@
     </div>
 </div>
 
-<!-- TELA 3: DIÁRIO DE CAMPO PAGINADO (ENGENHEIRO) -->
+<!-- TELA 3: DIÁRIO DE CAMPO PAGINADO + ASSINATURAS TOUCH (ENGENHEIRO) -->
 <div id="aba-diario" class="tab-content">
     <div class="container">
         <h2>Diário de Engenharia de Campo</h2>
         <div id="diarioOfflineBanner" class="offline-banner">
-            📡 Sem conexão com a internet. Ao finalizar, o diário e as fotos serão salvos no celular e sincronizados automaticamente quando houver sinal.
+            📡 Sem conexão com a internet. Ao finalizar, o diário, fotos e assinaturas serão salvos no celular e sincronizados automaticamente quando houver sinal.
         </div>
         <form id="formDiario" onsubmit="enviarDiario(event)">
             <div class="form-group">
@@ -269,6 +319,59 @@
             </div>
 
             <div id="container_formulario_dinamico"></div>
+
+            <!-- BLOCO DE ASSINATURAS DIGITAIS (EXIBIDO NA ÚLTIMA PÁGINA DO FORMULÁRIO) -->
+            <div id="blocoAssinaturasDigitais" style="display:none; margin-top: 25px;">
+                <div class="secao-header">✍️ Assinaturas Digitais do RDO (Opcional)</div>
+                <p style="font-size:12px; color:var(--subtext); margin-top:-8px; margin-bottom:14px;">
+                    Assine com o dedo ou caneta nos quadros abaixo para estampar diretamente na prancha PDF.
+                </p>
+
+                <!-- 1. ENGENHEIRO RESPONSÁVEL -->
+                <div class="assinatura-box">
+                    <div class="assinatura-header">
+                        <span class="assinatura-titulo">1. Engenheiro Responsável Técnico</span>
+                        <button type="button" class="btn-limpar-ass" onclick="limparAssinatura('engenheiro')">🧹 Limpar</button>
+                    </div>
+                    <div class="form-group" style="margin-bottom:8px;">
+                        <input type="text" id="ass_nome_engenheiro" placeholder="Nome do Engenheiro (opcional)" style="padding:7px 10px; font-size:13px;">
+                    </div>
+                    <div class="canvas-pad-wrapper">
+                        <canvas id="canvas_ass_engenheiro" class="canvas-assinatura" width="500" height="150"></canvas>
+                    </div>
+                    <div class="assinatura-dica">Desenhe a assinatura no quadro branco acima</div>
+                </div>
+
+                <!-- 2. COORDENADOR DE ENGENHARIA -->
+                <div class="assinatura-box">
+                    <div class="assinatura-header">
+                        <span class="assinatura-titulo">2. Coordenador de Engenharia</span>
+                        <button type="button" class="btn-limpar-ass" onclick="limparAssinatura('coordenador')">🧹 Limpar</button>
+                    </div>
+                    <div class="form-group" style="margin-bottom:8px;">
+                        <input type="text" id="ass_nome_coordenador" placeholder="Nome do Coordenador (opcional)" style="padding:7px 10px; font-size:13px;">
+                    </div>
+                    <div class="canvas-pad-wrapper">
+                        <canvas id="canvas_ass_coordenador" class="canvas-assinatura" width="500" height="150"></canvas>
+                    </div>
+                    <div class="assinatura-dica">Desenhe a assinatura no quadro branco acima</div>
+                </div>
+
+                <!-- 3. FISCAL DE OBRA -->
+                <div class="assinatura-box">
+                    <div class="assinatura-header">
+                        <span class="assinatura-titulo">3. Fiscal de Obra</span>
+                        <button type="button" class="btn-limpar-ass" onclick="limparAssinatura('fiscal')">🧹 Limpar</button>
+                    </div>
+                    <div class="form-group" style="margin-bottom:8px;">
+                        <input type="text" id="ass_nome_fiscal" placeholder="Nome do Fiscal (opcional)" style="padding:7px 10px; font-size:13px;">
+                    </div>
+                    <div class="canvas-pad-wrapper">
+                        <canvas id="canvas_ass_fiscal" class="canvas-assinatura" width="500" height="150"></canvas>
+                    </div>
+                    <div class="assinatura-dica">Desenhe a assinatura no quadro branco acima</div>
+                </div>
+            </div>
 
             <div class="nav-paginacao">
                 <button type="button" id="btnPagAnterior" class="btn-secondary flex-1" onclick="mudarPaginaForm(-1)" style="display:none;">⬅️ Anterior</button>
@@ -350,8 +453,122 @@
     let paginaAtualIndex = 0;
     let totalPaginasForm = 1;
 
+    // ESTADO DOS QUADROS DE ASSINATURA TOUCH
+    const estadoAssinaturas = {
+        engenheiro: { assinado: false, desenhando: false },
+        coordenador: { assinado: false, desenhando: false },
+        fiscal: { assinado: false, desenhando: false }
+    };
+
     // =========================================================================
-    // MOTOR INDEXEDDB PARA FILA OFFLINE (DIÁRIOS + FOTOS SEM LIMITE DE 5MB)
+    // MOTOR DE ASSINATURA DIGITAL TOUCH / MOUSE (CANVAS)
+    // =========================================================================
+    function inicializarPadsAssinatura() {
+        ['engenheiro', 'coordenador', 'fiscal'].forEach(papel => {
+            const canvas = document.getElementById(`canvas_ass_${papel}`);
+            if (!canvas || canvas.dataset.inicializado === "1") return;
+            canvas.dataset.inicializado = "1";
+
+            const ctx = canvas.getContext('2d');
+            ctx.strokeStyle = '#001f3f';
+            ctx.lineWidth = 2.6;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            function obterPosicao(evt) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                let clientX, clientY;
+
+                if (evt.touches && evt.touches.length > 0) {
+                    clientX = evt.touches[0].clientX;
+                    clientY = evt.touches[0].clientY;
+                } else {
+                    clientX = evt.clientX;
+                    clientY = evt.clientY;
+                }
+                return {
+                    x: (clientX - rect.left) * scaleX,
+                    y: (clientY - rect.top) * scaleY
+                };
+            }
+
+            function iniciarTraco(evt) {
+                if (evt.cancelable) evt.preventDefault();
+                estadoAssinaturas[papel].desenhando = true;
+                estadoAssinaturas[papel].assinado = true;
+                const pos = obterPosicao(evt);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+            }
+
+            function moverTraco(evt) {
+                if (!estadoAssinaturas[papel].desenhando) return;
+                if (evt.cancelable) evt.preventDefault();
+                const pos = obterPosicao(evt);
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+            }
+
+            function finalizarTraco(evt) {
+                if (!estadoAssinaturas[papel].desenhando) return;
+                if (evt && evt.cancelable) evt.preventDefault();
+                estadoAssinaturas[papel].desenhando = false;
+                ctx.closePath();
+            }
+
+            // Eventos Mouse
+            canvas.addEventListener('mousedown', iniciarTraco);
+            canvas.addEventListener('mousemove', moverTraco);
+            canvas.addEventListener('mouseup', finalizarTraco);
+            canvas.addEventListener('mouseleave', finalizarTraco);
+
+            // Eventos Touch (Celular / Tablet)
+            canvas.addEventListener('touchstart', iniciarTraco, { passive: false });
+            canvas.addEventListener('touchmove', moverTraco, { passive: false });
+            canvas.addEventListener('touchend', finalizarTraco, { passive: false });
+            canvas.addEventListener('touchcancel', finalizarTraco, { passive: false });
+        });
+    }
+
+    function limparAssinatura(papel) {
+        const canvas = document.getElementById(`canvas_ass_${papel}`);
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        estadoAssinaturas[papel].assinado = false;
+        estadoAssinaturas[papel].desenhando = false;
+    }
+
+    function limparTodasAssinaturas() {
+        ['engenheiro', 'coordenador', 'fiscal'].forEach(papel => {
+            limparAssinatura(papel);
+        });
+        if (usuarioAtivo && document.getElementById('ass_nome_engenheiro')) {
+            document.getElementById('ass_nome_engenheiro').value = usuarioAtivo.nome || "";
+        }
+        if (document.getElementById('ass_nome_coordenador')) document.getElementById('ass_nome_coordenador').value = "";
+        if (document.getElementById('ass_nome_fiscal')) document.getElementById('ass_nome_fiscal').value = "";
+    }
+
+    function coletarAssinaturasPayload() {
+        let resultado = {};
+        ['engenheiro', 'coordenador', 'fiscal'].forEach(papel => {
+            const canvas = document.getElementById(`canvas_ass_${papel}`);
+            const nomeInput = document.getElementById(`ass_nome_${papel}`);
+            const nome = nomeInput ? nomeInput.value.trim() : "";
+            const imagem = (canvas && estadoAssinaturas[papel].assinado) ? canvas.toDataURL('image/png') : "";
+            resultado[papel] = {
+                nome: nome,
+                imagem: imagem
+            };
+        });
+        return resultado;
+    }
+
+    // =========================================================================
+    // MOTOR INDEXEDDB PARA FILA OFFLINE (DIÁRIOS + FOTOS + ASSINATURAS)
     // =========================================================================
     const DB_NAME = "SmartSyncOfflineDB";
     const DB_VERSION = 1;
@@ -405,7 +622,7 @@
     }
 
     // =========================================================================
-    // REGISTRO DO SERVICE WORKER & MONITORAMENTO DE CONEXÃO
+    // SERVICE WORKER & MONITORAMENTO AUTOMÁTICO DE REDE
     // =========================================================================
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -420,6 +637,16 @@
     window.addEventListener('offline', () => {
         atualizarIndicadorRede();
     });
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && navigator.onLine) {
+            sincronizarFilaOffline(false);
+        }
+    });
+    setInterval(() => {
+        if (navigator.onLine && !sincronizandoEmAndamento) {
+            sincronizarFilaOffline(false);
+        }
+    }, 20000);
 
     function atualizarIndicadorRede() {
         const online = navigator.onLine;
@@ -585,6 +812,7 @@
         const temaSalvo = localStorage.getItem('smartsync_tema') || 'azul';
         aplicarTemaVisual(temaSalvo);
         
+        inicializarPadsAssinatura();
         atualizarIndicadorRede();
         await atualizarInterfaceFilaOffline();
         await carregarDadosSistema();
@@ -865,7 +1093,6 @@
             schemaFormulario: schemaFormularioAtual 
         };
 
-        // Atualiza imediatamente o cache local do dispositivo
         const idxObra = baseGlobal.obras.findIndex(o => o.nome === nomeObra);
         if (idxObra >= 0) {
             baseGlobal.obras[idxObra].empresa = empresa;
@@ -900,9 +1127,12 @@
         fotosAnexadasModulos = {};
         paginaAtualIndex = 0;
 
+        limparTodasAssinaturas();
+
         if (!obraObj || !obraObj.schemaFormulario || obraObj.schemaFormulario.length === 0) {
             container.innerHTML = "<p>O gestor ainda não configurou perguntas para esta obra.</p>";
             document.getElementById('stepProgressBar').style.display = 'none';
+            document.getElementById('blocoAssinaturasDigitais').style.display = 'none';
             return;
         }
 
@@ -1053,12 +1283,19 @@
 
         document.getElementById('btnPagAnterior').style.display = paginaAtualIndex > 0 ? 'block' : 'none';
         
+        const blocoAss = document.getElementById('blocoAssinaturasDigitais');
+
         if (paginaAtualIndex === totalPaginasForm - 1) {
             document.getElementById('btnPagProxima').style.display = 'none';
             document.getElementById('btnPagSubmit').style.display = 'block';
+            if (blocoAss) {
+                blocoAss.style.display = 'block';
+                inicializarPadsAssinatura();
+            }
         } else {
             document.getElementById('btnPagProxima').style.display = 'block';
             document.getElementById('btnPagSubmit').style.display = 'none';
+            if (blocoAss) blocoAss.style.display = 'none';
         }
     }
 
@@ -1112,7 +1349,7 @@
 
     async function enviarDiario(event) {
         event.preventDefault();
-        abrirModal("Processando Diário...", "Verificando conexão e salvando registro.");
+        abrirModal("Processando Diário...", "Consolidando dados, fotos e assinaturas digitais.");
 
         let respostas = {};
         let todasFotos = [];
@@ -1151,6 +1388,7 @@
         const obraSelecionada = document.getElementById('diario_select_obra').value;
         const dataDiario = document.getElementById('diario_data').value;
         const clientSyncId = "SYNC-" + Date.now() + "-" + Math.random().toString(36).substring(2, 7);
+        const assinaturasCapturadas = coletarAssinaturasPayload();
 
         const payload = {
             acao: "salvar_diario",
@@ -1159,7 +1397,8 @@
             data_diario: dataDiario,
             responsavel: usuarioAtivo ? usuarioAtivo.nome : "Engenheiro Responsável",
             respostas: respostas, 
-            fotos: todasFotos
+            fotos: todasFotos,
+            assinaturas: assinaturasCapturadas
         };
 
         const res = await apiRequest("salvar_diario", "POST", payload);
@@ -1169,9 +1408,8 @@
             salvarPdfNoHistoricoLocal(obraSelecionada, dataDiario, res.url_pdf);
             await carregarDadosSistema();
             renderizarFormularioEngenheiro();
-            fecharModal("Diário Publicado!", res.mensagem || "Diário salvo e PDF gerado com sucesso.", true);
+            fecharModal("Diário Publicado!", res.mensagem || "Diário salvo e PDF gerado com assinaturas.", true);
         } else {
-            // Salva na fila IndexedDB para sincronização automática posterior
             await adicionarNaFilaOffline({
                 titulo: `RDO: ${obraSelecionada} (${dataDiario})`,
                 data_criacao: new Date().toLocaleString('pt-BR'),
@@ -1182,7 +1420,7 @@
             renderizarFormularioEngenheiro();
             fecharModal(
                 "Salvo no Dispositivo (Offline)!",
-                "Sem internet no momento. O diário e as fotos foram guardados com segurança na Fila Offline e serão enviados automaticamente assim que o sinal voltar.",
+                "Sem internet no momento. O diário, as fotos e as assinaturas digitais foram guardados com segurança na Fila Offline e serão enviados automaticamente assim que o sinal voltar.",
                 true
             );
         }
