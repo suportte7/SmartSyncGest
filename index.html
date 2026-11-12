@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - Builder Master com Ícones e Preview</title>
+    <title>SmartSyncGest - Builder Master com Preview Interativo Real</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -50,7 +50,7 @@
         .juridical-box { background: #fdfefe; border: 1px solid #bce8f1; border-left: 4px solid #31708f; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: left; font-size: 12.5px; color: #31708f; }
 
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-box { background: var(--card-bg); padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 480px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border-color); }
+        .modal-box { background: var(--card-bg); padding: 25px; border-radius: 12px; text-align: center; width: 92%; max-width: 520px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border-color); }
         .spinner { width: 36px; height: 36px; border: 4px solid rgba(0,0,0,0.1); border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         #reader { width: 100%; background: #fff; border-radius: 10px; overflow: hidden; margin-top:10px; }
@@ -119,11 +119,11 @@
     </div>
 </div>
 
-<!-- TELA 3: CONSTRUTOR DE FORMULÁRIOS (BUILDER MASTER COM ÍCONES E PREVIEW) -->
+<!-- TELA 3: CONSTRUTOR DE FORMULÁRIOS (BUILDER MASTER COM PREVIEW INTERATIVO) -->
 <div id="aba-builder" class="tab-content">
     <div class="container">
         <h2>🛠️ Construtor de Formulários (Builder Master)</h2>
-        <p style="font-size:13px; color:var(--subtext);">Crie perguntas com ícones visuais, edite, reorganize e teste com o Preview antes de salvar.</p>
+        <p style="font-size:13px; color:var(--subtext);">Crie perguntas, edite e clique no Preview Interativo para testar de verdade o preenchimento antes de salvar.</p>
         
         <div class="form-group"><label>Selecione a Obra</label><select id="builder_select_obra" onchange="carregarSchemaNaTela()"></select></div>
         
@@ -155,7 +155,7 @@
             <button class="btn-warning" id="btnCancelarEdicao" onclick="cancelarEdicaoPergunta()" style="display:none;">Cancelar Edição</button>
         </div>
 
-        <button class="btn-info" onclick="abrirModalPreview()" style="margin-bottom:15px;">👁️ Visualizar Formulário (Preview)</button>
+        <button class="btn-info" onclick="abrirModalPreviewReal()" style="margin-bottom:15px;">👁️ Testar Preview Interativo Real</button>
 
         <h3 style="text-align:left; font-size:14px;">Perguntas Configuradas (Editáveis & Reordenáveis)</h3>
         <div id="listaSchemaBuilder" style="margin-top:10px;"></div>
@@ -207,19 +207,33 @@
     <div class="container">
         <h2>📚 Manual do Sistema</h2>
         <div class="tutorial-box">
-            <h3>Guia do Builder com Preview</h3>
-            <p style="font-size:13px;">Agora você conta com ícones visuais para cada tipo de pergunta e pode clicar em "Visualizar Formulário (Preview)" para testar a experiência exata do usuário antes de publicar na nuvem.</p>
+            <h3>Guia do Preview Interativo</h3>
+            <p style="font-size:13px;">O Preview Interativo Real simula o formulário ativo: você pode clicar nas opções, digitar nos campos, testar a barra de progresso e o aceite jurídico sem enviar nenhum dado para a nuvem.</p>
         </div>
     </div>
 </div>
 
-<!-- MODAL PREVIEW DO FORMULÁRIO -->
-<div id="modalPreview" class="overlay" onclick="document.getElementById('modalPreview').style.display='none'">
+<!-- MODAL PREVIEW INTERATIVO REAL -->
+<div id="modalPreviewReal" class="overlay" onclick="document.getElementById('modalPreviewReal').style.display='none'">
     <div class="modal-box" onclick="event.stopPropagation()">
-        <h3 style="margin-top:0; color:var(--primary);">👁️ Pré-Visualização do Formulário</h3>
-        <p style="font-size:12px; color:var(--subtext); margin-bottom:15px;">Este é o modelo exato que o engenheiro visualizará no canteiro.</p>
-        <div id="containerPreviewConteudo" style="text-align:left; max-height:50vh; overflow-y:auto; padding:5px;"></div>
-        <button class="btn-primary" onclick="document.getElementById('modalPreview').style.display='none'" style="margin-top:15px;">Fechar Preview</button>
+        <h3 style="margin-top:0; color:var(--primary);">👁️ Preview Interativo Real</h3>
+        <p style="font-size:12px; color:var(--subtext); margin-bottom:15px;">Teste livremente o preenchimento, cliques e barra de progresso abaixo (Simulação local).</p>
+        
+        <label style="font-size:12px; margin-bottom:4px; text-align:left;">Progresso do Teste: <span id="lblPreviewPercentual">0%</span></label>
+        <div class="progress-bar-container"><div id="progressBarPreviewFill" class="progress-bar-fill"></div></div>
+
+        <div id="containerPreviewRealConteudo" style="text-align:left; max-height:45vh; overflow-y:auto; padding:5px;"></div>
+
+        <div class="juridical-box">
+            <label style="font-weight:bold; color:#245269; margin-bottom:8px; display:block;">⚖️ Declaração de Responsabilidade (Simulação)</label>
+            <label style="font-weight:normal; font-size:12.5px; display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
+                <input type="checkbox" id="chkTermosPreview" style="width:18px; height:18px; margin-top:2px;" onchange="atualizarProgressoPreview()">
+                <span>Declaro para os devidos fins que as informações prestadas neste teste refletem a realidade.</span>
+            </label>
+        </div>
+
+        <button class="btn-success" onclick="alert('Teste concluído com sucesso! Nenhum dado foi enviado.')" style="margin-top:15px;">Testar Envio (Simulado)</button>
+        <button class="btn-danger" onclick="document.getElementById('modalPreviewReal').style.display='none'" style="margin-top:8px;">Fechar Preview</button>
     </div>
 </div>
 
@@ -358,7 +372,7 @@
         renderizarHistorico();
     }
 
-    // --- BUILDER MASTER COM ÍCONES E PREVIEW ---
+    // --- BUILDER MASTER COM PREVIEW INTERATIVO REAL ---
     function carregarSchemaNaTela() {
         const obraNome = document.getElementById('builder_select_obra').value;
         const obra = baseGlobal.obras.find(o => o.nome === obraNome);
@@ -388,34 +402,64 @@
         container.innerHTML = html;
     }
 
-    function abrirModalPreview() {
-        const container = document.getElementById('containerPreviewConteudo');
+    function abrirModalPreviewReal() {
+        const container = document.getElementById('containerPreviewRealConteudo');
         if (schemaEdicaoAtual.length === 0) {
-            container.innerHTML = "<p>Nenhuma pergunta configurada para visualizar.</p>";
+            container.innerHTML = "<p>Nenhuma pergunta configurada para testar.</p>";
         } else {
             let html = '';
             schemaEdicaoAtual.forEach(campo => {
                 const icone = iconesTipos[campo.tipo] || '❓';
-                html += `<div class="form-group" style="border-bottom:1px solid #eee; padding-bottom:10px;">
-                            <label><b>${icone} ${campo.titulo}</b> ${campo.obrigatoria?'<span style="color:red;">*</span>':''}</label>`;
-                if (campo.tipo === 'text') html += `<input type="text" disabled placeholder="[Texto curto]">`;
-                else if (campo.tipo === 'textarea') html += `<textarea disabled rows="2" placeholder="[Parágrafo]"></textarea>`;
-                else if (campo.tipo === 'number') html += `<input type="number" disabled placeholder="[Número]">`;
-                else if (campo.tipo === 'date') html += `<input type="date" disabled>`;
-                else if (campo.tipo === 'time') html += `<input type="time" disabled>`;
-                else if (campo.tipo === 'rating') html += `<p style="font-size:12px; color:#777;">⭐ 1 | 2 | 3 | 4 | 5</p>`;
-                else if (campo.tipo === 'radio' || campo.tipo === 'checkbox') {
-                    (campo.opcoes||[]).forEach(op => html += `<div style="font-size:12.5px; color:#555;">- ${op}</div>`);
+                html += `<div class="form-group" oninput="atualizarProgressoPreview()" onchange="atualizarProgressoPreview()">
+                            <label>${icone} ${campo.titulo} ${campo.obrigatoria?'<span style="color:red;">*</span>':''}</label>`;
+                
+                if (campo.tipo === 'text') html += `<input type="text" class="form-campo-preview" placeholder="Resposta curta">`;
+                else if (campo.tipo === 'textarea') html += `<textarea class="form-campo-preview" rows="3" placeholder="Parágrafo / Observações"></textarea>`;
+                else if (campo.tipo === 'number') html += `<input type="number" class="form-campo-preview" placeholder="Valor numérico">`;
+                else if (campo.tipo === 'date') html += `<input type="date" class="form-campo-preview">`;
+                else if (campo.tipo === 'time') html += `<input type="time" class="form-campo-preview">`;
+                else if (campo.tipo === 'rating') {
+                    html += `<div style="display:flex; gap:10px;">`;
+                    for(let r=1; r<=5; r++) {
+                        html += `<label style="font-weight:normal;"><input type="radio" name="prev_${campo.id}" class="form-campo-preview" value="${r}" style="width:auto; margin-right:4px;"> ${r}</label>`;
+                    }
+                    html += `</div>`;
+                }
+                else if (campo.tipo === 'radio') {
+                    (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="radio" name="prev_${campo.id}" class="form-campo-preview" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
+                } else if (campo.tipo === 'checkbox') {
+                    (campo.opcoes||[]).forEach(op => html += `<label style="font-weight:normal; margin-bottom:4px;"><input type="checkbox" name="prev_${campo.id}" class="form-campo-preview" value="${op}" style="width:auto; margin-right:8px;"> ${op}</label>`);
                 } else if (campo.tipo === 'select') {
-                    html += `<select disabled><option>Selecione...</option></select>`;
+                    html += `<select class="form-campo-preview"><option value="">Selecione...</option>`;
+                    (campo.opcoes||[]).forEach(op => html += `<option value="${op}">${op}</option>`);
+                    html += `</select>`;
                 } else if (campo.tipo === 'etapa_producao') {
-                    html += `<input type="number" disabled placeholder="[Meta: ${campo.meta}]">`;
+                    html += `<input type="number" class="form-campo-preview" placeholder="Qtd Produzida Hoje (Meta: ${campo.meta})">`;
                 }
                 html += `</div>`;
             });
             container.innerHTML = html;
         }
-        document.getElementById('modalPreview').style.display = 'flex';
+        document.getElementById('chkTermosPreview').checked = false;
+        atualizarProgressoPreview();
+        document.getElementById('modalPreviewReal').style.display = 'flex';
+    }
+
+    function atualizarProgressoPreview() {
+        const campos = document.querySelectorAll('.form-campo-preview');
+        const termoCheck = document.getElementById('chkTermosPreview')?.checked ? 1 : 0;
+        let preenchidos = 0;
+        const total = campos.length + 1;
+
+        campos.forEach(c => {
+            if (c.type === 'radio' || c.type === 'checkbox') { if (c.checked) preenchidos++; }
+            else if (c.value.trim() !== '') { preenchidos++; }
+        });
+        if (termoCheck) preenchidos++;
+
+        const pct = Math.min(100, Math.round((preenchidos / total) * 100));
+        document.getElementById('lblPreviewPercentual').innerText = pct + '%';
+        document.getElementById('progressBarPreviewFill').style.width = pct + '%';
     }
 
     function carregarPerguntaParaEdicao(idx) {
