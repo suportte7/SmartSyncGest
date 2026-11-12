@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartSyncGest - SaaS Multi-Tenant com Otimização de Fotos</title>
+    <title>SmartSyncGest - SaaS Multi-Tenant com White-Label</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -212,16 +212,17 @@
     </div>
 </div>
 
-<!-- TELA 8: GESTÃO DE OBRAS E EMPRESAS (SAAS SUPER ADMIN) -->
+<!-- TELA 8: GESTÃO DE OBRAS E EMPRESAS (WHITE-LABEL) -->
 <div id="aba-empresas" class="tab-content">
     <div class="container">
-        <h2>🏢 Gestão de Obras & Empresas</h2>
-        <p style="font-size:13px; color:var(--subtext);">Módulo Super Admin B2B. Crie Construtoras (inquilinos) e cadastre as obras pertencentes a cada uma.</p>
+        <h2>🏢 Gestão de Obras & Empresas (White-Label)</h2>
+        <p style="font-size:13px; color:var(--subtext);">Módulo Super Admin B2B. Crie Construtoras, defina suas logomarcas para os PDFs e cadastre suas obras.</p>
         
         <div style="background:var(--bg); padding:15px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:20px; text-align:left;">
-            <h3 style="margin-top:0; font-size:14px; color:var(--primary);">➕ Nova Empresa (Construtora)</h3>
+            <h3 style="margin-top:0; font-size:14px; color:var(--primary);">➕ Nova Empresa & Logomarca (White-Label)</h3>
             <div class="form-group"><label>Nome da Empresa (Razão/Fantasia)</label><input type="text" id="nova_empresa_nome" placeholder="Ex: Construtora Alfa"></div>
-            <button class="btn-primary" onclick="salvarNovaEmpresaAdmin()">Cadastrar Empresa</button>
+            <div class="form-group"><label>URL da Logomarca (PNG/JPG para o PDF)</label><input type="url" id="nova_empresa_logo" placeholder="https://site.com/logo.png"></div>
+            <button class="btn-primary" onclick="salvarNovaEmpresaAdmin()">Cadastrar Empresa & Logo</button>
         </div>
 
         <div style="background:var(--bg); padding:15px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:20px; text-align:left;">
@@ -274,8 +275,8 @@
     <div class="container">
         <h2>📚 Manual do Sistema</h2>
         <div class="tutorial-box">
-            <h3>Compressão e Nuvem (Ponto 3)</h3>
-            <p style="font-size:13px;">As fotos tiradas no canteiro passam por um redimensionamento automático de largura (800px) e taxa otimizada (60%). Isso garante que o Google Drive e o Google Sheets não fiquem lotados, mantendo o SaaS veloz e econômico.</p>
+            <h3>White-Label (Ponto 4)</h3>
+            <p style="font-size:13px;">Cada construtora cadastrada possui sua própria URL de logomarca configurável. Ao gerar os relatórios e PDFs dos diários, a identidade visual do documento é adaptada automaticamente para a marca do cliente.</p>
         </div>
     </div>
 </div>
@@ -383,7 +384,6 @@
         } catch(e) { document.getElementById('sysOverlay').style.display = 'none'; }
     }
 
-    // PONTO 3: COMPRESSÃO INTELIGENTE DE FOTOS NO CLIENTE (OTIMIZAÇÃO DE NUVEM)
     function processarFotos(event) {
         const files = event.target.files; const preview = document.getElementById('previewFotos');
         for (let i = 0; i < files.length; i++) {
@@ -392,10 +392,9 @@
                 const img = new Image();
                 img.onload = () => {
                     const cvs = document.createElement('canvas'); const cCtx = cvs.getContext('2d');
-                    // Redimensiona largura para max 800px mantendo proporção para poupar banda e espaço na nuvem
                     cvs.width = 800; cvs.height = img.height * (800 / img.width);
                     cCtx.drawImage(img, 0, 0, cvs.width, cvs.height);
-                    const b64 = cvs.toDataURL('image/jpeg', 0.6); // Compressão otimizada a 60%
+                    const b64 = cvs.toDataURL('image/jpeg', 0.6);
                     fotosBase64Array.push(b64);
                     const thumb = document.createElement('img'); thumb.src = b64; thumb.style.height = '70px'; thumb.style.borderRadius = '6px';
                     preview.appendChild(thumb);
@@ -509,13 +508,15 @@
         document.getElementById('cad_obra').innerHTML = opts;
     }
 
+    // PONTO 4: SALVAR EMPRESA COM SUPORTE A WHITE-LABEL (LOGOMARCA)
     async function salvarNovaEmpresaAdmin() {
         const nomeEmpresa = document.getElementById('nova_empresa_nome').value.trim();
+        const logoUrl = document.getElementById('nova_empresa_logo').value.trim();
         if(!nomeEmpresa) return alert("Digite o nome da empresa.");
-        mostrarLoadingUI("Salvando...", "Cadastrando nova empresa no sistema.");
-        const payload = { acao: "salvar_empresa", nome: nomeEmpresa };
+        mostrarLoadingUI("Salvando...", "Cadastrando nova empresa e logomarca.");
+        const payload = { acao: "salvar_empresa", nome: nomeEmpresa, logo: logoUrl };
         const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json());
-        if(res.sucesso) { baseGlobal = res.base; popularselectsGerais(); configurarMenuPorPerfil(); mostrarAlertaUI("Sucesso!", res.mensagem); document.getElementById('nova_empresa_nome').value = ""; }
+        if(res.sucesso) { baseGlobal = res.base; popularselectsGerais(); configurarMenuPorPerfil(); mostrarAlertaUI("Sucesso!", res.mensagem); document.getElementById('nova_empresa_nome').value = ""; document.getElementById('nova_empresa_logo').value = ""; }
         else { mostrarAlertaUI("Erro", res.erro); }
     }
 
