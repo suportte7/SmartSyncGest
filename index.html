@@ -85,6 +85,9 @@
         .btn-primary { background: var(--primary); } .btn-primary:hover { background: var(--primary-hover); }
         .btn-success { background: #28a745; } .btn-info { background: #17a2b8; } .btn-danger { background: #dc3545; } .btn-secondary { background: #6c757d; }
 
+        .req-star { color: #dc3545; font-weight: bold; margin-left: 3px; }
+        .campo-erro-borda { border: 2px solid #dc3545 !important; border-radius: 8px; padding: 8px; background: rgba(220, 53, 69, 0.04); }
+
         .step-progress-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.04); padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; font-weight: bold; color: var(--primary); }
         .pagina-form { display: none; }
         .pagina-form.active { display: block; }
@@ -94,6 +97,7 @@
         .card-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; }
         .btn-card-action { background: none; border: none; font-size: 16px; cursor: pointer; padding: 2px 5px; color: var(--subtext); width: auto; margin: 0; }
         .badge-tipo { font-size: 11px; background: rgba(0,0,0,0.08); color: var(--text-color); padding: 3px 8px; border-radius: 4px; font-weight: bold; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
+        .badge-obrig { font-size: 10px; background: #dc3545; color: #fff; padding: 3px 7px; border-radius: 4px; font-weight: bold; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
 
         .checkbox-group, .radio-group { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
         .checkbox-item, .radio-item { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
@@ -102,7 +106,7 @@
         .preview-foto-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
         .preview-foto { width: 75px; height: 75px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-color); }
 
-        /* BLOCO DE ASSINATURA DIGITAL TOUCH (CANVAS) */
+        /* BLOCO DE ASSINATURA DIGITAL TOUCH DO RESPONSÁVEL (CANVAS) */
         .assinatura-box {
             border: 1px solid var(--border-color);
             border-radius: 10px;
@@ -144,7 +148,7 @@
         .canvas-assinatura {
             display: block;
             width: 100%;
-            height: 140px;
+            height: 150px;
             background: #ffffff;
             touch-action: none;
             cursor: crosshair;
@@ -159,7 +163,7 @@
         .fila-card { border: 1px solid var(--border-color); border-left: 4px solid #ffc107; padding: 12px; border-radius: 8px; margin-bottom: 10px; background: rgba(0,0,0,0.02); }
 
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 3000; align-items: center; justify-content: center; }
-        .modal-box { background: var(--card-bg); padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 380px; border: 1px solid var(--border-color); }
+        .modal-box { background: var(--card-bg); padding: 25px; border-radius: 12px; text-align: center; width: 90%; max-width: 380px; border: 1px solid var(--border-color); box-shadow: 0 8px 25px rgba(0,0,0,0.3); position: relative; z-index: 3001; }
         .spinner { width: 36px; height: 36px; border: 4px solid rgba(0,0,0,0.1); border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -213,11 +217,11 @@
     </div>
 </div>
 
-<!-- TELA 2: CONSTRUTOR DE FORMULÁRIOS COM EDIÇÃO DE CAMPOS (ADMIN) -->
+<!-- TELA 2: CONSTRUTOR DE FORMULÁRIOS COM EDIÇÃO E OBRIGATORIEDADE (ADMIN) -->
 <div id="aba-builder" class="tab-content">
     <div class="container">
         <h2>🎨 Construtor de Formulário Personalizável</h2>
-        <p style="font-size:12px; color:var(--subtext);">Configure o molde de perguntas, altere tipos e edite campos com 1 clique.</p>
+        <p style="font-size:12px; color:var(--subtext);">Configure o molde de perguntas, defina campos obrigatórios e edite com 1 clique.</p>
         
         <div class="form-group">
             <label>Obra a Ser Configurada</label>
@@ -280,7 +284,14 @@
 
             <div class="form-group" id="builder_box_opcoes">
                 <label>Opções de Escolha (separadas por vírgula)</label>
-                <input type="text" id="builder_novas_opcoes" placeholder="Ex: Trabalhos Normais, Parcialmente Paralisado, Paralisado por Chuva">
+                <input type="text" id="builder_novas_opcoes" placeholder="Ex: Sol, Nublado, Chuva Leve, Chuva Forte">
+            </div>
+
+            <div class="form-group" style="margin-top: 10px;">
+                <label class="checkbox-item" style="font-weight:700; color:var(--primary);">
+                    <input type="checkbox" id="builder_nova_obrigatoria">
+                    <span>Pergunta Obrigatória (Exigir resposta antes de avançar)</span>
+                </label>
             </div>
 
             <div class="form-row">
@@ -296,20 +307,20 @@
     </div>
 </div>
 
-<!-- TELA 3: DIÁRIO DE CAMPO PAGINADO + ASSINATURAS TOUCH (ENGENHEIRO) -->
+<!-- TELA 3: DIÁRIO DE CAMPO PAGINADO + ASSINATURA DO RESPONSÁVEL (ENGENHEIRO) -->
 <div id="aba-diario" class="tab-content">
     <div class="container">
         <h2>Diário de Engenharia de Campo</h2>
         <div id="diarioOfflineBanner" class="offline-banner">
-            📡 Sem conexão com a internet. Ao finalizar, o diário, fotos e assinaturas serão salvos no celular e sincronizados automaticamente quando houver sinal.
+            📡 Sem conexão com a internet. Ao finalizar, o diário, fotos e assinatura serão salvos no celular e sincronizados automaticamente quando houver sinal.
         </div>
-        <form id="formDiario" onsubmit="enviarDiario(event)">
+        <form id="formDiario" onsubmit="enviarDiario(event)" novalidate>
             <div class="form-group">
                 <label>Obra Selecionada</label>
                 <select id="diario_select_obra" onchange="renderizarFormularioEngenheiro()"></select>
             </div>
             <div class="form-group">
-                <label>Data do Diário</label>
+                <label>Data do Diário <span class="req-star">*</span></label>
                 <input type="date" id="diario_data" required>
             </div>
 
@@ -320,56 +331,25 @@
 
             <div id="container_formulario_dinamico"></div>
 
-            <!-- BLOCO DE ASSINATURAS DIGITAIS (EXIBIDO NA ÚLTIMA PÁGINA DO FORMULÁRIO) -->
+            <!-- BLOCO DE ASSINATURA EXCLUSIVA DO ENGENHEIRO RESPONSÁVEL -->
             <div id="blocoAssinaturasDigitais" style="display:none; margin-top: 25px;">
-                <div class="secao-header">✍️ Assinaturas Digitais do RDO (Opcional)</div>
+                <div class="secao-header">✍️ Assinatura do Responsável Técnico</div>
                 <p style="font-size:12px; color:var(--subtext); margin-top:-8px; margin-bottom:14px;">
-                    Assine com o dedo ou caneta nos quadros abaixo para estampar diretamente na prancha PDF.
+                    O RDO é emitido pelo engenheiro responsável pela obra. Assine no quadro abaixo com o dedo ou caneta.
                 </p>
 
-                <!-- 1. ENGENHEIRO RESPONSÁVEL -->
                 <div class="assinatura-box">
                     <div class="assinatura-header">
-                        <span class="assinatura-titulo">1. Engenheiro Responsável Técnico</span>
+                        <span class="assinatura-titulo">Engenheiro Responsável pela Obra</span>
                         <button type="button" class="btn-limpar-ass" onclick="limparAssinatura('engenheiro')">🧹 Limpar</button>
                     </div>
                     <div class="form-group" style="margin-bottom:8px;">
-                        <input type="text" id="ass_nome_engenheiro" placeholder="Nome do Engenheiro (opcional)" style="padding:7px 10px; font-size:13px;">
+                        <input type="text" id="ass_nome_engenheiro" placeholder="Nome do Engenheiro Responsável" style="padding:7px 10px; font-size:13px;">
                     </div>
                     <div class="canvas-pad-wrapper">
                         <canvas id="canvas_ass_engenheiro" class="canvas-assinatura" width="500" height="150"></canvas>
                     </div>
-                    <div class="assinatura-dica">Desenhe a assinatura no quadro branco acima</div>
-                </div>
-
-                <!-- 2. COORDENADOR DE ENGENHARIA -->
-                <div class="assinatura-box">
-                    <div class="assinatura-header">
-                        <span class="assinatura-titulo">2. Coordenador de Engenharia</span>
-                        <button type="button" class="btn-limpar-ass" onclick="limparAssinatura('coordenador')">🧹 Limpar</button>
-                    </div>
-                    <div class="form-group" style="margin-bottom:8px;">
-                        <input type="text" id="ass_nome_coordenador" placeholder="Nome do Coordenador (opcional)" style="padding:7px 10px; font-size:13px;">
-                    </div>
-                    <div class="canvas-pad-wrapper">
-                        <canvas id="canvas_ass_coordenador" class="canvas-assinatura" width="500" height="150"></canvas>
-                    </div>
-                    <div class="assinatura-dica">Desenhe a assinatura no quadro branco acima</div>
-                </div>
-
-                <!-- 3. FISCAL DE OBRA -->
-                <div class="assinatura-box">
-                    <div class="assinatura-header">
-                        <span class="assinatura-titulo">3. Fiscal de Obra</span>
-                        <button type="button" class="btn-limpar-ass" onclick="limparAssinatura('fiscal')">🧹 Limpar</button>
-                    </div>
-                    <div class="form-group" style="margin-bottom:8px;">
-                        <input type="text" id="ass_nome_fiscal" placeholder="Nome do Fiscal (opcional)" style="padding:7px 10px; font-size:13px;">
-                    </div>
-                    <div class="canvas-pad-wrapper">
-                        <canvas id="canvas_ass_fiscal" class="canvas-assinatura" width="500" height="150"></canvas>
-                    </div>
-                    <div class="assinatura-dica">Desenhe a assinatura no quadro branco acima</div>
+                    <div class="assinatura-dica">Assine no quadro branco acima (opcional se preferir assinar no papel depois)</div>
                 </div>
             </div>
 
@@ -427,13 +407,13 @@
 </div>
 
 <!-- MODAL OVERLAY -->
-<div id="sysOverlay" class="overlay">
+<div id="sysOverlay" class="overlay" onclick="fecharSeClicarFora(event)">
     <div class="modal-box">
         <div id="modalSpinner" class="spinner"></div>
         <h3 id="modalTitle" style="color:var(--primary); margin-top:0;">Processando...</h3>
         <p id="modalMsg" style="font-size:14px; color:var(--subtext);">Comunicando com a API do Google.</p>
         <div id="modalLink" style="margin-top: 15px;"></div>
-        <button id="modalBtn" class="btn-primary" style="display:none;" onclick="fecharModal()">OK</button>
+        <button type="button" id="modalBtn" class="btn-primary" style="display:none;" onclick="ocultarModal()">OK</button>
     </div>
 </div>
 
@@ -453,83 +433,78 @@
     let paginaAtualIndex = 0;
     let totalPaginasForm = 1;
 
-    // ESTADO DOS QUADROS DE ASSINATURA TOUCH
+    // ESTADO DO QUADRO DE ASSINATURA TOUCH DO RESPONSÁVEL
     const estadoAssinaturas = {
-        engenheiro: { assinado: false, desenhando: false },
-        coordenador: { assinado: false, desenhando: false },
-        fiscal: { assinado: false, desenhando: false }
+        engenheiro: { assinado: false, desenhando: false }
     };
 
     // =========================================================================
     // MOTOR DE ASSINATURA DIGITAL TOUCH / MOUSE (CANVAS)
     // =========================================================================
     function inicializarPadsAssinatura() {
-        ['engenheiro', 'coordenador', 'fiscal'].forEach(papel => {
-            const canvas = document.getElementById(`canvas_ass_${papel}`);
-            if (!canvas || canvas.dataset.inicializado === "1") return;
-            canvas.dataset.inicializado = "1";
+        const papel = 'engenheiro';
+        const canvas = document.getElementById(`canvas_ass_${papel}`);
+        if (!canvas || canvas.dataset.inicializado === "1") return;
+        canvas.dataset.inicializado = "1";
 
-            const ctx = canvas.getContext('2d');
-            ctx.strokeStyle = '#001f3f';
-            ctx.lineWidth = 2.6;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
+        const ctx = canvas.getContext('2d');
+        ctx.strokeStyle = '#001f3f';
+        ctx.lineWidth = 2.6;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
 
-            function obterPosicao(evt) {
-                const rect = canvas.getBoundingClientRect();
-                const scaleX = canvas.width / rect.width;
-                const scaleY = canvas.height / rect.height;
-                let clientX, clientY;
+        function obterPosicao(evt) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let clientX, clientY;
 
-                if (evt.touches && evt.touches.length > 0) {
-                    clientX = evt.touches[0].clientX;
-                    clientY = evt.touches[0].clientY;
-                } else {
-                    clientX = evt.clientX;
-                    clientY = evt.clientY;
-                }
-                return {
-                    x: (clientX - rect.left) * scaleX,
-                    y: (clientY - rect.top) * scaleY
-                };
+            if (evt.touches && evt.touches.length > 0) {
+                clientX = evt.touches[0].clientX;
+                clientY = evt.touches[0].clientY;
+            } else {
+                clientX = evt.clientX;
+                clientY = evt.clientY;
             }
+            return {
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top) * scaleY
+            };
+        }
 
-            function iniciarTraco(evt) {
-                if (evt.cancelable) evt.preventDefault();
-                estadoAssinaturas[papel].desenhando = true;
-                estadoAssinaturas[papel].assinado = true;
-                const pos = obterPosicao(evt);
-                ctx.beginPath();
-                ctx.moveTo(pos.x, pos.y);
-            }
+        function iniciarTraco(evt) {
+            if (evt.cancelable) evt.preventDefault();
+            estadoAssinaturas[papel].desenhando = true;
+            estadoAssinaturas[papel].assinado = true;
+            const pos = obterPosicao(evt);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+        }
 
-            function moverTraco(evt) {
-                if (!estadoAssinaturas[papel].desenhando) return;
-                if (evt.cancelable) evt.preventDefault();
-                const pos = obterPosicao(evt);
-                ctx.lineTo(pos.x, pos.y);
-                ctx.stroke();
-            }
+        function moverTraco(evt) {
+            if (!estadoAssinaturas[papel].desenhando) return;
+            if (evt.cancelable) evt.preventDefault();
+            const pos = obterPosicao(evt);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+        }
 
-            function finalizarTraco(evt) {
-                if (!estadoAssinaturas[papel].desenhando) return;
-                if (evt && evt.cancelable) evt.preventDefault();
-                estadoAssinaturas[papel].desenhando = false;
-                ctx.closePath();
-            }
+        function finalizarTraco(evt) {
+            if (!estadoAssinaturas[papel].desenhando) return;
+            if (evt && evt.cancelable) evt.preventDefault();
+            estadoAssinaturas[papel].desenhando = false;
+            ctx.closePath();
+        }
 
-            // Eventos Mouse
-            canvas.addEventListener('mousedown', iniciarTraco);
-            canvas.addEventListener('mousemove', moverTraco);
-            canvas.addEventListener('mouseup', finalizarTraco);
-            canvas.addEventListener('mouseleave', finalizarTraco);
+        canvas.addEventListener('mousedown', iniciarTraco);
+        canvas.addEventListener('mousemove', moverTraco);
+        canvas.addEventListener('mouseup', finalizarTraco);
+        canvas.addEventListener('mouseleave', finalizarTraco);
 
-            // Eventos Touch (Celular / Tablet)
-            canvas.addEventListener('touchstart', iniciarTraco, { passive: false });
-            canvas.addEventListener('touchmove', moverTraco, { passive: false });
-            canvas.addEventListener('touchend', finalizarTraco, { passive: false });
-            canvas.addEventListener('touchcancel', finalizarTraco, { passive: false });
-        });
+        canvas.addEventListener('touchstart', iniciarTraco, { passive: false });
+        canvas.addEventListener('touchmove', moverTraco, { passive: false });
+        canvas.addEventListener('touchend', finalizarTraco, { passive: false });
+        canvas.addEventListener('touchcancel', finalizarTraco, { passive: false });
     }
 
     function limparAssinatura(papel) {
@@ -542,33 +517,27 @@
     }
 
     function limparTodasAssinaturas() {
-        ['engenheiro', 'coordenador', 'fiscal'].forEach(papel => {
-            limparAssinatura(papel);
-        });
+        limparAssinatura('engenheiro');
         if (usuarioAtivo && document.getElementById('ass_nome_engenheiro')) {
             document.getElementById('ass_nome_engenheiro').value = usuarioAtivo.nome || "";
         }
-        if (document.getElementById('ass_nome_coordenador')) document.getElementById('ass_nome_coordenador').value = "";
-        if (document.getElementById('ass_nome_fiscal')) document.getElementById('ass_nome_fiscal').value = "";
     }
 
     function coletarAssinaturasPayload() {
-        let resultado = {};
-        ['engenheiro', 'coordenador', 'fiscal'].forEach(papel => {
-            const canvas = document.getElementById(`canvas_ass_${papel}`);
-            const nomeInput = document.getElementById(`ass_nome_${papel}`);
-            const nome = nomeInput ? nomeInput.value.trim() : "";
-            const imagem = (canvas && estadoAssinaturas[papel].assinado) ? canvas.toDataURL('image/png') : "";
-            resultado[papel] = {
+        const canvas = document.getElementById('canvas_ass_engenheiro');
+        const nomeInput = document.getElementById('ass_nome_engenheiro');
+        const nome = nomeInput ? nomeInput.value.trim() : (usuarioAtivo ? usuarioAtivo.nome : "");
+        const imagem = (canvas && estadoAssinaturas.engenheiro.assinado) ? canvas.toDataURL('image/png') : "";
+        return {
+            engenheiro: {
                 nome: nome,
                 imagem: imagem
-            };
-        });
-        return resultado;
+            }
+        };
     }
 
     // =========================================================================
-    // MOTOR INDEXEDDB PARA FILA OFFLINE (DIÁRIOS + FOTOS + ASSINATURAS)
+    // MOTOR INDEXEDDB PARA FILA OFFLINE
     // =========================================================================
     const DB_NAME = "SmartSyncOfflineDB";
     const DB_VERSION = 1;
@@ -699,7 +668,7 @@
                         <div class="fila-card">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <strong>${item.titulo || 'Registro Offline'}</strong>
-                                <button class="btn-card-action" style="color:#dc3545; font-size:13px;" onclick="excluirItemFila(${item.id})">🗑️ Descartar</button>
+                                <button type="button" class="btn-card-action" style="color:#dc3545; font-size:13px;" onclick="excluirItemFila(${item.id})">🗑️ Descartar</button>
                             </div>
                             <div style="font-size:12px; color:var(--subtext); margin-top:4px;">
                                 Data: ${item.data_criacao} | Fotos anexadas: ${qtdFotos}
@@ -796,10 +765,9 @@
         }
 
         if (manual) {
-            fecharModal(
+            atualizarModalFinal(
                 enviados > 0 ? "Sincronização Concluída!" : "Falha na Sincronização",
-                `${enviados} registro(s) enviado(s) com sucesso.${falhas > 0 ? ` ${falhas} ainda aguardando conexão estável.` : ''}`,
-                true
+                `${enviados} registro(s) enviado(s) com sucesso.${falhas > 0 ? ` ${falhas} ainda aguardando conexão estável.` : ''}`
             );
         }
     }
@@ -871,7 +839,7 @@
         if (!navigator.onLine) return alert("Conecte-se à internet para atualizar o cache de obras.");
         abrirModal("Atualizando Cache...", "Baixando obras e formulários mais recentes.");
         await carregarDadosSistema();
-        fecharModal("Cache Atualizado!", "As obras e formulários estão salvos no dispositivo para uso offline.", true);
+        atualizarModalFinal("Cache Atualizado!", "As obras e formulários estão salvos no dispositivo para uso offline.");
     }
 
     async function carregarDadosSistema() {
@@ -899,12 +867,12 @@
             baseGlobal = {
                 obras: [
                     { nome: "Obra Modelo Genérica", empresa: "Construtora Padrão", totalUHs: 500, schemaFormulario: [
-                        { id: "c1", secao: "1. Condições de Campo", tipo: "radio", titulo: "Clima Manhã", opcoes: ["Sol", "Nublado", "Chuva Leve", "Chuva Forte"] },
-                        { id: "c2", secao: "1. Condições de Campo", tipo: "radio", titulo: "Clima Tarde", opcoes: ["Sol", "Nublado", "Chuva Leve", "Chuva Forte"] },
-                        { id: "c3", secao: "1. Condições de Campo", tipo: "radio", titulo: "Condição de Trabalho", opcoes: ["Trabalhos Normais", "Parcialmente Paralisado", "Paralisado por Chuva"] },
-                        { id: "c4", secao: "2. Efetivo de Campo", tipo: "numero", titulo: "Efetivo Próprio - Produção" },
-                        { id: "c5", secao: "3. Matriz Habitação", tipo: "etapa_producao", titulo: "01-Laje Radier", meta: 500, ac: 0, sd: 500 },
-                        { id: "c6", secao: "4. Qualidade e Ocorrências", tipo: "textarea", titulo: "Relato Diário do Empreendimento" }
+                        { id: "c1", secao: "1. Condições de Campo", tipo: "radio", titulo: "Clima Manhã", opcoes: ["Sol", "Nublado", "Chuva Leve", "Chuva Forte"], obrigatoria: true },
+                        { id: "c2", secao: "1. Condições de Campo", tipo: "radio", titulo: "Clima Tarde", opcoes: ["Sol", "Nublado", "Chuva Leve", "Chuva Forte"], obrigatoria: true },
+                        { id: "c3", secao: "1. Condições de Campo", tipo: "radio", titulo: "Condição de Trabalho", opcoes: ["Trabalhos Normais", "Parcialmente Paralisado", "Paralisado por Chuva"], obrigatoria: true },
+                        { id: "c4", secao: "2. Efetivo de Campo", tipo: "numero", titulo: "Efetivo Próprio - Produção", obrigatoria: true },
+                        { id: "c5", secao: "3. Matriz Habitação", tipo: "etapa_producao", titulo: "01-Laje Radier", meta: 500, ac: 0, sd: 500, obrigatoria: false },
+                        { id: "c6", secao: "4. Qualidade e Ocorrências", tipo: "textarea", titulo: "Relato Diário do Empreendimento", obrigatoria: true }
                     ]}
                 ],
                 usuarios: [
@@ -951,6 +919,9 @@
         trocarAba('diario', null);
     }
 
+    // =========================================================================
+    // CONSTRUTOR DE FORMULÁRIOS (BUILDER)
+    // =========================================================================
     function alternarCamposAdicionaisBuilder() {
         const tipo = document.getElementById('builder_novo_tipo').value;
         document.getElementById('builder_box_meta').style.display = (tipo === 'etapa_producao') ? 'block' : 'none';
@@ -990,6 +961,7 @@
         document.getElementById('builder_nova_secao').value = campo.secao || '';
         document.getElementById('builder_novo_titulo').value = campo.titulo || '';
         document.getElementById('builder_novo_tipo').value = campo.tipo || 'texto';
+        document.getElementById('builder_nova_obrigatoria').checked = Boolean(campo.obrigatoria);
         
         alternarCamposAdicionaisBuilder();
 
@@ -1006,18 +978,27 @@
     function cancelarEdicaoBuilder() {
         itemEditandoIndex = null;
         document.getElementById('builder_novo_titulo').value = '';
+        document.getElementById('builder_nova_obrigatoria').checked = false;
         document.getElementById('builder_form_label').innerText = "+ Adicionar Novo Campo / Pergunta";
         document.getElementById('btn_salvar_campo_builder').innerText = "+ Adicionar Pergunta ao Formulário";
         document.getElementById('btn_cancelar_edicao_builder').style.display = "none";
     }
 
     function adicionarOuAtualizarCampoBuilder() {
-        const titulo = document.getElementById('builder_novo_titulo').value;
+        const titulo = document.getElementById('builder_novo_titulo').value.trim();
         const tipo = document.getElementById('builder_novo_tipo').value;
-        const secao = document.getElementById('builder_nova_secao').value || "1. Informações Gerais";
+        const secao = document.getElementById('builder_nova_secao').value.trim() || "1. Informações Gerais";
+        const obrigatoria = document.getElementById('builder_nova_obrigatoria').checked;
+
         if (!titulo) return alert("Digite o título da pergunta.");
 
-        let campoDado = { id: itemEditandoIndex !== null ? schemaFormularioAtual[itemEditandoIndex].id : "c_" + Date.now(), secao: secao, tipo: tipo, titulo: titulo };
+        let campoDado = {
+            id: itemEditandoIndex !== null ? schemaFormularioAtual[itemEditandoIndex].id : "c_" + Date.now(),
+            secao: secao,
+            tipo: tipo,
+            titulo: titulo,
+            obrigatoria: obrigatoria
+        };
         if (tipo === 'etapa_producao') campoDado.meta = Number(document.getElementById('builder_nova_meta').value || 500);
         if (['select', 'radio', 'checkbox'].includes(tipo)) {
             const ops = document.getElementById('builder_novas_opcoes').value;
@@ -1064,15 +1045,16 @@
         let html = '';
         schemaFormularioAtual.forEach((c, idx) => {
             let labelExtra = c.meta ? ` (Meta: ${c.meta})` : c.opcoes ? ` (${c.opcoes.join(', ')})` : '';
+            let tagObrig = c.obrigatoria ? ` <span class="badge-obrig">* Obrigatória</span>` : '';
             html += `
                 <div class="card-pergunta-builder">
                     <div class="card-actions">
-                        <button class="btn-card-action" title="Editar Pergunta" onclick="editarCampoBuilder(${idx})">✏️</button>
-                        <button class="btn-card-action" onclick="moverCampoBuilder(${idx}, -1)">⬆️</button>
-                        <button class="btn-card-action" onclick="moverCampoBuilder(${idx}, 1)">⬇️</button>
-                        <button class="btn-card-action" style="color:var(--danger);" onclick="removerCampoBuilder(${idx})">🗑️</button>
+                        <button type="button" class="btn-card-action" title="Editar Pergunta" onclick="editarCampoBuilder(${idx})">✏️</button>
+                        <button type="button" class="btn-card-action" onclick="moverCampoBuilder(${idx}, -1)">⬆️</button>
+                        <button type="button" class="btn-card-action" onclick="moverCampoBuilder(${idx}, 1)">⬇️</button>
+                        <button type="button" class="btn-card-action" style="color:#dc3545;" onclick="removerCampoBuilder(${idx})">🗑️</button>
                     </div>
-                    <span class="badge-tipo">${c.secao || '1. Gerais'}</span> | <span class="badge-tipo" style="background:var(--primary); color:#fff;">${nomesTipos[c.tipo] || c.tipo}</span>
+                    <span class="badge-tipo">${c.secao || '1. Gerais'}</span> | <span class="badge-tipo" style="background:var(--primary); color:#fff;">${nomesTipos[c.tipo] || c.tipo}</span>${tagObrig}
                     <div style="font-weight:bold; font-size:14px; margin-top:5px;">${idx + 1}. ${c.titulo}${labelExtra}</div>
                 </div>
             `;
@@ -1108,7 +1090,7 @@
 
         if (res && res.sucesso) {
             await carregarDadosSistema();
-            fecharModal("Formulário Salvo!", res.mensagem || "Estrutura gravada com sucesso.", true);
+            atualizarModalFinal("Formulário Salvo!", res.mensagem || "Estrutura gravada com sucesso.");
         } else {
             await adicionarNaFilaOffline({
                 titulo: `Configuração Obra: ${nomeObra}`,
@@ -1116,10 +1098,13 @@
                 payload: payload
             });
             await atualizarInterfaceFilaOffline();
-            fecharModal("Salvo Offline!", "Sem sinal no momento. O formulário já está ativo neste aparelho e será enviado à nuvem automaticamente quando conectar.", true);
+            atualizarModalFinal("Salvo Offline!", "Sem sinal no momento. O formulário já está ativo neste aparelho e será enviado à nuvem automaticamente quando conectar.");
         }
     }
 
+    // =========================================================================
+    // RENDERIZAÇÃO DO FORMULÁRIO DE CAMPO (SEM OPÇÕES PRÉ-MARCADAS)
+    // =========================================================================
     function renderizarFormularioEngenheiro() {
         const nomeObra = document.getElementById('diario_select_obra').value;
         const obraObj = baseGlobal.obras.find(o => o.nome === nomeObra);
@@ -1155,31 +1140,34 @@
 
             secoesMap[secNome].forEach((c, idx) => {
                 const fieldId = "campo_din_" + pageIdx + "_" + idx;
+                const isObrig = Boolean(c.obrigatoria);
+                const starHtml = isObrig ? `<span class="req-star">*</span>` : '';
+                const obrigAttr = isObrig ? '1' : '0';
                 
                 if (c.tipo === 'etapa_producao') {
                     html += `
-                        <div class="form-group" style="background:rgba(0,0,0,0.02); padding:12px; border-radius:8px; border:1px solid var(--border-color);">
-                            <label>🏗️ ${c.titulo} <span style="font-size:11px; background:rgba(0,0,0,0.08); padding:2px 6px; border-radius:4px;">Meta: ${c.meta} | Saldo: ${c.sd !== undefined ? c.sd : c.meta}</span></label>
-                            <input type="number" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="etapa_producao" data-meta="${c.meta}" value="0" placeholder="Produção do Dia (PD)">
+                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="etapa_producao" style="background:rgba(0,0,0,0.02); padding:12px; border-radius:8px; border:1px solid var(--border-color);">
+                            <label>🏗️ ${c.titulo}${starHtml} <span style="font-size:11px; background:rgba(0,0,0,0.08); padding:2px 6px; border-radius:4px;">Meta: ${c.meta} | Saldo: ${c.sd !== undefined ? c.sd : c.meta}</span></label>
+                            <input type="number" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="etapa_producao" data-meta="${c.meta}" placeholder="0">
                         </div>
                     `;
                 } else if (c.tipo === 'select') {
-                    let options = c.opcoes.map(op => `<option value="${op}">${op}</option>`).join('');
+                    let options = `<option value="">-- Selecione uma opção --</option>` + c.opcoes.map(op => `<option value="${op}">${op}</option>`).join('');
                     html += `
-                        <div class="form-group">
-                            <label>🔽 ${c.titulo}</label>
+                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="select">
+                            <label>🔽 ${c.titulo}${starHtml}</label>
                             <select class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="select">${options}</select>
                         </div>
                     `;
                 } else if (c.tipo === 'radio') {
-                    let radios = c.opcoes.map((op, i) => `
+                    let radios = c.opcoes.map((op) => `
                         <label class="radio-item">
-                            <input type="radio" name="${fieldId}" value="${op}" ${i===0?'checked':''}> ${op}
+                            <input type="radio" name="${fieldId}" value="${op}"> ${op}
                         </label>
                     `).join('');
                     html += `
-                        <div class="form-group">
-                            <label>🔘 ${c.titulo}</label>
+                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="radio" data-group-id="${fieldId}">
+                            <label>🔘 ${c.titulo}${starHtml}</label>
                             <div class="radio-group" data-titulo="${c.titulo}" data-tipo="radio" data-radio-group="${fieldId}">${radios}</div>
                         </div>
                     `;
@@ -1190,16 +1178,17 @@
                         </label>
                     `).join('');
                     html += `
-                        <div class="form-group">
-                            <label>☑️ ${c.titulo}</label>
+                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="checkbox" data-group-id="${fieldId}">
+                            <label>☑️ ${c.titulo}${starHtml}</label>
                             <div class="checkbox-group" data-titulo="${c.titulo}" data-tipo="checkbox" data-chk-group="${fieldId}">${chks}</div>
                         </div>
                     `;
                 } else if (c.tipo === 'escala') {
                     html += `
-                        <div class="form-group">
-                            <label>⭐️ ${c.titulo}</label>
+                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="escala">
+                            <label>⭐️ ${c.titulo}${starHtml}</label>
                             <select class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="escala">
+                                <option value="">-- Selecione uma avaliação --</option>
                                 <option value="5">⭐️⭐️⭐️⭐️⭐️ (5 - Bom / Pleno)</option>
                                 <option value="4">⭐️⭐️⭐️⭐️ (4 - Satisfatório)</option>
                                 <option value="3">⭐️⭐️⭐️ (3 - Regular)</option>
@@ -1210,44 +1199,51 @@
                     `;
                 } else if (c.tipo === 'textarea') {
                     html += `
-                        <div class="form-group">
-                            <label>📄 ${c.titulo}</label>
+                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="textarea">
+                            <label>📄 ${c.titulo}${starHtml}</label>
                             <textarea class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="textarea" rows="3" placeholder="Digite seu relato detalhado..."></textarea>
+                        </div>
+                    `;
+                } else if (c.tipo === 'numero') {
+                    html += `
+                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="numero">
+                            <label>🔢 ${c.titulo}${starHtml}</label>
+                            <input type="number" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="numero" placeholder="0">
                         </div>
                     `;
                 } else if (c.tipo === 'decimal') {
                     html += `
-                        <div class="form-group">
-                            <label>📐 ${c.titulo}</label>
+                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="decimal">
+                            <label>📐 ${c.titulo}${starHtml}</label>
                             <input type="number" step="0.01" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="decimal" placeholder="0.00">
                         </div>
                     `;
                 } else if (c.tipo === 'data') {
                     html += `
-                        <div class="form-group">
-                            <label>📅 ${c.titulo}</label>
+                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="data">
+                            <label>📅 ${c.titulo}${starHtml}</label>
                             <input type="date" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="data">
                         </div>
                     `;
                 } else if (c.tipo === 'hora') {
                     html += `
-                        <div class="form-group">
-                            <label>⏰ ${c.titulo}</label>
+                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="hora">
+                            <label>⏰ ${c.titulo}${starHtml}</label>
                             <input type="time" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="hora">
                         </div>
                     `;
                 } else if (c.tipo === 'foto') {
                     html += `
-                        <div class="form-group">
-                            <label>📸 ${c.titulo}</label>
+                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="foto">
+                            <label>📸 ${c.titulo}${starHtml}</label>
                             <input type="file" accept="image/*" capture="environment" multiple onchange="processarFotoCampo(event, '${c.titulo}')">
                             <div class="preview-foto-container" id="prev_foto_${c.titulo.replace(/[^a-zA-Z0-9]/g, '')}"></div>
                         </div>
                     `;
                 } else {
                     html += `
-                        <div class="form-group">
-                            <label>📝 ${c.titulo}</label>
+                        <div class="form-group wrapper-campo" data-obrigatorio="${obrigAttr}" data-titulo="${c.titulo}" data-tipo="texto">
+                            <label>📝 ${c.titulo}${starHtml}</label>
                             <input type="text" class="campo-dinamico" id="${fieldId}" data-titulo="${c.titulo}" data-tipo="texto" placeholder="Sua resposta...">
                         </div>
                     `;
@@ -1261,7 +1257,46 @@
         atualizarControlesPaginacao();
     }
 
+    function validarPaginaAtual(idxPagina) {
+        const paginaEl = document.getElementById(`pagina_form_${idxPagina}`);
+        if (!paginaEl) return true;
+
+        paginaEl.querySelectorAll('.campo-erro-borda').forEach(el => el.classList.remove('campo-erro-borda'));
+
+        const wrappers = paginaEl.querySelectorAll('.wrapper-campo[data-obrigatorio="1"]');
+        for (let i = 0; i < wrappers.length; i++) {
+            const w = wrappers[i];
+            const tipo = w.dataset.tipo;
+            const titulo = w.dataset.titulo;
+            let preenchido = false;
+
+            if (tipo === 'radio') {
+                const gId = w.dataset.groupId;
+                preenchido = Boolean(w.querySelector(`input[name="${gId}"]:checked`));
+            } else if (tipo === 'checkbox') {
+                const gId = w.dataset.groupId;
+                preenchido = w.querySelectorAll(`.chk_${gId}:checked`).length > 0;
+            } else if (tipo === 'foto') {
+                preenchido = Boolean(fotosAnexadasModulos[titulo] && fotosAnexadasModulos[titulo].length > 0);
+            } else {
+                const inp = w.querySelector('.campo-dinamico');
+                preenchido = Boolean(inp && inp.value.trim() !== "");
+            }
+
+            if (!preenchido) {
+                w.classList.add('campo-erro-borda');
+                w.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                abrirModalAviso("Campo Obrigatório (*)", `Por favor, preencha ou selecione uma opção para:\n"${titulo}"`);
+                return false;
+            }
+        }
+        return true;
+    }
+
     function mudarPaginaForm(direcao) {
+        if (direcao === 1) {
+            if (!validarPaginaAtual(paginaAtualIndex)) return;
+        }
         const novaPag = paginaAtualIndex + direcao;
         if (novaPag >= 0 && novaPag < totalPaginasForm) {
             document.getElementById(`pagina_form_${paginaAtualIndex}`).classList.remove('active');
@@ -1349,7 +1384,26 @@
 
     async function enviarDiario(event) {
         event.preventDefault();
-        abrirModal("Processando Diário...", "Consolidando dados, fotos e assinaturas digitais.");
+
+        const dataDiario = document.getElementById('diario_data').value;
+        if (!dataDiario) {
+            abrirModalAviso("Data Obrigatória", "Informe a data do diário antes de publicar.");
+            return;
+        }
+
+        for (let p = 0; p < totalPaginasForm; p++) {
+            if (!validarPaginaAtual(p)) {
+                if (p !== paginaAtualIndex) {
+                    document.getElementById(`pagina_form_${paginaAtualIndex}`).classList.remove('active');
+                    paginaAtualIndex = p;
+                    document.getElementById(`pagina_form_${paginaAtualIndex}`).classList.add('active');
+                    atualizarControlesPaginacao();
+                }
+                return;
+            }
+        }
+
+        abrirModal("Processando Diário...", "Consolidando dados, fotos e assinatura do responsável.");
 
         let respostas = {};
         let todasFotos = [];
@@ -1386,7 +1440,6 @@
         }
 
         const obraSelecionada = document.getElementById('diario_select_obra').value;
-        const dataDiario = document.getElementById('diario_data').value;
         const clientSyncId = "SYNC-" + Date.now() + "-" + Math.random().toString(36).substring(2, 7);
         const assinaturasCapturadas = coletarAssinaturasPayload();
 
@@ -1404,11 +1457,11 @@
         const res = await apiRequest("salvar_diario", "POST", payload);
         
         if (res && res.sucesso) {
-            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold;">📄 Visualizar Prancha PDF Oficial no Drive</a>`;
+            document.getElementById('modalLink').innerHTML = `<a href="${res.url_pdf}" target="_blank" style="color:var(--primary); font-weight:bold; display:inline-block; padding:8px 12px; background:rgba(0,0,0,0.05); border-radius:6px; text-decoration:none;">📄 Abrir Prancha PDF Oficial no Drive</a>`;
             salvarPdfNoHistoricoLocal(obraSelecionada, dataDiario, res.url_pdf);
             await carregarDadosSistema();
             renderizarFormularioEngenheiro();
-            fecharModal("Diário Publicado!", res.mensagem || "Diário salvo e PDF gerado com assinaturas.", true);
+            atualizarModalFinal("Diário Publicado!", res.mensagem || "Diário salvo e Prancha PDF gerada com sucesso.");
         } else {
             await adicionarNaFilaOffline({
                 titulo: `RDO: ${obraSelecionada} (${dataDiario})`,
@@ -1418,14 +1471,16 @@
             abaterSaldoOtimistaOffline(obraSelecionada, respostas);
             await atualizarInterfaceFilaOffline();
             renderizarFormularioEngenheiro();
-            fecharModal(
+            atualizarModalFinal(
                 "Salvo no Dispositivo (Offline)!",
-                "Sem internet no momento. O diário, as fotos e as assinaturas digitais foram guardados com segurança na Fila Offline e serão enviados automaticamente assim que o sinal voltar.",
-                true
+                "Sem internet no momento. O diário, as fotos e a assinatura foram guardados com segurança na Fila Offline e serão enviados automaticamente assim que o sinal voltar."
             );
         }
     }
 
+    // =========================================================================
+    // CONTROLE DO MODAL DE FEEDBACK (BOTÃO OK FUNCIONAL)
+    // =========================================================================
     function abrirModal(titulo, msg) {
         document.getElementById('sysOverlay').style.display = 'flex';
         document.getElementById('modalSpinner').style.display = 'block';
@@ -1434,6 +1489,7 @@
         document.getElementById('modalTitle').innerText = titulo;
         document.getElementById('modalMsg').innerText = msg;
     }
+
     function abrirModalAviso(titulo, msg) {
         document.getElementById('sysOverlay').style.display = 'flex';
         document.getElementById('modalSpinner').style.display = 'none';
@@ -1442,12 +1498,23 @@
         document.getElementById('modalMsg').innerText = msg;
         document.getElementById('modalBtn').style.display = 'inline-block';
     }
-    function fecharModal(titulo, msg, showBtn = true) {
+
+    function atualizarModalFinal(titulo, msg) {
         document.getElementById('modalSpinner').style.display = 'none';
         if (titulo) document.getElementById('modalTitle').innerText = titulo;
         if (msg) document.getElementById('modalMsg').innerText = msg;
-        if (showBtn) document.getElementById('modalBtn').style.display = 'inline-block';
-        else document.getElementById('sysOverlay').style.display = 'none';
+        document.getElementById('modalBtn').style.display = 'inline-block';
+    }
+
+    function ocultarModal() {
+        document.getElementById('sysOverlay').style.display = 'none';
+        document.getElementById('modalLink').innerHTML = '';
+    }
+
+    function fecharSeClicarFora(evt) {
+        if (evt.target.id === 'sysOverlay' && document.getElementById('modalBtn').style.display !== 'none') {
+            ocultarModal();
+        }
     }
 </script>
 </body>
